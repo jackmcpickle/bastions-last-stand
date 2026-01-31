@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="TowerData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/tower_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "archer"
+display_name = "Archer Tower"
+base_cost = 100
+damage = 15000
+attack_speed_ms = 800
+range_tiles = 5
+aoe_radius = 0
+special = {}
+upgrade_cost_t2 = 150
+upgrade_cost_t3 = 300
+upgrades = []

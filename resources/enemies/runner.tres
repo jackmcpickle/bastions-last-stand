@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/enemy_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "runner"
+display_name = "Runner"
+hp = 30
+speed = 2000
+armor = 0
+gold_value = 8
+special = {}
+is_boss = false
+boss_abilities = []
