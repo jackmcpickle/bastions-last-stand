@@ -3,7 +3,7 @@ class_name ChapterCard extends Control
 signal level_selected(level)
 
 var chapter
-var is_expanded: bool = false
+var is_expanded: bool = true
 
 @onready var title_label: Label = %TitleLabel
 @onready var expand_button: Button = %ExpandButton
@@ -13,6 +13,9 @@ var is_expanded: bool = false
 func _ready() -> void:
 	if expand_button:
 		expand_button.pressed.connect(_on_expand_pressed)
+		expand_button.text = "▼" if is_expanded else "▶"
+	if levels_grid:
+		levels_grid.visible = is_expanded
 
 
 func setup(p_chapter) -> void:
