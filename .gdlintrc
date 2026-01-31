@@ -18,13 +18,14 @@ class-name: ([A-Z][a-z0-9]*)+
 class-variable-name: _?[a-z][a-z0-9]*(_[a-z0-9]+)*
 comparison-with-itself: null
 constant-name: _?[A-Z][A-Z0-9]*(_[A-Z0-9]+)*
+# Disabled rules with justification (see CLAUDE.md for details)
 disable:
-- max-public-methods
-- class-definitions-order
-- no-elif-return
-- no-else-return
-- unused-argument
-- private-method-call
+- max-public-methods       # Test files have 20-40 methods; GameState is coordinator
+- class-definitions-order  # Multiple intentional exceptions: late-init vars, grouped consts
+- no-elif-return           # Team preference; controversial rule
+- no-else-return           # Team preference; controversial rule
+- unused-argument          # Required by test framework, signal handlers, interfaces
+- private-method-call      # Unit tests must test private methods for coverage
 duplicated-load: null
 enum-element-name: '[A-Z][A-Z0-9]*(_[A-Z0-9]+)*'
 enum-name: ([A-Z][a-z0-9]*)+
