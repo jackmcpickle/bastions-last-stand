@@ -1,6 +1,4 @@
 [gd_resource type="Resource" script_class="ChapterData"]
-
-script = ExtResource("res://resources/chapter_data.gd")
 id = "chapter_1"
 display_name = "The First Stand"
 description = "Tutorial chapter. Learn tower placement and enemy patterns."
@@ -10,7 +8,6 @@ levels = [SubResource("Resource_1"), SubResource("Resource_2"), SubResource("Res
 [sub_resources]
 
 [SubResource type="Resource" class_name="LevelData" id="Resource_1"]
-script = ExtResource("res://resources/level_data.gd")
 id = "ch1_lv1"
 display_name = "First Steps"
 chapter_id = "chapter_1"
@@ -25,7 +22,6 @@ recommended_towers = ["archer_tower"]
 enemy_types = ["grunt"]
 
 [SubResource type="Resource" class_name="LevelData" id="Resource_2"]
-script = ExtResource("res://resources/level_data.gd")
 id = "ch1_lv2"
 display_name = "Speed Threat"
 chapter_id = "chapter_1"
@@ -40,7 +36,6 @@ recommended_towers = ["archer_tower", "frost_tower"]
 enemy_types = ["grunt", "runner"]
 
 [SubResource type="Resource" class_name="LevelData" id="Resource_3"]
-script = ExtResource("res://resources/level_data.gd")
 id = "ch1_lv3"
 display_name = "Rush Defense"
 chapter_id = "chapter_1"

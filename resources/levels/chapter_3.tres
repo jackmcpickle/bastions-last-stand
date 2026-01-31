@@ -1,6 +1,4 @@
 [gd_resource type="Resource" script_class="ChapterData"]
-
-script = ExtResource("res://resources/chapter_data.gd")
 id = "chapter_3"
 display_name = "Final Trial"
 description = "Endgame challenges. Only the most skilled survive."
@@ -10,7 +8,6 @@ levels = [SubResource("Resource_1"), SubResource("Resource_2"), SubResource("Res
 [sub_resources]
 
 [SubResource type="Resource" class_name="LevelData" id="Resource_1"]
-script = ExtResource("res://resources/level_data.gd")
 id = "ch3_lv1"
 display_name = "Shadow Strike"
 chapter_id = "chapter_3"
@@ -25,7 +22,6 @@ recommended_towers = ["cannon_tower", "lightning_tower"]
 enemy_types = ["stealth", "grunt"]
 
 [SubResource type="Resource" class_name="LevelData" id="Resource_2"]
-script = ExtResource("res://resources/level_data.gd")
 id = "ch3_lv2"
 display_name = "Siege"
 chapter_id = "chapter_3"
@@ -40,7 +36,6 @@ recommended_towers = ["cannon_tower", "frost_tower"]
 enemy_types = ["breaker", "tank"]
 
 [SubResource type="Resource" class_name="LevelData" id="Resource_3"]
-script = ExtResource("res://resources/level_data.gd")
 id = "ch3_lv3"
 display_name = "Boss Battle"
 chapter_id = "chapter_3"
