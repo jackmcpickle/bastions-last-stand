@@ -46,7 +46,7 @@ var wave_enemies_remaining: int = 0
 var spawn_queue: Array[Dictionary] = []  # {enemy_id, spawn_point, delay_remaining}
 
 ## Constants
-const STARTING_GOLD := 200
+const STARTING_GOLD := 120
 const SHRINE_HP := 100
 const TICK_MS := 100  # 0.1 seconds per tick
 
@@ -55,9 +55,18 @@ func _init() -> void:
 	pass
 
 
+## Balance config (set via initialize_with_config)
+var balance_config: BalanceConfig
+
+
 func initialize(p_map_data: MapData, p_wave_data: WaveData, seed: int = 0) -> void:
+	initialize_with_config(p_map_data, p_wave_data, null, seed)
+
+
+func initialize_with_config(p_map_data: MapData, p_wave_data: WaveData, config: BalanceConfig, seed: int = 0) -> void:
 	map_data = p_map_data
 	wave_data = p_wave_data
+	balance_config = config if config else BalanceConfig.new()
 	rng = RandomManager.new(seed)
 	
 	# Initialize pathfinding
@@ -70,13 +79,13 @@ func initialize(p_map_data: MapData, p_wave_data: WaveData, seed: int = 0) -> vo
 	
 	shrine = SimShrine.new()
 	shrine.position = shrine_pos
-	shrine.hp = SHRINE_HP
-	shrine.max_hp = SHRINE_HP
+	shrine.hp = balance_config.shrine_hp
+	shrine.max_hp = balance_config.shrine_hp
 	
 	pathfinding.set_shrine_position(shrine_pos)
 	
 	# Reset state
-	gold = STARTING_GOLD
+	gold = balance_config.starting_gold
 	current_wave = 0
 	towers.clear()
 	walls.clear()
@@ -151,7 +160,8 @@ func place_tower(pos: Vector2i, tower_id: String) -> SimTower:
 
 ## Wall placement
 func can_place_wall(pos: Vector2i) -> bool:
-	if 25 > gold:  # Wall cost
+	var wall_cost := balance_config.wall_cost if balance_config else 10
+	if wall_cost > gold:
 		return false
 	if not map_data.can_build_wall(pos):
 		return false
@@ -166,13 +176,15 @@ func place_wall(pos: Vector2i) -> SimWall:
 	if not can_place_wall(pos):
 		return null
 	
+	var wall_cost := balance_config.wall_cost if balance_config else 10
+	
 	var wall := SimWall.new()
 	wall.position = pos
 	wall.hp = 100
 	wall.max_hp = 100
 	
-	gold -= 25
-	total_gold_spent += 25
+	gold -= wall_cost
+	total_gold_spent += wall_cost
 	walls.append(wall)
 	
 	pathfinding.set_blocked(pos, true)

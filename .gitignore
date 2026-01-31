@@ -26,3 +26,6 @@ Thumbs.db
 # Simulation output
 *.csv
 results/
+
+# GUT testing framework (install via git clone)
+addons/gut/

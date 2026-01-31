@@ -11,11 +11,13 @@ var _map_data: MapData
 var _wave_data: WaveData
 var _tower_registry: Dictionary = {}
 var _enemy_registry: Dictionary = {}
+var _balance_config: BalanceConfig
 
 
-func setup(map: MapData, waves: WaveData) -> void:
+func setup(map: MapData, waves: WaveData, config: BalanceConfig = null) -> void:
 	_map_data = map
 	_wave_data = waves
+	_balance_config = config if config else BalanceConfig.new()
 
 
 func register_tower(data: TowerData) -> void:
@@ -26,22 +28,62 @@ func register_enemy(data: EnemyData) -> void:
 	_enemy_registry[data.id] = data
 
 
-func run_single(seed: int, tower_placements: Array[Dictionary]) -> TickProcessor.GameResult:
-	## Run a single simulation with specified tower placements
+func get_balance_config() -> BalanceConfig:
+	return _balance_config
+
+
+func _apply_config_to_tower(data: TowerData) -> TowerData:
+	## Apply balance config overrides to tower data
+	if data.id == "archer":
+		data.base_cost = _balance_config.archer_cost
+		data.damage = _balance_config.archer_damage
+		data.attack_speed_ms = _balance_config.archer_attack_speed_ms
+		data.range_tiles = _balance_config.archer_range
+	return data
+
+
+func _apply_config_to_enemy(data: EnemyData) -> EnemyData:
+	## Apply balance config overrides to enemy data
+	if data.id == "grunt":
+		data.hp = _balance_config.grunt_hp
+		data.speed = _balance_config.grunt_speed
+		data.gold_value = _balance_config.grunt_gold
+	elif data.id == "runner":
+		data.hp = _balance_config.runner_hp
+		data.speed = _balance_config.runner_speed
+		data.gold_value = _balance_config.runner_gold
+	return data
+
+
+func run_single(
+	seed: int,
+	tower_placements: Array[Dictionary],
+	wall_placements: Array[Vector2i] = []
+) -> TickProcessor.GameResult:
+	## Run a single simulation with specified tower and wall placements
 	## tower_placements: [{pos: Vector2i, id: String}, ...]
+	## wall_placements: [Vector2i, ...]
 	
 	var game := GameState.new()
 	
-	# Register data
+	# Register data with config overrides
 	for id in _tower_registry:
-		game.register_tower_data(_tower_registry[id])
+		var data: TowerData = _tower_registry[id].duplicate()
+		data = _apply_config_to_tower(data)
+		game.register_tower_data(data)
 	for id in _enemy_registry:
-		game.register_enemy_data(_enemy_registry[id])
+		var data: EnemyData = _enemy_registry[id].duplicate()
+		data = _apply_config_to_enemy(data)
+		game.register_enemy_data(data)
 	
-	# Initialize
-	game.initialize(_map_data, _wave_data, seed)
+	# Initialize with config
+	game.initialize_with_config(_map_data, _wave_data, _balance_config, seed)
 	
-	# Place towers
+	# Place walls first (affects pathfinding)
+	for pos in wall_placements:
+		game.place_wall(pos)
+	
+	# Then place towers
 	for placement in tower_placements:
 		game.place_tower(placement.pos, placement.id)
 	
@@ -53,7 +95,8 @@ func run_single(seed: int, tower_placements: Array[Dictionary]) -> TickProcessor
 func run_batch(
 	count: int,
 	base_seed: int,
-	tower_placements: Array[Dictionary]
+	tower_placements: Array[Dictionary],
+	wall_placements: Array[Vector2i] = []
 ) -> Array[TickProcessor.GameResult]:
 	## Run multiple simulations
 	
@@ -63,7 +106,7 @@ func run_batch(
 		simulation_started.emit(i, count)
 		
 		var seed := base_seed + i
-		var result := run_single(seed, tower_placements)
+		var result := run_single(seed, tower_placements, wall_placements)
 		results.append(result)
 		
 		simulation_completed.emit(i, result)
@@ -160,6 +203,8 @@ static func analyze_results(results: Array[TickProcessor.GameResult]) -> Diction
 	var total_shrine_hp := 0
 	var total_gold := 0
 	var total_duration := 0
+	var total_killed := 0
+	var total_leaked := 0
 	var tower_damage: Dictionary = {}
 	var tower_kills: Dictionary = {}
 	
@@ -170,6 +215,8 @@ static func analyze_results(results: Array[TickProcessor.GameResult]) -> Diction
 		total_shrine_hp += result.final_shrine_hp
 		total_gold += result.final_gold
 		total_duration += result.get_duration_ms()
+		total_killed += result.enemies_killed
+		total_leaked += result.enemies_leaked
 		
 		for tower_id in result.tower_stats:
 			var stats: Dictionary = result.tower_stats[tower_id]
@@ -187,6 +234,8 @@ static func analyze_results(results: Array[TickProcessor.GameResult]) -> Diction
 		"avg_shrine_hp": float(total_shrine_hp) / count,
 		"avg_gold": float(total_gold) / count,
 		"avg_duration_ms": float(total_duration) / count,
+		"avg_killed": float(total_killed) / count,
+		"avg_leaked": float(total_leaked) / count,
 		"tower_total_damage": tower_damage,
 		"tower_total_kills": tower_kills,
 	}

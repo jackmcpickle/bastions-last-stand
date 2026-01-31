@@ -89,11 +89,15 @@ static func process_enemy_leaks(game_state: GameState) -> void:
 			to_remove.append(enemy)
 	
 	for enemy in to_remove:
-		# Damage shrine - enemies deal damage equal to their remaining HP percentage
-		# Standard enemies deal 1 damage, stronger enemies deal more
-		var damage := 1
+		# Damage shrine based on config
+		var base_damage := 1
+		if game_state.balance_config:
+			base_damage = game_state.balance_config.enemy_shrine_damage
+		
+		# Scale damage for stronger enemies
+		var damage := base_damage
 		if enemy.max_hp > 100:
-			damage = enemy.max_hp / 50  # Scale with HP
+			damage = base_damage + enemy.max_hp / 50
 		
 		game_state.damage_shrine(damage)
 		game_state.enemy_reached_shrine.emit(enemy, damage)

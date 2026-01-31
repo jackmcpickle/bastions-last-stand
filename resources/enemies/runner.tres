@@ -6,7 +6,7 @@
 script = ExtResource("1")
 id = "runner"
 display_name = "Runner"
-hp = 30
+hp = 40
 speed = 2000
 armor = 0
 gold_value = 8

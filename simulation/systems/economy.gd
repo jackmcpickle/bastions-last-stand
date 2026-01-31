@@ -3,7 +3,7 @@ extends RefCounted
 
 ## Economy system - gold tracking, bonuses, interest
 
-const WALL_COST := 25
+const WALL_COST := 10
 const SELL_RATE := 90  # 90% return
 const INTEREST_RATE := 50  # 5% (x1000)
 const INTEREST_CAP := 50  # Max 50 gold per wave
