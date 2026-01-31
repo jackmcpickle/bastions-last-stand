@@ -18,6 +18,9 @@ var selected_difficulty: String = "normal"
 
 
 func _ready() -> void:
+	print("LevelSelect _ready called")
+	print("ProgressionManager.all_chapters: ", ProgressionManager.all_chapters)
+	print("chapters_container: ", chapters_container)
 	_populate_chapters()
 	_connect_signals()
 	_setup_difficulty_buttons()
@@ -25,11 +28,15 @@ func _ready() -> void:
 
 func _populate_chapters() -> void:
 	var card_scene = load("res://ui/components/chapter_card.tscn")
+	print("card_scene loaded: ", card_scene)
+	print("Number of chapters: ", ProgressionManager.all_chapters.size())
 	for chapter in ProgressionManager.all_chapters:
+		print("Creating card for chapter: ", chapter.display_name)
 		var card = card_scene.instantiate()
 		card.setup(chapter)
 		card.level_selected.connect(_on_level_selected)
 		chapters_container.add_child(card)
+		print("Card added: ", card)
 
 
 func _setup_difficulty_buttons() -> void:
@@ -46,6 +53,7 @@ func _connect_signals() -> void:
 
 
 func _on_level_selected(level: LevelData) -> void:
+	print("Level selected: ", level.display_name if level else "null")
 	selected_level = level
 	_show_level_details(level)
 
@@ -94,8 +102,13 @@ func _update_difficulty_display() -> void:
 
 
 func _on_start_pressed() -> void:
+	print("Start pressed, selected_level: ", selected_level)
+	print("Selected difficulty: ", selected_difficulty)
 	if selected_level:
+		print("Emitting battle_requested signal")
 		battle_requested.emit(selected_level, selected_difficulty)
+	else:
+		print("No level selected")
 
 
 func _on_back_pressed() -> void:
