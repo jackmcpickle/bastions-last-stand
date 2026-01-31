@@ -49,7 +49,10 @@ func _connect_signals() -> void:
 func _setup_level_select() -> void:
 	# Level select is already embedded in main_hub.tscn as LevelSelectTab
 	# and has level_select.gd script handling its logic
-	pass
+	if tab_level_select:
+		var level_select = tab_level_select.find_child("LevelSelect", true, false)
+		if level_select and level_select.has_signal("battle_requested"):
+			level_select.battle_requested.connect(_on_battle_requested)
 
 
 func _restore_last_tab() -> void:
