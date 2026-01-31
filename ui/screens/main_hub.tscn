@@ -1,7 +1,10 @@
-[gd_scene load_steps=3 format=3 uid="uid://br2r4kx00001"]
+[gd_scene load_steps=6 format=3 uid="uid://br2r4kx00001"]
 
 [ext_resource type="Script" path="res://ui/screens/main_hub.gd" id="1"]
 [ext_resource type="Script" path="res://ui/screens/level_select.gd" id="2"]
+[ext_resource type="PackedScene" path="res://ui/screens/tower_upgrade.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://ui/screens/shrine_upgrade.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://ui/screens/settings.tscn" id="5"]
 
 [node name="MainHub" type="Control"]
 layout_mode = 3
@@ -113,27 +116,21 @@ text = "Start Battle"
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="Label" type="Label" parent="TabContainer/TowersTab"]
+[node name="TowerUpgrade" parent="TabContainer/TowersTab" instance=ExtResource("3")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-text = "Towers Tab"
-horizontal_alignment = 1
-vertical_alignment = 1
 
 [node name="ShrineTab" type="Control" parent="TabContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="Label" type="Label" parent="TabContainer/ShrineTab"]
+[node name="ShrineUpgrade" parent="TabContainer/ShrineTab" instance=ExtResource("4")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-text = "Shrine Tab"
-horizontal_alignment = 1
-vertical_alignment = 1
 
 [node name="LoreTab" type="Control" parent="TabContainer"]
 unique_name_in_owner = true
@@ -152,11 +149,8 @@ vertical_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="Label" type="Label" parent="TabContainer/SettingsTab"]
+[node name="Settings" parent="TabContainer/SettingsTab" instance=ExtResource("5")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-text = "Settings Tab"
-horizontal_alignment = 1
-vertical_alignment = 1
