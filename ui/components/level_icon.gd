@@ -1,8 +1,8 @@
 class_name LevelIcon extends Button
 
-signal level_selected(level: LevelData)
+signal level_selected(level)
 
-var level: LevelData
+var level
 
 @onready var star_display: HBoxContainer = %StarDisplay
 @onready var lock_icon: Control = %LockIcon
@@ -12,7 +12,7 @@ func _ready() -> void:
 	pressed.connect(_on_pressed)
 
 
-func setup(p_level: LevelData) -> void:
+func setup(p_level) -> void:
 	level = p_level
 	_update_display()
 

@@ -99,7 +99,7 @@ func _on_tab_changed(tab: int) -> void:
 	_last_tab = tab
 
 
-func _on_level_selected(level: LevelData) -> void:
+func _on_level_selected(level) -> void:
 	_selected_level = level
 	var detail_title = tab_level_select.find_child("DetailTitle", true, false)
 	var detail_description = tab_level_select.find_child("DetailDescription", true, false)
@@ -119,11 +119,11 @@ func _on_start_battle_pressed() -> void:
 		start_battle(_selected_level, _selected_difficulty)
 
 
-func start_battle(level: LevelData, difficulty: String) -> void:
+func start_battle(level, difficulty: String) -> void:
 	ProgressionManager.current_level = level
 	ProgressionManager.current_difficulty = difficulty
 	SceneManager.change_scene("res://ui/screens/battle_screen.tscn")
 
 
-func _on_battle_requested(level: LevelData, difficulty: String) -> void:
+func _on_battle_requested(level, difficulty: String) -> void:
 	start_battle(level, difficulty)

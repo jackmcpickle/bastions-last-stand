@@ -1,13 +1,13 @@
 [gd_scene load_steps=2 format=3 uid="uid://br2r4kx00001"]
 
-[ext_resource type="Script" path="res://ui/screens/main_hub.gd"]
+[ext_resource type="Script" path="res://ui/screens/main_hub.gd" id="1"]
 
 [node name="MainHub" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-script = ExtResource("res://ui/screens/main_hub.gd")
+script = ExtResource("1")
 
 [node name="TabContainer" type="TabContainer" parent="." node_paths=PackedStringArray("tab_0_panel", "tab_1_panel", "tab_2_panel", "tab_3_panel", "tab_4_panel")]
 unique_name_in_owner = true

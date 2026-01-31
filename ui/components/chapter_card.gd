@@ -1,8 +1,8 @@
 class_name ChapterCard extends Control
 
-signal level_selected(level: LevelData)
+signal level_selected(level)
 
-var chapter: ChapterData
+var chapter
 var is_expanded: bool = false
 
 @onready var title_label: Label = %TitleLabel
@@ -16,7 +16,7 @@ func _ready() -> void:
 		expand_button.pressed.connect(_on_expand_pressed)
 
 
-func setup(p_chapter: ChapterData) -> void:
+func setup(p_chapter) -> void:
 	chapter = p_chapter
 	title_label.text = chapter.display_name
 	_populate_levels()
@@ -65,5 +65,5 @@ func _on_expand_pressed() -> void:
 	levels_grid.visible = is_expanded
 
 
-func _on_level_selected(level: LevelData) -> void:
+func _on_level_selected(level) -> void:
 	level_selected.emit(level)

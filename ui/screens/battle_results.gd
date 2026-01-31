@@ -10,7 +10,7 @@ extends Control
 @onready var continue_button: Button = %ContinueButton
 
 var result = null
-var level: LevelData = null
+var level = null
 var difficulty: String = ""
 
 

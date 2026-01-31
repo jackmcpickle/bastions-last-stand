@@ -1,5 +1,6 @@
 [gd_resource type="Resource" script_class="ChapterData"]
 
+script = ExtResource("res://resources/chapter_data.gd")
 id = "chapter_1"
 display_name = "The First Stand"
 description = "Tutorial chapter. Learn tower placement and enemy patterns."

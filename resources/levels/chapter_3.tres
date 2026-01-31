@@ -1,5 +1,6 @@
 [gd_resource type="Resource" script_class="ChapterData"]
 
+script = ExtResource("res://resources/chapter_data.gd")
 id = "chapter_3"
 display_name = "Final Trial"
 description = "Endgame challenges. Only the most skilled survive."

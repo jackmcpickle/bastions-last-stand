@@ -1,5 +1,6 @@
 [gd_resource type="Resource" script_class="ChapterData"]
 
+script = ExtResource("res://resources/chapter_data.gd")
 id = "chapter_2"
 display_name = "Escalation"
 description = "Mid-game challenges. New enemy types and tactics required."

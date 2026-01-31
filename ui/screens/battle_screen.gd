@@ -7,7 +7,7 @@ extends Control
 @onready var shrine_hp_label: Label = %ShrineHPLabel
 @onready var progress_bar: ProgressBar = %ProgressBar
 
-var current_level: LevelData
+var current_level
 var current_difficulty: String
 
 

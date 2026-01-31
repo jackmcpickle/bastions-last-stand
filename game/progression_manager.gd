@@ -13,12 +13,12 @@ var unlocked_chapters: Array[String] = ["chapter_1"]
 var total_gold: int = 0
 
 # Current session
-var current_level: LevelData = null
+var current_level = null  # Will be LevelData
 var current_difficulty: String = "normal"
 var last_battle_result = null
 
 # Chapter/level data cache
-var all_chapters: Array[ChapterData] = []
+var all_chapters: Array = []
 
 const SAVE_PATH = "user://progression.save"
 
@@ -169,7 +169,7 @@ func load_progression() -> void:
 		total_gold = data.get("total_gold", 0)
 
 
-func _get_level_data(level_id: String) -> LevelData:
+func _get_level_data(level_id: String):
 	for chapter in all_chapters:
 		for level in chapter.levels:
 			if level.id == level_id:
@@ -177,7 +177,7 @@ func _get_level_data(level_id: String) -> LevelData:
 	return null
 
 
-func _get_chapter_by_id(chapter_id: String) -> ChapterData:
+func _get_chapter_by_id(chapter_id: String):
 	for chapter in all_chapters:
 		if chapter.id == chapter_id:
 			return chapter
