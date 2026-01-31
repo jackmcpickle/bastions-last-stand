@@ -27,7 +27,15 @@ func _ready() -> void:
 	_update_display()
 
 
-func setup(p_id: String, p_name: String, p_desc: String, p_cost: int, p_level: int = 0, p_max: int = 5, p_icon: String = "⬆") -> void:
+func setup(
+	p_id: String,
+	p_name: String,
+	p_desc: String,
+	p_cost: int,
+	p_level: int = 0,
+	p_max: int = 5,
+	p_icon: String = "⬆"
+) -> void:
 	upgrade_id = p_id
 	upgrade_name = p_name
 	upgrade_description = p_desc

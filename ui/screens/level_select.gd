@@ -5,7 +5,7 @@ extends Control
 signal battle_requested(level: LevelData, difficulty: String)
 
 @onready var chapters_container: VBoxContainer = %ChaptersContainer
-@onready var level_detail_panel: PanelContainer = %LevelDetailPanel
+@onready var level_detail_panel: PanelContainer = %DetailPanel
 @onready var detail_title: Label = %DetailTitle
 @onready var detail_description: Label = %DetailDescription
 @onready var detail_stats: VBoxContainer = %DetailStats
@@ -24,8 +24,9 @@ func _ready() -> void:
 
 
 func _populate_chapters() -> void:
+	var card_scene = load("res://ui/components/chapter_card.tscn")
 	for chapter in ProgressionManager.all_chapters:
-		var card = ChapterCard.new()
+		var card = card_scene.instantiate()
 		card.setup(chapter)
 		card.level_selected.connect(_on_level_selected)
 		chapters_container.add_child(card)
@@ -79,13 +80,17 @@ func _update_difficulty_display() -> void:
 	var modifier = selected_level.difficulty_modifiers[selected_difficulty]
 
 	var star_text = "★" * stars + "☆" * (3 - stars)
-	var stats_text = "%s Difficulty\nGold Reward: %d\n%s" % [
-		selected_difficulty.to_upper(),
-		modifier.gold,
-		star_text
-	]
+	var stats_text = (
+		"%s Difficulty\nGold Reward: %d\n%s"
+		% [selected_difficulty.to_upper(), modifier.gold, star_text]
+	)
 
-	detail_stats.text = stats_text
+	# Clear existing children and add a new label
+	for child in detail_stats.get_children():
+		child.queue_free()
+	var label = Label.new()
+	label.text = stats_text
+	detail_stats.add_child(label)
 
 
 func _on_start_pressed() -> void:

@@ -121,6 +121,7 @@ func _fade_in(duration: float = 0.3) -> void:
 
 ## Settings persistence
 
+
 func _load_settings() -> void:
 	var config := ConfigFile.new()
 	if config.load("user://settings.cfg") == OK:

@@ -13,6 +13,7 @@ func before_each() -> void:
 # Upgrade path tests
 # ============================================
 
+
 func test_can_upgrade_t1_to_t2_branch_a() -> void:
 	var tower := _create_tower()
 	var upgrade := _create_tier2_upgrade("A")
@@ -132,6 +133,7 @@ func test_upgrade_preserves_existing_special_not_overwritten() -> void:
 # Helpers
 # ============================================
 
+
 func _create_tower() -> SimTower:
 	var data := TestHelpers.create_basic_tower_data()
 	var tower := SimTower.new()
@@ -172,7 +174,9 @@ func _create_tier2_upgrade(branch: String, special: Dictionary = {}) -> TowerUpg
 	return data
 
 
-func _create_tier3_upgrade(branch: String, parent: String, special: Dictionary = {}) -> TowerUpgradeData:
+func _create_tier3_upgrade(
+	branch: String, parent: String, special: Dictionary = {}
+) -> TowerUpgradeData:
 	var data := TowerUpgradeData.new()
 	data.id = "test_t3_%s" % branch
 	data.display_name = "Test T3 %s" % branch

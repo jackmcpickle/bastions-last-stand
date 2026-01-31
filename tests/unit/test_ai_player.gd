@@ -19,6 +19,7 @@ func before_each() -> void:
 # AIPlayerClass helper tests
 # ============================================
 
+
 func test_find_valid_tower_positions() -> void:
 	var ai := AIPlayerClass.new(_game_state)
 
@@ -87,6 +88,7 @@ func test_get_best_tower_position_covers_path() -> void:
 # ============================================
 # BalancedAIClass tests
 # ============================================
+
 
 func test_balanced_ai_places_tower() -> void:
 	_game_state.gold = 200

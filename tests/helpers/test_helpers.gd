@@ -3,6 +3,7 @@ class_name TestHelpers
 
 ## Common test fixtures and helper methods
 
+
 static func create_basic_enemy_data(id: String = "grunt") -> EnemyData:
 	var data := EnemyData.new()
 	data.id = id
@@ -217,7 +218,9 @@ static func create_test_pathfinding(width: int = 20, height: int = 20) -> SimPat
 	return pf
 
 
-static func create_enemy_at_position(pos: Vector2, data: EnemyData = null, pathfinding: SimPathfinding = null) -> SimEnemy:
+static func create_enemy_at_position(
+	pos: Vector2, data: EnemyData = null, pathfinding: SimPathfinding = null
+) -> SimEnemy:
 	if not data:
 		data = create_basic_enemy_data()
 	if not pathfinding:
@@ -271,7 +274,9 @@ static func create_tower_with_upgrades() -> TowerData:
 	return data
 
 
-static func create_test_ground_effect(pos: Vector2, dps: int, duration_ms: int, radius: float = 1.5) -> SimGroundEffect:
+static func create_test_ground_effect(
+	pos: Vector2, dps: int, duration_ms: int, radius: float = 1.5
+) -> SimGroundEffect:
 	return SimGroundEffect.new(pos, radius, dps, duration_ms)
 
 

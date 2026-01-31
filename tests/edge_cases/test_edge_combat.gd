@@ -15,6 +15,7 @@ func before_each() -> void:
 # Zero/minimal damage edge cases
 # ============================================
 
+
 func test_zero_damage_with_full_armor() -> void:
 	var enemy := _spawn_enemy_at(Vector2(10, 10))
 	enemy.armor = 1000  # 100% armor
@@ -52,6 +53,7 @@ func test_small_damage_accumulates() -> void:
 # Overkill edge cases
 # ============================================
 
+
 func test_overkill_damage() -> void:
 	var enemy := _spawn_enemy_at(Vector2(10, 10))
 	enemy.hp = 10
@@ -75,6 +77,7 @@ func test_overkill_still_counts_damage() -> void:
 # ============================================
 # Simultaneous deaths
 # ============================================
+
 
 func test_multiple_enemies_die_same_tick() -> void:
 	# Create multiple low-hp enemies
@@ -105,6 +108,7 @@ func test_gold_awarded_for_all_simultaneous_deaths() -> void:
 # ============================================
 # AOE edge cases
 # ============================================
+
 
 func test_aoe_hitting_zero_enemies() -> void:
 	var data := TestHelpers.create_aoe_tower_data()
@@ -155,6 +159,7 @@ func test_aoe_radius_zero() -> void:
 # ============================================
 # Chain attack edge cases
 # ============================================
+
 
 func test_chain_fewer_targets_than_chain_count() -> void:
 	var data := TestHelpers.create_lightning_tower_data()
@@ -225,6 +230,7 @@ func test_chain_skips_stealth() -> void:
 # Shrine damage edge cases
 # ============================================
 
+
 func test_enemy_leak_with_zero_shrine_hp() -> void:
 	_game_state.shrine.hp = 0
 	var enemy := _spawn_enemy_at(Vector2(19, 10))
@@ -264,6 +270,7 @@ func test_boss_enemy_does_more_shrine_damage() -> void:
 # Tower attack edge cases
 # ============================================
 
+
 func test_tower_attack_enemy_dies_before_attack() -> void:
 	_game_state.gold = 500
 	var tower := _place_tower(Vector2i(8, 8))
@@ -296,6 +303,7 @@ func test_tower_all_enemies_stealth() -> void:
 # ============================================
 # Helpers
 # ============================================
+
 
 func _spawn_enemy_at(pos: Vector2) -> SimEnemy:
 	var data := TestHelpers.create_basic_enemy_data()

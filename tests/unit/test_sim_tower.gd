@@ -13,6 +13,7 @@ func before_each() -> void:
 # attack() tests
 # ============================================
 
+
 func test_attack_single_target() -> void:
 	var tower := _create_tower()
 	var enemies: Array[SimEnemy] = [_create_enemy_at(Vector2(5, 5))]
@@ -143,6 +144,7 @@ func test_attack_chain_respects_range() -> void:
 # process_cooldown() tests
 # ============================================
 
+
 func test_process_cooldown_reduces() -> void:
 	var tower := _create_tower()
 	tower.cooldown_ms = 500
@@ -174,6 +176,7 @@ func test_process_cooldown_zero_stays_zero() -> void:
 # can_attack() tests
 # ============================================
 
+
 func test_can_attack_when_ready() -> void:
 	var tower := _create_tower()
 	tower.cooldown_ms = 0
@@ -191,6 +194,7 @@ func test_can_attack_false_on_cooldown() -> void:
 # ============================================
 # can_upgrade_to() tests
 # ============================================
+
 
 func test_can_upgrade_t1_to_t2() -> void:
 	var tower := _create_tower()
@@ -245,6 +249,7 @@ func test_cannot_upgrade_null() -> void:
 # apply_upgrade() tests
 # ============================================
 
+
 func test_apply_upgrade_updates_stats() -> void:
 	var tower := _create_tower()
 	var upgrade := TestHelpers.create_upgrade_data(2, "A")
@@ -275,6 +280,7 @@ func test_apply_upgrade_merges_special() -> void:
 # ============================================
 # get_dps() tests
 # ============================================
+
 
 func test_get_dps_calculation() -> void:
 	var tower := _create_tower()
@@ -308,6 +314,7 @@ func test_get_dps_zero_attack_speed() -> void:
 # ============================================
 # get_damage_for_target() tests
 # ============================================
+
 
 func test_get_damage_for_target_basic() -> void:
 	var tower := _create_tower()
@@ -350,6 +357,7 @@ func test_get_damage_fast_bonus_not_applied_to_slow() -> void:
 # Record/tracking tests
 # ============================================
 
+
 func test_record_damage() -> void:
 	var tower := _create_tower()
 
@@ -389,6 +397,7 @@ func test_get_center() -> void:
 # ============================================
 # Helpers
 # ============================================
+
 
 func _create_tower() -> SimTower:
 	var data := TestHelpers.create_basic_tower_data()

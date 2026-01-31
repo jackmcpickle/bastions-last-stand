@@ -13,6 +13,7 @@ func before_each() -> void:
 # calculate_kill_reward() tests
 # ============================================
 
+
 func test_calculate_kill_reward_basic() -> void:
 	var data := TestHelpers.create_basic_enemy_data()
 	data.gold_value = 15
@@ -38,6 +39,7 @@ func test_calculate_kill_reward_high_value() -> void:
 # ============================================
 # calculate_wave_bonus() tests
 # ============================================
+
 
 func test_calculate_wave_bonus_perfect_wave() -> void:
 	var bonus := Economy.calculate_wave_bonus(100, false)
@@ -83,6 +85,7 @@ func test_calculate_wave_bonus_zero_gold() -> void:
 # calculate_interest() tests
 # ============================================
 
+
 func test_calculate_interest_basic() -> void:
 	var interest := Economy.calculate_interest(100, true)
 
@@ -120,6 +123,7 @@ func test_calculate_interest_rounds_down() -> void:
 # get_tower_cost() tests
 # ============================================
 
+
 func test_get_tower_cost_basic() -> void:
 	var data := TestHelpers.create_basic_tower_data()
 	data.base_cost = 80
@@ -139,6 +143,7 @@ func test_get_tower_cost_unknown_tower() -> void:
 # ============================================
 # get_upgrade_cost() tests
 # ============================================
+
 
 func test_get_upgrade_cost_tier2() -> void:
 	var data := TestHelpers.create_basic_tower_data()
@@ -179,6 +184,7 @@ func test_get_upgrade_cost_max_tier() -> void:
 # get_sell_value() tests
 # ============================================
 
+
 func test_get_sell_value_basic() -> void:
 	var data := TestHelpers.create_basic_tower_data()
 	var tower := SimTower.new()
@@ -205,6 +211,7 @@ func test_get_sell_value_upgraded() -> void:
 # ============================================
 # can_afford_* tests
 # ============================================
+
 
 func test_can_afford_tower_true() -> void:
 	var data := TestHelpers.create_basic_tower_data()
@@ -270,6 +277,7 @@ func test_can_afford_upgrade_false() -> void:
 # ============================================
 # Constants tests
 # ============================================
+
 
 func test_wall_cost_constant() -> void:
 	assert_eq(Economy.WALL_COST, 10)

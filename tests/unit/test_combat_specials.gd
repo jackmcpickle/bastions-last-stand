@@ -15,6 +15,7 @@ func before_each() -> void:
 # Crit chance tests
 # ============================================
 
+
 func test_crit_chance_doubles_damage() -> void:
 	# Use fixed RNG that always crits
 	_game_state.rng.set_seed(42)
@@ -38,6 +39,7 @@ func test_crit_chance_respects_probability() -> void:
 # ============================================
 # Instakill threshold tests
 # ============================================
+
 
 func test_instakill_threshold_kills_low_hp() -> void:
 	var tower := _create_tower_with_special({"instakill_threshold": 50})
@@ -65,6 +67,7 @@ func test_instakill_threshold_no_effect_above() -> void:
 # Slow damage amp tests
 # ============================================
 
+
 func test_slow_damage_amp_increases_damage_when_slowed() -> void:
 	var tower := _create_tower_with_special({"slow_damage_amp": 500})  # +50%
 	tower.damage = 10000
@@ -91,6 +94,7 @@ func test_slow_damage_amp_no_effect_unslowed() -> void:
 # Freeze chance tests
 # ============================================
 
+
 func test_freeze_chance_applies_stun() -> void:
 	var tower := _create_tower_with_special({"freeze_chance": 1000})  # 100%
 	var enemy := _spawn_enemy_at(Vector2(10, 10))
@@ -113,6 +117,7 @@ func test_freeze_chance_stun_duration_2000ms() -> void:
 # Stun on hit tests
 # ============================================
 
+
 func test_stun_ms_applies_on_every_hit() -> void:
 	var tower := _create_tower_with_special({"stun_ms": 300})
 	var enemy := _spawn_enemy_at(Vector2(10, 10))
@@ -126,6 +131,7 @@ func test_stun_ms_applies_on_every_hit() -> void:
 # ============================================
 # Armor pen tests
 # ============================================
+
 
 func test_armor_pen_reduces_armor_effectiveness() -> void:
 	var tower := _create_tower_with_special({"armor_pen": 500})  # 50%
@@ -156,6 +162,7 @@ func test_armor_pen_500_halves_armor() -> void:
 # Breaker bonus tests
 # ============================================
 
+
 func test_breaker_bonus_increases_damage_vs_breaker() -> void:
 	var tower := _create_tower_with_special({"breaker_bonus": 1000})  # +100%
 	tower.damage = 10000
@@ -179,6 +186,7 @@ func test_breaker_bonus_no_effect_vs_normal() -> void:
 # ============================================
 # Beam mode tests
 # ============================================
+
 
 func test_beam_tower_deals_continuous_damage() -> void:
 	var tower := _create_tower_with_special({"beam": true})
@@ -216,15 +224,16 @@ func test_beam_tower_no_cooldown() -> void:
 # Pierce tests
 # ============================================
 
+
 func test_pierce_hits_multiple_enemies() -> void:
 	var tower := _create_tower_with_special({"pierce": 3})
 	tower.position = Vector2i(0, 0)  # Tower at origin
 
 	# Enemies in a line from tower (diagonal direction)
 	var enemies: Array[SimEnemy] = [
-		_spawn_enemy_at(Vector2(6, 6)),   # First target
-		_spawn_enemy_at(Vector2(8, 8)),   # Same direction
-		_spawn_enemy_at(Vector2(10, 10)), # Same direction
+		_spawn_enemy_at(Vector2(6, 6)),  # First target
+		_spawn_enemy_at(Vector2(8, 8)),  # Same direction
+		_spawn_enemy_at(Vector2(10, 10)),  # Same direction
 	]
 
 	var hit := tower.get_pierce_targets(enemies[0], enemies)
@@ -253,16 +262,17 @@ func test_pierce_respects_count_limit() -> void:
 # Line pierce (railgun) tests
 # ============================================
 
+
 func test_pierce_line_hits_all_in_line() -> void:
 	var tower := _create_tower_with_special({"pierce_line": true})
 	tower.position = Vector2i(0, 9)  # Center will be (1, 10)
 
 	# Enemies in horizontal line at y=10 (tower center y + 0)
 	var enemies: Array[SimEnemy] = [
-		_spawn_enemy_at(Vector2(5, 10)),   # In line
-		_spawn_enemy_at(Vector2(8, 10)),   # In line
+		_spawn_enemy_at(Vector2(5, 10)),  # In line
+		_spawn_enemy_at(Vector2(8, 10)),  # In line
 		_spawn_enemy_at(Vector2(12, 10)),  # In line
-		_spawn_enemy_at(Vector2(5, 16)),   # Off line (> 0.5 perp distance)
+		_spawn_enemy_at(Vector2(5, 16)),  # Off line (> 0.5 perp distance)
 	]
 
 	var hit := Combat._get_line_targets(tower, enemies[0], enemies)
@@ -292,6 +302,7 @@ func test_pierce_line_orders_by_distance() -> void:
 # ============================================
 # Barrage tests
 # ============================================
+
 
 func test_barrage_schedules_delayed_damage() -> void:
 	var tower := _create_tower_with_special({"barrage": true})
@@ -324,6 +335,7 @@ func test_barrage_4_hits_over_3_seconds() -> void:
 # ============================================
 # Cluster tests
 # ============================================
+
 
 func test_cluster_spawns_sub_explosions() -> void:
 	var tower := _create_tower_with_special({"cluster": 4})
@@ -358,6 +370,7 @@ func test_cluster_spawns_sub_explosions() -> void:
 # ============================================
 # Shatter (on kill) tests
 # ============================================
+
 
 func test_shatter_deals_aoe_on_kill() -> void:
 	var tower := _create_tower_with_special({"shatter_damage": 5000})
@@ -398,6 +411,7 @@ func test_shatter_no_effect_if_not_killed() -> void:
 # Disable effect tests
 # ============================================
 
+
 func test_disable_prevents_regen() -> void:
 	var tower := _create_tower_with_special({"disable": true})
 	var enemy := _spawn_enemy_at(Vector2(10, 10))
@@ -415,6 +429,7 @@ func test_disable_prevents_regen() -> void:
 # ============================================
 # Helpers
 # ============================================
+
 
 func _create_tower_with_special(special: Dictionary) -> SimTower:
 	var data := TestHelpers.create_basic_tower_data()

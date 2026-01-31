@@ -13,6 +13,7 @@ func before_each() -> void:
 # take_damage() tests
 # ============================================
 
+
 func test_take_damage_basic() -> void:
 	var enemy := _create_enemy(100, 0)
 
@@ -80,6 +81,7 @@ func test_take_damage_overkill() -> void:
 # ============================================
 # move() tests
 # ============================================
+
 
 func test_move_follows_path() -> void:
 	var enemy := _create_enemy_at_pos(Vector2(0, 10))
@@ -149,6 +151,7 @@ func test_move_stops_at_shrine() -> void:
 # ============================================
 # Status effects tests
 # ============================================
+
 
 func test_apply_slow_sets_effect() -> void:
 	var enemy := _create_enemy(100, 0)
@@ -229,6 +232,7 @@ func test_apply_stun_extends_duration() -> void:
 # process_status_effects() tests
 # ============================================
 
+
 func test_process_status_burn_deals_damage() -> void:
 	var enemy := _create_enemy(100, 0)
 	enemy.apply_burn(10000, 3000)  # 10 dps
@@ -292,6 +296,7 @@ func test_process_status_regen_caps_at_max() -> void:
 # is_targetable() tests
 # ============================================
 
+
 func test_is_targetable_normal_enemy() -> void:
 	var enemy := _create_enemy(100, 0)
 
@@ -319,6 +324,7 @@ func test_is_targetable_stealth_revealed() -> void:
 # Burn stacks tests
 # ============================================
 
+
 func test_apply_burn_with_stacks_accumulates() -> void:
 	var enemy := _create_enemy(100, 0)
 
@@ -342,7 +348,7 @@ func test_burn_stacks_all_deal_damage() -> void:
 
 func test_burn_stacks_expire_independently() -> void:
 	var enemy := _create_enemy(100, 0)
-	enemy.apply_burn(5000, 500, 5)   # Short duration
+	enemy.apply_burn(5000, 500, 5)  # Short duration
 	enemy.apply_burn(5000, 3000, 5)  # Long duration
 
 	enemy.process_status_effects(600)
@@ -363,7 +369,7 @@ func test_burn_stacks_respects_max_limit() -> void:
 func test_burn_stacks_refresh_weakest() -> void:
 	var enemy := _create_enemy(100, 0)
 	enemy.apply_burn(5000, 1000, 2)  # Weak (5000 dps * 1000ms = 5M value)
-	enemy.apply_burn(10000, 2000, 2) # Strong (10000 dps * 2000ms = 20M value)
+	enemy.apply_burn(10000, 2000, 2)  # Strong (10000 dps * 2000ms = 20M value)
 
 	# Now at max, new burn should replace weakest
 	enemy.apply_burn(8000, 3000, 2)  # Medium-strong
@@ -385,6 +391,7 @@ func test_burn_stacks_refresh_weakest() -> void:
 # Disable flag tests
 # ============================================
 
+
 func test_is_disabled_prevents_regen() -> void:
 	var data := TestHelpers.create_regen_enemy_data()
 	var enemy := SimEnemy.new()
@@ -401,6 +408,7 @@ func test_is_disabled_prevents_regen() -> void:
 # ============================================
 # Other tests
 # ============================================
+
 
 func test_is_dead() -> void:
 	var enemy := _create_enemy(10, 0)
@@ -437,6 +445,7 @@ func test_flying_enemy_direct_path() -> void:
 # ============================================
 # Helpers
 # ============================================
+
 
 func _create_enemy(hp: int, armor: int) -> SimEnemy:
 	var data := TestHelpers.create_basic_enemy_data()

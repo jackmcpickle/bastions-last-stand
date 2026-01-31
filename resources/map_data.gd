@@ -35,8 +35,12 @@ func is_spawn_point(pos: Vector2i) -> bool:
 
 
 func is_in_shrine_zone(pos: Vector2i) -> bool:
-	return (pos.x >= shrine_zone_start.x and pos.x <= shrine_zone_end.x and
-			pos.y >= shrine_zone_start.y and pos.y <= shrine_zone_end.y)
+	return (
+		pos.x >= shrine_zone_start.x
+		and pos.x <= shrine_zone_end.x
+		and pos.y >= shrine_zone_start.y
+		and pos.y <= shrine_zone_end.y
+	)
 
 
 func can_build_tower(pos: Vector2i) -> bool:

@@ -18,6 +18,7 @@ func before_each() -> void:
 # Swarm Queen tests
 # ============================================
 
+
 func test_swarm_queen_spawns_enemy() -> void:
 	var queen_data := TestHelpers.create_swarm_queen_data()
 	var queen := SimEnemy.new()
@@ -62,6 +63,7 @@ func test_swarm_queen_stunned_no_spawn() -> void:
 # CC Immune tests
 # ============================================
 
+
 func test_cc_immune_ignores_slow() -> void:
 	var colossus_data := TestHelpers.create_cc_immune_enemy_data()
 	var colossus := SimEnemy.new()
@@ -97,6 +99,7 @@ func test_cc_immune_takes_damage() -> void:
 # Tower freeze tests
 # ============================================
 
+
 func test_frost_wyrm_freezes_towers() -> void:
 	# Create tower
 	var tower_data := TestHelpers.create_basic_tower_data()
@@ -108,7 +111,9 @@ func test_frost_wyrm_freezes_towers() -> void:
 	wyrm_data.id = "frost_wyrm"
 	wyrm_data.hp = 1200
 	wyrm_data.speed = 800
-	wyrm_data.special = {"freeze_towers_range": 4, "freeze_duration_ms": 3000, "freeze_interval_ms": 8000}
+	wyrm_data.special = {
+		"freeze_towers_range": 4, "freeze_duration_ms": 3000, "freeze_interval_ms": 8000
+	}
 	wyrm_data.is_boss = true
 	_game_state.register_enemy_data(wyrm_data)
 
@@ -146,6 +151,7 @@ func test_frozen_tower_thaws_over_time() -> void:
 # ============================================
 # Dead enemy tracking tests
 # ============================================
+
 
 func test_dead_enemy_tracked() -> void:
 	var enemy_data := TestHelpers.create_basic_enemy_data()

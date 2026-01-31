@@ -13,6 +13,7 @@ func before_each() -> void:
 # Ground effect damage tests
 # ============================================
 
+
 func test_ground_effect_damages_enemies_in_radius() -> void:
 	var effect := _create_ground_effect(Vector2(10, 10), 2.0, 10000, 5000)
 	var enemy := _create_enemy_at(Vector2(10, 10))
@@ -117,7 +118,10 @@ func test_ground_effect_multiple_ticks() -> void:
 # Helpers
 # ============================================
 
-func _create_ground_effect(pos: Vector2, radius: float, dps: int, duration_ms: int) -> SimGroundEffect:
+
+func _create_ground_effect(
+	pos: Vector2, radius: float, dps: int, duration_ms: int
+) -> SimGroundEffect:
 	return SimGroundEffect.new(pos, radius, dps, duration_ms)
 
 

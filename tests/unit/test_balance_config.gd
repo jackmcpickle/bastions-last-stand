@@ -2,10 +2,10 @@ extends GutTest
 
 ## Unit tests for BalanceConfig
 
-
 # ============================================
 # to_dict() tests
 # ============================================
+
 
 func test_to_dict_contains_economy() -> void:
 	var config := BalanceConfig.new()
@@ -61,6 +61,7 @@ func test_to_dict_values_match() -> void:
 # ============================================
 # from_dict() tests
 # ============================================
+
 
 func test_from_dict_loads_economy() -> void:
 	var config := BalanceConfig.new()
@@ -118,6 +119,7 @@ func test_from_dict_partial_update() -> void:
 # Roundtrip tests
 # ============================================
 
+
 func test_roundtrip_preserves_values() -> void:
 	var config1 := BalanceConfig.new()
 	config1.starting_gold = 150
@@ -152,6 +154,7 @@ func test_roundtrip_all_values() -> void:
 # get_parameter_bounds() tests
 # ============================================
 
+
 func test_get_parameter_bounds_has_economy() -> void:
 	var bounds := BalanceConfig.get_parameter_bounds()
 
@@ -184,6 +187,7 @@ func test_get_parameter_bounds_matches_dict_keys() -> void:
 # Default values tests
 # ============================================
 
+
 func test_default_starting_gold() -> void:
 	var config := BalanceConfig.new()
 	assert_eq(config.starting_gold, 120)
@@ -212,6 +216,7 @@ func test_default_grunt_stats() -> void:
 # ============================================
 # File I/O tests (using temp file)
 # ============================================
+
 
 func test_save_and_load_file() -> void:
 	var config1 := BalanceConfig.new()

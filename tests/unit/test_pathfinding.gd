@@ -14,6 +14,7 @@ func before_each() -> void:
 # get_path() tests
 # ============================================
 
+
 func test_get_path_basic() -> void:
 	var path := _pathfinding.get_path(Vector2i(0, 10))
 
@@ -77,6 +78,7 @@ func test_get_path_at_shrine() -> void:
 # Cache invalidation tests
 # ============================================
 
+
 func test_cache_invalidated_on_block() -> void:
 	var path1 := _pathfinding.get_path(Vector2i(0, 10))
 
@@ -123,6 +125,7 @@ func test_invalidate_cache_explicit() -> void:
 # set_blocked()/is_blocked() tests
 # ============================================
 
+
 func test_set_blocked_marks_tile() -> void:
 	_pathfinding.set_blocked(Vector2i(5, 5), true)
 
@@ -143,6 +146,7 @@ func test_is_blocked_default_false() -> void:
 # ============================================
 # is_walkable() tests
 # ============================================
+
 
 func test_is_walkable_open_tile() -> void:
 	assert_true(_pathfinding.is_walkable(Vector2i(10, 10)))
@@ -168,6 +172,7 @@ func test_is_walkable_out_of_bounds_positive() -> void:
 # has_valid_path() tests
 # ============================================
 
+
 func test_has_valid_path_true() -> void:
 	assert_true(_pathfinding.has_valid_path(Vector2i(0, 10)))
 
@@ -183,6 +188,7 @@ func test_has_valid_path_false_blocked() -> void:
 # ============================================
 # get_path_length() tests
 # ============================================
+
 
 func test_get_path_length_basic() -> void:
 	var length := _pathfinding.get_path_length(Vector2i(0, 10))
@@ -209,6 +215,7 @@ func test_get_path_length_from_shrine() -> void:
 # get_all_blocked() tests
 # ============================================
 
+
 func test_get_all_blocked_empty() -> void:
 	var blocked := _pathfinding.get_all_blocked()
 
@@ -229,6 +236,7 @@ func test_get_all_blocked_returns_all() -> void:
 # ============================================
 # Complex path tests
 # ============================================
+
 
 func test_path_around_wall() -> void:
 	# Create a wall with a gap

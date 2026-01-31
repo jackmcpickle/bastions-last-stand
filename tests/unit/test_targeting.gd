@@ -13,6 +13,7 @@ func before_each() -> void:
 # find_target() tests - FIRST priority
 # ============================================
 
+
 func test_find_target_first_returns_furthest_along_path() -> void:
 	var enemies: Array[SimEnemy] = [
 		_create_enemy_with_progress(0.3),
@@ -20,12 +21,7 @@ func test_find_target_first_returns_furthest_along_path() -> void:
 		_create_enemy_with_progress(0.5),
 	]
 
-	var target := Targeting.find_target(
-		Vector2i(10, 10),
-		enemies,
-		20,
-		Targeting.Priority.FIRST
-	)
+	var target := Targeting.find_target(Vector2i(10, 10), enemies, 20, Targeting.Priority.FIRST)
 
 	assert_eq(target, enemies[1])
 
@@ -36,11 +32,7 @@ func test_find_target_first_default_priority() -> void:
 		_create_enemy_with_progress(0.9),
 	]
 
-	var target := Targeting.find_target(
-		Vector2i(10, 10),
-		enemies,
-		20
-	)
+	var target := Targeting.find_target(Vector2i(10, 10), enemies, 20)
 
 	assert_eq(target, enemies[1])
 
@@ -49,6 +41,7 @@ func test_find_target_first_default_priority() -> void:
 # find_target() tests - LAST priority
 # ============================================
 
+
 func test_find_target_last_returns_closest_to_spawn() -> void:
 	var enemies: Array[SimEnemy] = [
 		_create_enemy_with_progress(0.7),
@@ -56,12 +49,7 @@ func test_find_target_last_returns_closest_to_spawn() -> void:
 		_create_enemy_with_progress(0.5),
 	]
 
-	var target := Targeting.find_target(
-		Vector2i(10, 10),
-		enemies,
-		20,
-		Targeting.Priority.LAST
-	)
+	var target := Targeting.find_target(Vector2i(10, 10), enemies, 20, Targeting.Priority.LAST)
 
 	assert_eq(target, enemies[1])
 
@@ -70,6 +58,7 @@ func test_find_target_last_returns_closest_to_spawn() -> void:
 # find_target() tests - STRONGEST priority
 # ============================================
 
+
 func test_find_target_strongest_returns_highest_hp() -> void:
 	var enemies: Array[SimEnemy] = [
 		_create_enemy_with_hp(50),
@@ -77,12 +66,7 @@ func test_find_target_strongest_returns_highest_hp() -> void:
 		_create_enemy_with_hp(80),
 	]
 
-	var target := Targeting.find_target(
-		Vector2i(10, 10),
-		enemies,
-		20,
-		Targeting.Priority.STRONGEST
-	)
+	var target := Targeting.find_target(Vector2i(10, 10), enemies, 20, Targeting.Priority.STRONGEST)
 
 	assert_eq(target, enemies[1])
 
@@ -94,12 +78,7 @@ func test_find_target_strongest_considers_current_hp() -> void:
 	]
 	enemies[0].hp = 30  # Damaged
 
-	var target := Targeting.find_target(
-		Vector2i(10, 10),
-		enemies,
-		20,
-		Targeting.Priority.STRONGEST
-	)
+	var target := Targeting.find_target(Vector2i(10, 10), enemies, 20, Targeting.Priority.STRONGEST)
 
 	assert_eq(target, enemies[1])
 
@@ -108,6 +87,7 @@ func test_find_target_strongest_considers_current_hp() -> void:
 # find_target() tests - WEAKEST priority
 # ============================================
 
+
 func test_find_target_weakest_returns_lowest_hp() -> void:
 	var enemies: Array[SimEnemy] = [
 		_create_enemy_with_hp(100),
@@ -115,12 +95,7 @@ func test_find_target_weakest_returns_lowest_hp() -> void:
 		_create_enemy_with_hp(50),
 	]
 
-	var target := Targeting.find_target(
-		Vector2i(10, 10),
-		enemies,
-		20,
-		Targeting.Priority.WEAKEST
-	)
+	var target := Targeting.find_target(Vector2i(10, 10), enemies, 20, Targeting.Priority.WEAKEST)
 
 	assert_eq(target, enemies[1])
 
@@ -129,6 +104,7 @@ func test_find_target_weakest_returns_lowest_hp() -> void:
 # find_target() tests - CLOSEST priority
 # ============================================
 
+
 func test_find_target_closest_returns_nearest_to_tower() -> void:
 	var enemies: Array[SimEnemy] = [
 		_create_enemy_at(Vector2(15, 15)),
@@ -136,12 +112,7 @@ func test_find_target_closest_returns_nearest_to_tower() -> void:
 		_create_enemy_at(Vector2(18, 18)),
 	]
 
-	var target := Targeting.find_target(
-		Vector2i(10, 10),
-		enemies,
-		20,
-		Targeting.Priority.CLOSEST
-	)
+	var target := Targeting.find_target(Vector2i(10, 10), enemies, 20, Targeting.Priority.CLOSEST)
 
 	assert_eq(target, enemies[1])
 
@@ -150,17 +121,14 @@ func test_find_target_closest_returns_nearest_to_tower() -> void:
 # find_target() range tests
 # ============================================
 
+
 func test_find_target_respects_range() -> void:
 	var enemies: Array[SimEnemy] = [
 		_create_enemy_at(Vector2(20, 20)),  # Out of range
 	]
 
-	var target := Targeting.find_target(
-		Vector2i(0, 0),
-		enemies,
-		5,  # Range 5
-		Targeting.Priority.FIRST
-	)
+	# Range 5
+	var target := Targeting.find_target(Vector2i(0, 0), enemies, 5, Targeting.Priority.FIRST)
 
 	assert_null(target)
 
@@ -170,12 +138,7 @@ func test_find_target_includes_at_edge_of_range() -> void:
 		_create_enemy_at(Vector2(5, 0)),  # Exactly at range 5
 	]
 
-	var target := Targeting.find_target(
-		Vector2i(0, 0),
-		enemies,
-		5,
-		Targeting.Priority.FIRST
-	)
+	var target := Targeting.find_target(Vector2i(0, 0), enemies, 5, Targeting.Priority.FIRST)
 
 	assert_eq(target, enemies[0])
 
@@ -183,12 +146,7 @@ func test_find_target_includes_at_edge_of_range() -> void:
 func test_find_target_empty_list_returns_null() -> void:
 	var enemies: Array[SimEnemy] = []
 
-	var target := Targeting.find_target(
-		Vector2i(0, 0),
-		enemies,
-		10,
-		Targeting.Priority.FIRST
-	)
+	var target := Targeting.find_target(Vector2i(0, 0), enemies, 10, Targeting.Priority.FIRST)
 
 	assert_null(target)
 
@@ -196,6 +154,7 @@ func test_find_target_empty_list_returns_null() -> void:
 # ============================================
 # find_target() stealth tests
 # ============================================
+
 
 func test_find_target_ignores_stealth() -> void:
 	var data := TestHelpers.create_stealth_enemy_data()
@@ -205,12 +164,7 @@ func test_find_target_ignores_stealth() -> void:
 
 	var enemies: Array[SimEnemy] = [enemy]
 
-	var target := Targeting.find_target(
-		Vector2i(0, 0),
-		enemies,
-		10,
-		Targeting.Priority.FIRST
-	)
+	var target := Targeting.find_target(Vector2i(0, 0), enemies, 10, Targeting.Priority.FIRST)
 
 	assert_null(target)
 
@@ -224,12 +178,7 @@ func test_find_target_targets_revealed_stealth() -> void:
 
 	var enemies: Array[SimEnemy] = [enemy]
 
-	var target := Targeting.find_target(
-		Vector2i(0, 0),
-		enemies,
-		10,
-		Targeting.Priority.FIRST
-	)
+	var target := Targeting.find_target(Vector2i(0, 0), enemies, 10, Targeting.Priority.FIRST)
 
 	assert_eq(target, enemy)
 
@@ -245,12 +194,7 @@ func test_find_target_skips_stealth_picks_visible() -> void:
 
 	var enemies: Array[SimEnemy] = [stealth, visible]
 
-	var target := Targeting.find_target(
-		Vector2i(0, 0),
-		enemies,
-		20,
-		Targeting.Priority.FIRST
-	)
+	var target := Targeting.find_target(Vector2i(0, 0), enemies, 20, Targeting.Priority.FIRST)
 
 	assert_eq(target, visible)
 
@@ -259,6 +203,7 @@ func test_find_target_skips_stealth_picks_visible() -> void:
 # get_enemies_in_range() tests
 # ============================================
 
+
 func test_get_enemies_in_range_returns_all_in_range() -> void:
 	var enemies: Array[SimEnemy] = [
 		_create_enemy_at(Vector2(2, 2)),
@@ -266,11 +211,7 @@ func test_get_enemies_in_range_returns_all_in_range() -> void:
 		_create_enemy_at(Vector2(20, 20)),  # Out
 	]
 
-	var in_range := Targeting.get_enemies_in_range(
-		Vector2i(0, 0),
-		enemies,
-		5
-	)
+	var in_range := Targeting.get_enemies_in_range(Vector2i(0, 0), enemies, 5)
 
 	assert_eq(in_range.size(), 2)
 	assert_has(in_range, enemies[0])
@@ -282,11 +223,7 @@ func test_get_enemies_in_range_empty_when_none() -> void:
 		_create_enemy_at(Vector2(20, 20)),
 	]
 
-	var in_range := Targeting.get_enemies_in_range(
-		Vector2i(0, 0),
-		enemies,
-		5
-	)
+	var in_range := Targeting.get_enemies_in_range(Vector2i(0, 0), enemies, 5)
 
 	assert_eq(in_range.size(), 0)
 
@@ -297,11 +234,7 @@ func test_get_enemies_in_range_uses_squared_distance() -> void:
 		_create_enemy_at(Vector2(3, 4)),
 	]
 
-	var in_range := Targeting.get_enemies_in_range(
-		Vector2i(0, 0),
-		enemies,
-		5
-	)
+	var in_range := Targeting.get_enemies_in_range(Vector2i(0, 0), enemies, 5)
 
 	assert_eq(in_range.size(), 1)
 
@@ -310,6 +243,7 @@ func test_get_enemies_in_range_uses_squared_distance() -> void:
 # get_enemies_in_aoe() tests
 # ============================================
 
+
 func test_get_enemies_in_aoe_basic() -> void:
 	var enemies: Array[SimEnemy] = [
 		_create_enemy_at(Vector2(5.5, 5.5)),
@@ -317,11 +251,7 @@ func test_get_enemies_in_aoe_basic() -> void:
 		_create_enemy_at(Vector2(10, 10)),  # Out
 	]
 
-	var in_aoe := Targeting.get_enemies_in_aoe(
-		Vector2(5, 5),
-		enemies,
-		2.0
-	)
+	var in_aoe := Targeting.get_enemies_in_aoe(Vector2(5, 5), enemies, 2.0)
 
 	assert_eq(in_aoe.size(), 2)
 
@@ -331,11 +261,7 @@ func test_get_enemies_in_aoe_uses_float_center() -> void:
 		_create_enemy_at(Vector2(5.5, 5.5)),
 	]
 
-	var in_aoe := Targeting.get_enemies_in_aoe(
-		Vector2(5.5, 5.5),  # Sub-tile center
-		enemies,
-		0.1
-	)
+	var in_aoe := Targeting.get_enemies_in_aoe(Vector2(5.5, 5.5), enemies, 0.1)  # Sub-tile center
 
 	assert_eq(in_aoe.size(), 1)
 
@@ -345,11 +271,7 @@ func test_get_enemies_in_aoe_empty() -> void:
 		_create_enemy_at(Vector2(20, 20)),
 	]
 
-	var in_aoe := Targeting.get_enemies_in_aoe(
-		Vector2(5, 5),
-		enemies,
-		1.0
-	)
+	var in_aoe := Targeting.get_enemies_in_aoe(Vector2(5, 5), enemies, 1.0)
 
 	assert_eq(in_aoe.size(), 0)
 
@@ -357,6 +279,7 @@ func test_get_enemies_in_aoe_empty() -> void:
 # ============================================
 # Helpers
 # ============================================
+
 
 func _create_enemy_at(pos: Vector2) -> SimEnemy:
 	var data := TestHelpers.create_basic_enemy_data()

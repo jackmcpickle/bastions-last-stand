@@ -8,7 +8,6 @@ var is_expanded: bool = false
 @onready var title_label: Label = %TitleLabel
 @onready var expand_button: Button = %ExpandButton
 @onready var levels_grid: GridContainer = %LevelsGrid
-@onready var panel: PanelContainer = %PanelContainer
 
 
 func _ready() -> void:
@@ -28,11 +27,11 @@ func _populate_levels() -> void:
 	for child in levels_grid.get_children():
 		child.queue_free()
 
+	var icon_scene = load("res://ui/components/level_icon.tscn")
 	for level in chapter.levels:
-		var icon = LevelIcon.new()
+		var icon = icon_scene.instantiate()
 		icon.setup(level)
 		icon.level_selected.connect(_on_level_selected)
-		icon.custom_minimum_size = Vector2(60, 60)
 		levels_grid.add_child(icon)
 
 
@@ -40,8 +39,7 @@ func _update_lock_state() -> void:
 	var is_unlocked = ProgressionManager.is_chapter_unlocked(chapter.id)
 
 	# Update visual state
-	if panel:
-		panel.modulate.a = 1.0 if is_unlocked else 0.5
+	modulate.a = 1.0 if is_unlocked else 0.5
 
 	if expand_button:
 		expand_button.disabled = not is_unlocked

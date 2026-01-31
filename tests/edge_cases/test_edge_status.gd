@@ -13,6 +13,7 @@ func before_each() -> void:
 # Multiple slows stacking
 # ============================================
 
+
 func test_multiple_slows_takes_strongest() -> void:
 	var enemy := _create_enemy()
 
@@ -58,6 +59,7 @@ func test_slow_no_refresh_shorter_duration() -> void:
 # ============================================
 # Burn + regen interaction
 # ============================================
+
 
 func test_burn_and_regen_simultaneous() -> void:
 	var data := TestHelpers.create_regen_enemy_data()
@@ -107,6 +109,7 @@ func test_burn_kills_before_regen() -> void:
 # Stun during attack animation
 # ============================================
 
+
 func test_stun_prevents_movement() -> void:
 	var enemy := _create_enemy()
 	var start_pos := enemy.grid_pos
@@ -154,6 +157,7 @@ func test_stun_not_shortened() -> void:
 # Effect expiry same tick as death
 # ============================================
 
+
 func test_burn_kills_same_tick_as_expiry() -> void:
 	var enemy := _create_enemy()
 	enemy.hp = 1
@@ -188,6 +192,7 @@ func test_stun_expires_same_tick_enemy_dies() -> void:
 # ============================================
 # Multiple effect interactions
 # ============================================
+
 
 func test_all_effects_simultaneously() -> void:
 	var enemy := _create_enemy()
@@ -226,6 +231,7 @@ func test_effects_decay_independently() -> void:
 # Zero/negative duration edge cases
 # ============================================
 
+
 func test_zero_duration_slow() -> void:
 	var enemy := _create_enemy()
 
@@ -260,6 +266,7 @@ func test_zero_duration_stun() -> void:
 # Very long durations
 # ============================================
 
+
 func test_very_long_slow() -> void:
 	var enemy := _create_enemy()
 
@@ -284,6 +291,7 @@ func test_very_long_burn() -> void:
 # ============================================
 # Status effects on special enemies
 # ============================================
+
 
 func test_slow_on_fast_enemy() -> void:
 	var data := TestHelpers.create_fast_enemy_data()
@@ -328,6 +336,7 @@ func test_stun_on_boss_enemy() -> void:
 # ============================================
 # Helpers
 # ============================================
+
 
 func _create_enemy() -> SimEnemy:
 	var data := TestHelpers.create_basic_enemy_data()

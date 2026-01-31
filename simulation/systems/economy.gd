@@ -15,32 +15,29 @@ const PERFECT_WAVE_BONUS := 250  # 25% (x1000)
 static func calculate_kill_reward(enemy: SimEnemy, game_state: GameState) -> int:
 	## Calculate gold earned from killing an enemy
 	var base_reward := enemy.gold_value
-	
+
 	# TODO: Add bonuses from upgrades/modifiers
-	
+
 	return base_reward
 
 
 static func calculate_wave_bonus(
-	wave_gold_earned: int,
-	shrine_took_damage: bool,
-	seconds_early: float = 0.0
+	wave_gold_earned: int, shrine_took_damage: bool, seconds_early: float = 0.0
 ) -> int:
 	## Calculate end-of-wave bonus gold
 	var bonus := 0
-	
+
 	# Perfect wave bonus (no damage)
 	if not shrine_took_damage:
 		bonus += wave_gold_earned * PERFECT_WAVE_BONUS / 1000
-	
+
 	# Early start bonus
 	if seconds_early > 0:
 		var early_bonus_mult := mini(
-			int(seconds_early / 5.0) * EARLY_START_BONUS_PER_5S,
-			EARLY_START_BONUS_MAX
+			int(seconds_early / 5.0) * EARLY_START_BONUS_PER_5S, EARLY_START_BONUS_MAX
 		)
 		bonus += wave_gold_earned * early_bonus_mult / 1000
-	
+
 	return bonus
 
 
@@ -48,7 +45,7 @@ static func calculate_interest(current_gold: int, has_interest_unlocked: bool) -
 	## Calculate interest earned on banked gold
 	if not has_interest_unlocked:
 		return 0
-	
+
 	var interest := current_gold * INTEREST_RATE / 1000
 	return mini(interest, INTEREST_CAP)
 

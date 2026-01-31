@@ -18,6 +18,7 @@ func make_decisions(wave: int) -> void:
 
 ## Helper methods for subclasses
 
+
 func find_valid_tower_positions(tower_id: String) -> Array[Vector2i]:
 	## Returns all valid positions for a tower
 	var result: Array[Vector2i] = []

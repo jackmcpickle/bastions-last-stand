@@ -37,10 +37,10 @@ func _display_results() -> void:
 		victory_label.text = "DEFEAT"
 		victory_label.add_theme_color_override("font_color", Color.RED)
 
-	shrine_hp_label.text = "Shrine HP: %d / 1000 (%.0f%%)" % [
-		result.final_shrine_hp,
-		(result.final_shrine_hp / 1000.0) * 100
-	]
+	shrine_hp_label.text = (
+		"Shrine HP: %d / 1000 (%.0f%%)"
+		% [result.final_shrine_hp, (result.final_shrine_hp / 1000.0) * 100]
+	)
 
 	if is_victory:
 		var stars = ProgressionManager.calculate_stars(result.final_shrine_hp, 1000)

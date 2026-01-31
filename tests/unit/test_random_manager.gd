@@ -2,10 +2,10 @@ extends GutTest
 
 ## Unit tests for RandomManager
 
-
 # ============================================
 # Seed tests
 # ============================================
+
 
 func test_same_seed_same_sequence() -> void:
 	var rng1 := RandomManager.new(12345)
@@ -55,6 +55,7 @@ func test_get_seed() -> void:
 # Call count tests
 # ============================================
 
+
 func test_call_count_increments() -> void:
 	var rng := RandomManager.new(0)
 
@@ -80,6 +81,7 @@ func test_call_count_resets_on_set_seed() -> void:
 # ============================================
 # randi_range() tests
 # ============================================
+
 
 func test_randi_range_inclusive() -> void:
 	var rng := RandomManager.new(0)
@@ -111,6 +113,7 @@ func test_randi_range_bounds() -> void:
 # randi_range_exclusive() tests
 # ============================================
 
+
 func test_randi_range_exclusive_bounds() -> void:
 	var rng := RandomManager.new(0)
 
@@ -132,6 +135,7 @@ func test_randi_range_exclusive_never_max() -> void:
 # randf() tests
 # ============================================
 
+
 func test_randf_bounds() -> void:
 	var rng := RandomManager.new(0)
 
@@ -145,6 +149,7 @@ func test_randf_bounds() -> void:
 # randf_range() tests
 # ============================================
 
+
 func test_randf_range_bounds() -> void:
 	var rng := RandomManager.new(0)
 
@@ -157,6 +162,7 @@ func test_randf_range_bounds() -> void:
 # ============================================
 # check_probability() tests
 # ============================================
+
 
 func test_check_probability_always_true() -> void:
 	var rng := RandomManager.new(0)
@@ -190,6 +196,7 @@ func test_check_probability_roughly_correct() -> void:
 # ============================================
 # shuffle() tests
 # ============================================
+
 
 func test_shuffle_changes_order() -> void:
 	var rng := RandomManager.new(12345)
@@ -231,6 +238,7 @@ func test_shuffle_deterministic() -> void:
 # pick() tests
 # ============================================
 
+
 func test_pick_returns_element() -> void:
 	var rng := RandomManager.new(0)
 	var array := ["a", "b", "c"]
@@ -261,6 +269,7 @@ func test_pick_deterministic() -> void:
 # pick_index() tests
 # ============================================
 
+
 func test_pick_index_valid() -> void:
 	var rng := RandomManager.new(0)
 	var array := [1, 2, 3, 4, 5]
@@ -283,6 +292,7 @@ func test_pick_index_empty_returns_negative() -> void:
 # ============================================
 # create_child() tests
 # ============================================
+
 
 func test_create_child_different_from_parent() -> void:
 	var parent := RandomManager.new(12345)

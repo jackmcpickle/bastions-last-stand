@@ -36,13 +36,17 @@ func _build_tree() -> void:
 		return
 
 	# Tier 1 - Base tower (always unlocked)
-	var tier1 := _create_tier_row([{
-		"id": tower_data.id,
-		"name": tower_data.display_name,
-		"tier": 1,
-		"unlocked": true,
-		"selected": current_tier == 1
-	}])
+	var tier1 := _create_tier_row(
+		[
+			{
+				"id": tower_data.id,
+				"name": tower_data.display_name,
+				"tier": 1,
+				"unlocked": true,
+				"selected": current_tier == 1
+			}
+		]
+	)
 	tree_container.add_child(tier1)
 
 	# Connector
@@ -52,14 +56,16 @@ func _build_tree() -> void:
 	var tier2_upgrades := []
 	for upgrade in tower_data.upgrades:
 		if upgrade.tier == 2:
-			tier2_upgrades.append({
-				"id": upgrade.id,
-				"name": upgrade.display_name,
-				"tier": 2,
-				"branch": upgrade.branch,
-				"unlocked": current_tier >= 2,
-				"selected": current_tier == 2 and current_branch == upgrade.branch
-			})
+			tier2_upgrades.append(
+				{
+					"id": upgrade.id,
+					"name": upgrade.display_name,
+					"tier": 2,
+					"branch": upgrade.branch,
+					"unlocked": current_tier >= 2,
+					"selected": current_tier == 2 and current_branch == upgrade.branch
+				}
+			)
 
 	if tier2_upgrades.size() > 0:
 		var tier2 := _create_tier_row(tier2_upgrades)
@@ -70,15 +76,17 @@ func _build_tree() -> void:
 	var tier3_upgrades := []
 	for upgrade in tower_data.upgrades:
 		if upgrade.tier == 3:
-			tier3_upgrades.append({
-				"id": upgrade.id,
-				"name": upgrade.display_name,
-				"tier": 3,
-				"branch": upgrade.branch,
-				"parent_branch": upgrade.parent_branch,
-				"unlocked": current_tier >= 3,
-				"selected": current_tier == 3 and current_branch == upgrade.branch
-			})
+			tier3_upgrades.append(
+				{
+					"id": upgrade.id,
+					"name": upgrade.display_name,
+					"tier": 3,
+					"branch": upgrade.branch,
+					"parent_branch": upgrade.parent_branch,
+					"unlocked": current_tier >= 3,
+					"selected": current_tier == 3 and current_branch == upgrade.branch
+				}
+			)
 
 	if tier3_upgrades.size() > 0:
 		var tier3 := _create_tier_row(tier3_upgrades)

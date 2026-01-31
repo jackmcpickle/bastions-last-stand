@@ -28,6 +28,7 @@ func before_each() -> void:
 # Full game victory
 # ============================================
 
+
 func test_full_game_victory() -> void:
 	_setup_strong_defense()
 
@@ -66,6 +67,7 @@ func test_full_game_all_waves_succeed() -> void:
 # Full game defeat
 # ============================================
 
+
 func test_full_game_defeat_mid_wave() -> void:
 	# Weak defense - will lose eventually
 	_game_state.gold = 200
@@ -90,6 +92,7 @@ func test_full_game_defeat_tracks_final_wave() -> void:
 # ============================================
 # Economy tracking
 # ============================================
+
 
 func test_full_game_gold_tracking() -> void:
 	_setup_strong_defense()
@@ -123,6 +126,7 @@ func test_full_game_gold_increases_each_wave() -> void:
 # ============================================
 # Combat statistics
 # ============================================
+
 
 func test_full_game_enemies_killed() -> void:
 	_setup_strong_defense()
@@ -164,6 +168,7 @@ func test_full_game_tower_stats_content() -> void:
 # Result serialization
 # ============================================
 
+
 func test_game_result_to_dict() -> void:
 	_setup_strong_defense()
 
@@ -191,6 +196,7 @@ func test_game_result_dict_values() -> void:
 # ============================================
 # Strategy variations
 # ============================================
+
 
 func test_aoe_tower_strategy() -> void:
 	# Test with AOE-focused defense
@@ -241,6 +247,7 @@ func test_spread_defense() -> void:
 # Determinism
 # ============================================
 
+
 func test_full_game_deterministic() -> void:
 	# Run twice with same setup
 	var result1 := _run_game_with_seed(99999)
@@ -274,6 +281,7 @@ func test_different_seeds_different_outcomes() -> void:
 # ============================================
 # Helpers
 # ============================================
+
 
 func _setup_strong_defense() -> void:
 	_game_state.gold = 10000

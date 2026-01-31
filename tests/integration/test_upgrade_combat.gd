@@ -15,10 +15,9 @@ func before_each() -> void:
 # Archer upgrade tests
 # ============================================
 
+
 func test_archer_marksman_crits_in_combat() -> void:
-	var tower := _create_upgraded_tower("archer", {
-		"crit_chance": 1000  # 100% crit
-	})
+	var tower := _create_upgraded_tower("archer", {"crit_chance": 1000})  # 100% crit
 	tower.damage = 10000
 	_place_tower(tower)
 	var enemy := _spawn_enemy_at(Vector2(10, 10))
@@ -31,9 +30,7 @@ func test_archer_marksman_crits_in_combat() -> void:
 
 
 func test_archer_sniper_executes_low_hp() -> void:
-	var tower := _create_upgraded_tower("archer", {
-		"instakill_threshold": 50
-	})
+	var tower := _create_upgraded_tower("archer", {"instakill_threshold": 50})
 	tower.damage = 5000  # 5 damage
 	_place_tower(tower)
 	var enemy := _spawn_enemy_at(Vector2(10, 10))
@@ -48,12 +45,11 @@ func test_archer_sniper_executes_low_hp() -> void:
 # Frost upgrade tests
 # ============================================
 
+
 func test_frost_frostbite_amps_damage() -> void:
-	var tower := _create_upgraded_tower("frost", {
-		"slow": 400,
-		"slow_duration_ms": 3000,
-		"slow_damage_amp": 500  # +50% to slowed
-	})
+	var tower := _create_upgraded_tower(
+		"frost", {"slow": 400, "slow_duration_ms": 3000, "slow_damage_amp": 500}  # +50% to slowed
+	)
 	tower.damage = 10000
 	_place_tower(tower)
 
@@ -69,9 +65,7 @@ func test_frost_frostbite_amps_damage() -> void:
 
 
 func test_frost_glacier_freezes_enemies() -> void:
-	var tower := _create_upgraded_tower("frost", {
-		"freeze_chance": 1000  # 100%
-	})
+	var tower := _create_upgraded_tower("frost", {"freeze_chance": 1000})  # 100%
 	_place_tower(tower)
 	var enemy := _spawn_enemy_at(Vector2(10, 10))
 
@@ -82,9 +76,7 @@ func test_frost_glacier_freezes_enemies() -> void:
 
 
 func test_frost_shatter_on_kill_damages_nearby() -> void:
-	var tower := _create_upgraded_tower("frost", {
-		"shatter_damage": 8000
-	})
+	var tower := _create_upgraded_tower("frost", {"shatter_damage": 8000})
 	tower.damage = 200000
 	_place_tower(tower)
 
@@ -103,10 +95,9 @@ func test_frost_shatter_on_kill_damages_nearby() -> void:
 # Lightning upgrade tests
 # ============================================
 
+
 func test_lightning_beam_continuous_damage() -> void:
-	var tower := _create_upgraded_tower("lightning", {
-		"beam": true
-	})
+	var tower := _create_upgraded_tower("lightning", {"beam": true})
 	tower.damage = 20000  # 20 DPS
 	_place_tower(tower)
 	var enemy := _spawn_enemy_at(Vector2(10, 10))
@@ -120,10 +111,7 @@ func test_lightning_beam_continuous_damage() -> void:
 
 
 func test_lightning_overcharge_chains_more() -> void:
-	var tower := _create_upgraded_tower("lightning", {
-		"chain": 6,
-		"chain_range": 3.0
-	})
+	var tower := _create_upgraded_tower("lightning", {"chain": 6, "chain_range": 3.0})
 	_place_tower(tower)
 
 	# Line of enemies
@@ -146,12 +134,11 @@ func test_lightning_overcharge_chains_more() -> void:
 # Flame upgrade tests
 # ============================================
 
+
 func test_flame_hellfire_creates_ground_effect() -> void:
-	var tower := _create_upgraded_tower("flame", {
-		"ground_burn": true,
-		"burn_dps": 15000,
-		"burn_duration_ms": 4000
-	})
+	var tower := _create_upgraded_tower(
+		"flame", {"ground_burn": true, "burn_dps": 15000, "burn_duration_ms": 4000}
+	)
 	tower.aoe_radius = 1500
 	_place_tower(tower)
 	_spawn_enemy_at(Vector2(10, 10))
@@ -162,11 +149,9 @@ func test_flame_hellfire_creates_ground_effect() -> void:
 
 
 func test_flame_napalm_stacks_burns() -> void:
-	var tower := _create_upgraded_tower("flame", {
-		"burn_dps": 8000,
-		"burn_duration_ms": 3000,
-		"burn_stacks": 5  # Can stack 5 burns
-	})
+	var tower := _create_upgraded_tower(
+		"flame", {"burn_dps": 8000, "burn_duration_ms": 3000, "burn_stacks": 5}  # Can stack 5 burns
+	)
 	_place_tower(tower)
 	var enemy := _spawn_enemy_at(Vector2(10, 10))
 
@@ -182,10 +167,9 @@ func test_flame_napalm_stacks_burns() -> void:
 # Cannon upgrade tests
 # ============================================
 
+
 func test_cannon_railgun_pierces_line() -> void:
-	var tower := _create_upgraded_tower("cannon", {
-		"pierce_line": true
-	})
+	var tower := _create_upgraded_tower("cannon", {"pierce_line": true})
 	tower.position = Vector2i(0, 9)  # Center at (1, 10)
 	_place_tower(tower)
 
@@ -206,9 +190,7 @@ func test_cannon_railgun_pierces_line() -> void:
 
 
 func test_cannon_siege_bonus_vs_breaker() -> void:
-	var tower := _create_upgraded_tower("cannon", {
-		"breaker_bonus": 1000  # +100%
-	})
+	var tower := _create_upgraded_tower("cannon", {"breaker_bonus": 1000})  # +100%
 	tower.damage = 20000
 	_place_tower(tower)
 	var breaker := _spawn_breaker_at(Vector2(8, 8))
@@ -222,9 +204,7 @@ func test_cannon_siege_bonus_vs_breaker() -> void:
 
 
 func test_cannon_howitzer_barrage() -> void:
-	var tower := _create_upgraded_tower("cannon", {
-		"barrage": true
-	})
+	var tower := _create_upgraded_tower("cannon", {"barrage": true})
 	tower.aoe_radius = 2000
 	_place_tower(tower)
 	_spawn_enemy_at(Vector2(10, 10))
@@ -238,6 +218,7 @@ func test_cannon_howitzer_barrage() -> void:
 # ============================================
 # Mixed combat scenarios
 # ============================================
+
 
 func test_upgraded_towers_track_stats() -> void:
 	var tower := _create_upgraded_tower("archer", {"crit_chance": 500})
@@ -259,6 +240,7 @@ func test_upgraded_towers_track_stats() -> void:
 # ============================================
 # Helpers
 # ============================================
+
 
 func _create_upgraded_tower(base_id: String, special: Dictionary) -> SimTower:
 	var data := TestHelpers.create_basic_tower_data(base_id)

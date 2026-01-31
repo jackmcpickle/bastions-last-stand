@@ -144,10 +144,10 @@ var wave_9_runners: int = 8
 var wave_10_grunts: int = 18
 var wave_10_runners: int = 10
 
-
 ## ============================================
 ## METHODS
 ## ============================================
+
 
 func to_dict() -> Dictionary:
 	return {
@@ -259,108 +259,195 @@ func to_dict() -> Dictionary:
 
 func from_dict(d: Dictionary) -> void:
 	# Economy
-	if d.has("starting_gold"): starting_gold = d.starting_gold
-	if d.has("wall_cost"): wall_cost = d.wall_cost
-	if d.has("sell_rate_percent"): sell_rate_percent = d.sell_rate_percent
+	if d.has("starting_gold"):
+		starting_gold = d.starting_gold
+	if d.has("wall_cost"):
+		wall_cost = d.wall_cost
+	if d.has("sell_rate_percent"):
+		sell_rate_percent = d.sell_rate_percent
 	# Archer
-	if d.has("archer_cost"): archer_cost = d.archer_cost
-	if d.has("archer_damage"): archer_damage = d.archer_damage
-	if d.has("archer_attack_speed_ms"): archer_attack_speed_ms = d.archer_attack_speed_ms
-	if d.has("archer_range"): archer_range = d.archer_range
-	if d.has("archer_upgrade_t2"): archer_upgrade_t2 = d.archer_upgrade_t2
-	if d.has("archer_upgrade_t3"): archer_upgrade_t3 = d.archer_upgrade_t3
+	if d.has("archer_cost"):
+		archer_cost = d.archer_cost
+	if d.has("archer_damage"):
+		archer_damage = d.archer_damage
+	if d.has("archer_attack_speed_ms"):
+		archer_attack_speed_ms = d.archer_attack_speed_ms
+	if d.has("archer_range"):
+		archer_range = d.archer_range
+	if d.has("archer_upgrade_t2"):
+		archer_upgrade_t2 = d.archer_upgrade_t2
+	if d.has("archer_upgrade_t3"):
+		archer_upgrade_t3 = d.archer_upgrade_t3
 	# Cannon
-	if d.has("cannon_cost"): cannon_cost = d.cannon_cost
-	if d.has("cannon_damage"): cannon_damage = d.cannon_damage
-	if d.has("cannon_attack_speed_ms"): cannon_attack_speed_ms = d.cannon_attack_speed_ms
-	if d.has("cannon_range"): cannon_range = d.cannon_range
-	if d.has("cannon_aoe_radius"): cannon_aoe_radius = d.cannon_aoe_radius
-	if d.has("cannon_upgrade_t2"): cannon_upgrade_t2 = d.cannon_upgrade_t2
-	if d.has("cannon_upgrade_t3"): cannon_upgrade_t3 = d.cannon_upgrade_t3
+	if d.has("cannon_cost"):
+		cannon_cost = d.cannon_cost
+	if d.has("cannon_damage"):
+		cannon_damage = d.cannon_damage
+	if d.has("cannon_attack_speed_ms"):
+		cannon_attack_speed_ms = d.cannon_attack_speed_ms
+	if d.has("cannon_range"):
+		cannon_range = d.cannon_range
+	if d.has("cannon_aoe_radius"):
+		cannon_aoe_radius = d.cannon_aoe_radius
+	if d.has("cannon_upgrade_t2"):
+		cannon_upgrade_t2 = d.cannon_upgrade_t2
+	if d.has("cannon_upgrade_t3"):
+		cannon_upgrade_t3 = d.cannon_upgrade_t3
 	# Frost
-	if d.has("frost_cost"): frost_cost = d.frost_cost
-	if d.has("frost_damage"): frost_damage = d.frost_damage
-	if d.has("frost_attack_speed_ms"): frost_attack_speed_ms = d.frost_attack_speed_ms
-	if d.has("frost_range"): frost_range = d.frost_range
-	if d.has("frost_slow"): frost_slow = d.frost_slow
-	if d.has("frost_slow_duration_ms"): frost_slow_duration_ms = d.frost_slow_duration_ms
-	if d.has("frost_upgrade_t2"): frost_upgrade_t2 = d.frost_upgrade_t2
-	if d.has("frost_upgrade_t3"): frost_upgrade_t3 = d.frost_upgrade_t3
+	if d.has("frost_cost"):
+		frost_cost = d.frost_cost
+	if d.has("frost_damage"):
+		frost_damage = d.frost_damage
+	if d.has("frost_attack_speed_ms"):
+		frost_attack_speed_ms = d.frost_attack_speed_ms
+	if d.has("frost_range"):
+		frost_range = d.frost_range
+	if d.has("frost_slow"):
+		frost_slow = d.frost_slow
+	if d.has("frost_slow_duration_ms"):
+		frost_slow_duration_ms = d.frost_slow_duration_ms
+	if d.has("frost_upgrade_t2"):
+		frost_upgrade_t2 = d.frost_upgrade_t2
+	if d.has("frost_upgrade_t3"):
+		frost_upgrade_t3 = d.frost_upgrade_t3
 	# Lightning
-	if d.has("lightning_cost"): lightning_cost = d.lightning_cost
-	if d.has("lightning_damage"): lightning_damage = d.lightning_damage
-	if d.has("lightning_attack_speed_ms"): lightning_attack_speed_ms = d.lightning_attack_speed_ms
-	if d.has("lightning_range"): lightning_range = d.lightning_range
-	if d.has("lightning_chain_count"): lightning_chain_count = d.lightning_chain_count
-	if d.has("lightning_chain_range"): lightning_chain_range = d.lightning_chain_range
-	if d.has("lightning_upgrade_t2"): lightning_upgrade_t2 = d.lightning_upgrade_t2
-	if d.has("lightning_upgrade_t3"): lightning_upgrade_t3 = d.lightning_upgrade_t3
+	if d.has("lightning_cost"):
+		lightning_cost = d.lightning_cost
+	if d.has("lightning_damage"):
+		lightning_damage = d.lightning_damage
+	if d.has("lightning_attack_speed_ms"):
+		lightning_attack_speed_ms = d.lightning_attack_speed_ms
+	if d.has("lightning_range"):
+		lightning_range = d.lightning_range
+	if d.has("lightning_chain_count"):
+		lightning_chain_count = d.lightning_chain_count
+	if d.has("lightning_chain_range"):
+		lightning_chain_range = d.lightning_chain_range
+	if d.has("lightning_upgrade_t2"):
+		lightning_upgrade_t2 = d.lightning_upgrade_t2
+	if d.has("lightning_upgrade_t3"):
+		lightning_upgrade_t3 = d.lightning_upgrade_t3
 	# Flame
-	if d.has("flame_cost"): flame_cost = d.flame_cost
-	if d.has("flame_damage"): flame_damage = d.flame_damage
-	if d.has("flame_attack_speed_ms"): flame_attack_speed_ms = d.flame_attack_speed_ms
-	if d.has("flame_range"): flame_range = d.flame_range
-	if d.has("flame_burn_dps"): flame_burn_dps = d.flame_burn_dps
-	if d.has("flame_burn_duration_ms"): flame_burn_duration_ms = d.flame_burn_duration_ms
-	if d.has("flame_upgrade_t2"): flame_upgrade_t2 = d.flame_upgrade_t2
-	if d.has("flame_upgrade_t3"): flame_upgrade_t3 = d.flame_upgrade_t3
+	if d.has("flame_cost"):
+		flame_cost = d.flame_cost
+	if d.has("flame_damage"):
+		flame_damage = d.flame_damage
+	if d.has("flame_attack_speed_ms"):
+		flame_attack_speed_ms = d.flame_attack_speed_ms
+	if d.has("flame_range"):
+		flame_range = d.flame_range
+	if d.has("flame_burn_dps"):
+		flame_burn_dps = d.flame_burn_dps
+	if d.has("flame_burn_duration_ms"):
+		flame_burn_duration_ms = d.flame_burn_duration_ms
+	if d.has("flame_upgrade_t2"):
+		flame_upgrade_t2 = d.flame_upgrade_t2
+	if d.has("flame_upgrade_t3"):
+		flame_upgrade_t3 = d.flame_upgrade_t3
 	# Grunt
-	if d.has("grunt_hp"): grunt_hp = d.grunt_hp
-	if d.has("grunt_speed"): grunt_speed = d.grunt_speed
-	if d.has("grunt_gold"): grunt_gold = d.grunt_gold
+	if d.has("grunt_hp"):
+		grunt_hp = d.grunt_hp
+	if d.has("grunt_speed"):
+		grunt_speed = d.grunt_speed
+	if d.has("grunt_gold"):
+		grunt_gold = d.grunt_gold
 	# Runner
-	if d.has("runner_hp"): runner_hp = d.runner_hp
-	if d.has("runner_speed"): runner_speed = d.runner_speed
-	if d.has("runner_gold"): runner_gold = d.runner_gold
+	if d.has("runner_hp"):
+		runner_hp = d.runner_hp
+	if d.has("runner_speed"):
+		runner_speed = d.runner_speed
+	if d.has("runner_gold"):
+		runner_gold = d.runner_gold
 	# Tank
-	if d.has("tank_hp"): tank_hp = d.tank_hp
-	if d.has("tank_speed"): tank_speed = d.tank_speed
-	if d.has("tank_armor"): tank_armor = d.tank_armor
-	if d.has("tank_gold"): tank_gold = d.tank_gold
+	if d.has("tank_hp"):
+		tank_hp = d.tank_hp
+	if d.has("tank_speed"):
+		tank_speed = d.tank_speed
+	if d.has("tank_armor"):
+		tank_armor = d.tank_armor
+	if d.has("tank_gold"):
+		tank_gold = d.tank_gold
 	# Flyer
-	if d.has("flyer_hp"): flyer_hp = d.flyer_hp
-	if d.has("flyer_speed"): flyer_speed = d.flyer_speed
-	if d.has("flyer_gold"): flyer_gold = d.flyer_gold
+	if d.has("flyer_hp"):
+		flyer_hp = d.flyer_hp
+	if d.has("flyer_speed"):
+		flyer_speed = d.flyer_speed
+	if d.has("flyer_gold"):
+		flyer_gold = d.flyer_gold
 	# Swarm
-	if d.has("swarm_hp"): swarm_hp = d.swarm_hp
-	if d.has("swarm_speed"): swarm_speed = d.swarm_speed
-	if d.has("swarm_gold"): swarm_gold = d.swarm_gold
+	if d.has("swarm_hp"):
+		swarm_hp = d.swarm_hp
+	if d.has("swarm_speed"):
+		swarm_speed = d.swarm_speed
+	if d.has("swarm_gold"):
+		swarm_gold = d.swarm_gold
 	# Stealth
-	if d.has("stealth_hp"): stealth_hp = d.stealth_hp
-	if d.has("stealth_speed"): stealth_speed = d.stealth_speed
-	if d.has("stealth_gold"): stealth_gold = d.stealth_gold
+	if d.has("stealth_hp"):
+		stealth_hp = d.stealth_hp
+	if d.has("stealth_speed"):
+		stealth_speed = d.stealth_speed
+	if d.has("stealth_gold"):
+		stealth_gold = d.stealth_gold
 	# Breaker
-	if d.has("breaker_hp"): breaker_hp = d.breaker_hp
-	if d.has("breaker_speed"): breaker_speed = d.breaker_speed
-	if d.has("breaker_armor"): breaker_armor = d.breaker_armor
-	if d.has("breaker_gold"): breaker_gold = d.breaker_gold
-	if d.has("breaker_wall_damage"): breaker_wall_damage = d.breaker_wall_damage
+	if d.has("breaker_hp"):
+		breaker_hp = d.breaker_hp
+	if d.has("breaker_speed"):
+		breaker_speed = d.breaker_speed
+	if d.has("breaker_armor"):
+		breaker_armor = d.breaker_armor
+	if d.has("breaker_gold"):
+		breaker_gold = d.breaker_gold
+	if d.has("breaker_wall_damage"):
+		breaker_wall_damage = d.breaker_wall_damage
 	# Boss
-	if d.has("boss_golem_hp"): boss_golem_hp = d.boss_golem_hp
-	if d.has("boss_golem_speed"): boss_golem_speed = d.boss_golem_speed
-	if d.has("boss_golem_armor"): boss_golem_armor = d.boss_golem_armor
-	if d.has("boss_golem_gold"): boss_golem_gold = d.boss_golem_gold
-	if d.has("boss_golem_regen"): boss_golem_regen = d.boss_golem_regen
+	if d.has("boss_golem_hp"):
+		boss_golem_hp = d.boss_golem_hp
+	if d.has("boss_golem_speed"):
+		boss_golem_speed = d.boss_golem_speed
+	if d.has("boss_golem_armor"):
+		boss_golem_armor = d.boss_golem_armor
+	if d.has("boss_golem_gold"):
+		boss_golem_gold = d.boss_golem_gold
+	if d.has("boss_golem_regen"):
+		boss_golem_regen = d.boss_golem_regen
 	# Shrine
-	if d.has("shrine_hp"): shrine_hp = d.shrine_hp
-	if d.has("enemy_shrine_damage"): enemy_shrine_damage = d.enemy_shrine_damage
+	if d.has("shrine_hp"):
+		shrine_hp = d.shrine_hp
+	if d.has("enemy_shrine_damage"):
+		enemy_shrine_damage = d.enemy_shrine_damage
 	# Waves
-	if d.has("wave_spawn_interval_base_ms"): wave_spawn_interval_base_ms = d.wave_spawn_interval_base_ms
-	if d.has("wave_spawn_interval_rush_ms"): wave_spawn_interval_rush_ms = d.wave_spawn_interval_rush_ms
-	if d.has("wave_1_grunts"): wave_1_grunts = d.wave_1_grunts
-	if d.has("wave_2_grunts"): wave_2_grunts = d.wave_2_grunts
-	if d.has("wave_3_grunts"): wave_3_grunts = d.wave_3_grunts
-	if d.has("wave_4_grunts"): wave_4_grunts = d.wave_4_grunts
-	if d.has("wave_5_grunts"): wave_5_grunts = d.wave_5_grunts
-	if d.has("wave_6_grunts"): wave_6_grunts = d.wave_6_grunts
-	if d.has("wave_6_runners"): wave_6_runners = d.wave_6_runners
-	if d.has("wave_7_grunts"): wave_7_grunts = d.wave_7_grunts
-	if d.has("wave_7_runners"): wave_7_runners = d.wave_7_runners
-	if d.has("wave_8_runners"): wave_8_runners = d.wave_8_runners
-	if d.has("wave_9_grunts"): wave_9_grunts = d.wave_9_grunts
-	if d.has("wave_9_runners"): wave_9_runners = d.wave_9_runners
-	if d.has("wave_10_grunts"): wave_10_grunts = d.wave_10_grunts
-	if d.has("wave_10_runners"): wave_10_runners = d.wave_10_runners
+	if d.has("wave_spawn_interval_base_ms"):
+		wave_spawn_interval_base_ms = d.wave_spawn_interval_base_ms
+	if d.has("wave_spawn_interval_rush_ms"):
+		wave_spawn_interval_rush_ms = d.wave_spawn_interval_rush_ms
+	if d.has("wave_1_grunts"):
+		wave_1_grunts = d.wave_1_grunts
+	if d.has("wave_2_grunts"):
+		wave_2_grunts = d.wave_2_grunts
+	if d.has("wave_3_grunts"):
+		wave_3_grunts = d.wave_3_grunts
+	if d.has("wave_4_grunts"):
+		wave_4_grunts = d.wave_4_grunts
+	if d.has("wave_5_grunts"):
+		wave_5_grunts = d.wave_5_grunts
+	if d.has("wave_6_grunts"):
+		wave_6_grunts = d.wave_6_grunts
+	if d.has("wave_6_runners"):
+		wave_6_runners = d.wave_6_runners
+	if d.has("wave_7_grunts"):
+		wave_7_grunts = d.wave_7_grunts
+	if d.has("wave_7_runners"):
+		wave_7_runners = d.wave_7_runners
+	if d.has("wave_8_runners"):
+		wave_8_runners = d.wave_8_runners
+	if d.has("wave_9_grunts"):
+		wave_9_grunts = d.wave_9_grunts
+	if d.has("wave_9_runners"):
+		wave_9_runners = d.wave_9_runners
+	if d.has("wave_10_grunts"):
+		wave_10_grunts = d.wave_10_grunts
+	if d.has("wave_10_runners"):
+		wave_10_runners = d.wave_10_runners
 
 
 func save_to_file(path: String) -> Error:
@@ -378,12 +465,12 @@ func load_from_file(path: String) -> Error:
 		return FileAccess.get_open_error()
 	var json_str := file.get_as_text()
 	file.close()
-	
+
 	var json := JSON.new()
 	var err := json.parse(json_str)
 	if err != OK:
 		return err
-	
+
 	from_dict(json.data)
 	return OK
 

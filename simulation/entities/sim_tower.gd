@@ -36,14 +36,14 @@ func initialize(p_data: TowerData, p_position: Vector2i) -> void:
 	data = p_data
 	id = data.id
 	position = p_position
-	
+
 	# Copy base stats
 	damage = data.damage
 	attack_speed_ms = data.attack_speed_ms
 	range_tiles = data.range_tiles
 	aoe_radius = data.aoe_radius
 	special = data.special.duplicate()
-	
+
 	total_cost = data.base_cost
 	tier = 1
 
@@ -115,7 +115,9 @@ func _get_chain_targets(target: SimEnemy, all_enemies: Array[SimEnemy]) -> Array
 	return hit
 
 
-func _find_nearest_unchained(from: SimEnemy, all_enemies: Array[SimEnemy], exclude: Array[SimEnemy], max_range: float) -> SimEnemy:
+func _find_nearest_unchained(
+	from: SimEnemy, all_enemies: Array[SimEnemy], exclude: Array[SimEnemy], max_range: float
+) -> SimEnemy:
 	var best: SimEnemy = null
 	var best_dist := max_range * max_range
 
@@ -136,11 +138,11 @@ func get_damage_for_target(target: SimEnemy) -> int:
 	## Returns damage to deal to target (x1000)
 	## Can be modified by specials
 	var final_damage := damage
-	
+
 	# Hunter bonus vs fast enemies
 	if special.has("fast_bonus") and target.speed >= 1500:  # 1.5+ tiles/sec
 		final_damage = final_damage * (1000 + special.fast_bonus) / 1000
-	
+
 	return final_damage
 
 
@@ -245,10 +247,11 @@ func get_pierce_targets(target: SimEnemy, all_enemies: Array[SimEnemy]) -> Array
 			candidates.append(enemy)
 
 	# Sort by distance and take pierce_count - 1 additional targets
-	candidates.sort_custom(func(a: SimEnemy, b: SimEnemy) -> bool:
-		var da := (a.grid_pos - tower_pos).length()
-		var db := (b.grid_pos - tower_pos).length()
-		return da < db
+	candidates.sort_custom(
+		func(a: SimEnemy, b: SimEnemy) -> bool:
+			var da := (a.grid_pos - tower_pos).length()
+			var db := (b.grid_pos - tower_pos).length()
+			return da < db
 	)
 
 	for i in range(mini(pierce_count - 1, candidates.size())):

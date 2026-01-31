@@ -28,10 +28,11 @@ func _build_emergency_walls() -> void:
 	var wall_positions := find_valid_wall_positions()
 
 	# Sort by distance to shrine
-	wall_positions.sort_custom(func(a: Vector2i, b: Vector2i) -> bool:
-		var da := (a - shrine_pos).length_squared()
-		var db := (b - shrine_pos).length_squared()
-		return da < db
+	wall_positions.sort_custom(
+		func(a: Vector2i, b: Vector2i) -> bool:
+			var da := (a - shrine_pos).length_squared()
+			var db := (b - shrine_pos).length_squared()
+			return da < db
 	)
 
 	# Build up to 3 walls
@@ -91,9 +92,7 @@ func _upgrade_towers() -> void:
 		return
 
 	# Sort by kills (most valuable towers first)
-	upgradeable.sort_custom(func(a: SimTower, b: SimTower) -> bool:
-		return a.kills > b.kills
-	)
+	upgradeable.sort_custom(func(a: SimTower, b: SimTower) -> bool: return a.kills > b.kills)
 
 	for tower in upgradeable:
 		var upgrade := get_best_upgrade_for_tower(tower)

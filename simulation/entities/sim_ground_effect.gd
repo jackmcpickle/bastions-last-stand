@@ -12,7 +12,12 @@ var next_tick_ms: int = 0
 var source_tower_id: String = ""
 
 
-func _init(p_position: Vector2 = Vector2.ZERO, p_radius: float = 1.0, p_dps: int = 0, p_duration_ms: int = 0) -> void:
+func _init(
+	p_position: Vector2 = Vector2.ZERO,
+	p_radius: float = 1.0,
+	p_dps: int = 0,
+	p_duration_ms: int = 0
+) -> void:
 	position = p_position
 	radius = p_radius
 	damage_per_tick = p_dps * tick_interval_ms / 1000  # Convert DPS to damage per tick

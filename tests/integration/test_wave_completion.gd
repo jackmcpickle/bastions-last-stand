@@ -17,6 +17,7 @@ func before_each() -> void:
 # Victory scenarios
 # ============================================
 
+
 func test_single_wave_victory() -> void:
 	_setup_powerful_towers()
 
@@ -49,6 +50,7 @@ func test_wave_victory_gold_earned() -> void:
 # ============================================
 # Defeat scenarios
 # ============================================
+
 
 func test_single_wave_defeat_all_leak() -> void:
 	# No towers - all enemies leak
@@ -90,6 +92,7 @@ func test_wave_defeat_tracks_final_state() -> void:
 # Mixed outcomes
 # ============================================
 
+
 func test_wave_victory_with_some_damage() -> void:
 	# Medium strength defense
 	_game_state.gold = 500
@@ -125,6 +128,7 @@ func test_wave_partial_kills_partial_leaks() -> void:
 # ============================================
 # Wave state tracking
 # ============================================
+
 
 func test_wave_completion_clears_enemies() -> void:
 	_setup_powerful_towers()
@@ -164,6 +168,7 @@ func test_wave_completion_emits_signal() -> void:
 # Multi-wave scenarios
 # ============================================
 
+
 func test_consecutive_waves_accumulate_gold() -> void:
 	# Use multi-wave data
 	_game_state.wave_data = TestHelpers.create_multi_wave_data(3)
@@ -193,6 +198,7 @@ func test_consecutive_waves_track_kills() -> void:
 # ============================================
 # Tower performance tracking
 # ============================================
+
 
 func test_tower_damage_tracking() -> void:
 	_setup_powerful_towers()
@@ -233,6 +239,7 @@ func test_tower_shot_tracking() -> void:
 # Edge cases
 # ============================================
 
+
 func test_wave_with_no_enemies() -> void:
 	# Create wave with zero enemies
 	var wave_data := WaveData.new()
@@ -261,6 +268,7 @@ func test_wave_timeout_protection() -> void:
 # ============================================
 # Helpers
 # ============================================
+
 
 func _setup_powerful_towers() -> void:
 	_game_state.gold = 10000

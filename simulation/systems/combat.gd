@@ -23,10 +23,7 @@ static func process_tower_attacks(game_state: GameState, delta_ms: int) -> void:
 
 		# Find target
 		var target := Targeting.find_target(
-			tower.position,
-			game_state.enemies,
-			tower.range_tiles,
-			tower.target_priority
+			tower.position, game_state.enemies, tower.range_tiles, tower.target_priority
 		)
 
 		if not target:
@@ -150,10 +147,7 @@ static func _process_beam_tower(tower: SimTower, game_state: GameState, delta_ms
 	## Handle continuous beam damage
 	# Beam towers attack every tick (no cooldown)
 	var target := Targeting.find_target(
-		tower.position,
-		game_state.enemies,
-		tower.range_tiles,
-		tower.target_priority
+		tower.position, game_state.enemies, tower.range_tiles, tower.target_priority
 	)
 
 	if not target:
@@ -174,7 +168,9 @@ static func _process_beam_tower(tower: SimTower, game_state: GameState, delta_ms
 		tower.record_kill()
 
 
-static func _get_line_targets(tower: SimTower, primary_target: SimEnemy, all_enemies: Array[SimEnemy]) -> Array[SimEnemy]:
+static func _get_line_targets(
+	tower: SimTower, primary_target: SimEnemy, all_enemies: Array[SimEnemy]
+) -> Array[SimEnemy]:
 	## Get all enemies in a line from tower through target (for railgun)
 	var result: Array[SimEnemy] = []
 	var tower_pos := tower.get_center()
@@ -205,10 +201,11 @@ static func _get_line_targets(tower: SimTower, primary_target: SimEnemy, all_ene
 			result.append(enemy)
 
 	# Sort by distance from tower
-	result.sort_custom(func(a: SimEnemy, b: SimEnemy) -> bool:
-		var da := (a.grid_pos - tower_pos).length_squared()
-		var db := (b.grid_pos - tower_pos).length_squared()
-		return da < db
+	result.sort_custom(
+		func(a: SimEnemy, b: SimEnemy) -> bool:
+			var da := (a.grid_pos - tower_pos).length_squared()
+			var db := (b.grid_pos - tower_pos).length_squared()
+			return da < db
 	)
 
 	return result
@@ -224,8 +221,7 @@ static func _schedule_barrage(tower: SimTower, target_pos: Vector2, game_state: 
 		var delay_ms := (i + 1) * 750  # 750, 1500, 2250, 3000ms
 		# Add some randomness to position
 		var offset := Vector2(
-			game_state.rng.randf_range(-0.5, 0.5),
-			game_state.rng.randf_range(-0.5, 0.5)
+			game_state.rng.randf_range(-0.5, 0.5), game_state.rng.randf_range(-0.5, 0.5)
 		)
 		game_state.add_delayed_damage(delay_ms, target_pos + offset, damage, aoe_radius)
 
@@ -298,8 +294,7 @@ static func process_enemy_deaths(game_state: GameState) -> void:
 		if enemy.splits_into != "" and enemy.split_count > 0:
 			for i in range(enemy.split_count):
 				var offset := Vector2(
-					game_state.rng.randf_range(-0.3, 0.3),
-					game_state.rng.randf_range(-0.3, 0.3)
+					game_state.rng.randf_range(-0.3, 0.3), game_state.rng.randf_range(-0.3, 0.3)
 				)
 				game_state.spawn_enemy_at_position(enemy.splits_into, enemy.grid_pos + offset)
 
@@ -312,22 +307,22 @@ static func process_enemy_deaths(game_state: GameState) -> void:
 static func process_enemy_leaks(game_state: GameState) -> void:
 	## Handle enemies reaching shrine
 	var to_remove: Array[SimEnemy] = []
-	
+
 	for enemy in game_state.enemies:
 		if enemy.has_reached_shrine():
 			to_remove.append(enemy)
-	
+
 	for enemy in to_remove:
 		# Damage shrine based on config
 		var base_damage := 1
 		if game_state.balance_config:
 			base_damage = game_state.balance_config.enemy_shrine_damage
-		
+
 		# Scale damage for stronger enemies
 		var damage := base_damage
 		if enemy.max_hp > 100:
 			damage = base_damage + enemy.max_hp / 50
-		
+
 		game_state.damage_shrine(damage)
 		game_state.enemy_reached_shrine.emit(enemy, damage)
 		game_state.remove_enemy(enemy, false)

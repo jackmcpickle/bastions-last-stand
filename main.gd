@@ -19,18 +19,17 @@ const BalanceConfig = preload("res://simulation/core/balance_config.gd")
 ## Each strategy has towers and walls
 ## Map is 10x10, spawns at (2,0) and (7,0), shrine at (4,4)
 
+
 func _get_strategy_a() -> Dictionary:
 	## Strategy A: Dual Tower - 2 towers covering both spawn paths
 	## Cost: 160g towers = need 160+ starting gold
 	return {
 		"name": "DualTower",
 		"description": "Two towers covering spawn paths",
-		"towers": [
-			{pos = Vector2i(3, 2), id = "archer"},
-			{pos = Vector2i(6, 2), id = "archer"}
-		],
+		"towers": [{pos = Vector2i(3, 2), id = "archer"}, {pos = Vector2i(6, 2), id = "archer"}],
 		"walls": [] as Array[Vector2i]
 	}
+
 
 func _get_strategy_b() -> Dictionary:
 	## Strategy B: Triple Tower - 3 towers in killing zone
@@ -38,7 +37,8 @@ func _get_strategy_b() -> Dictionary:
 	return {
 		"name": "TripleTower",
 		"description": "Three towers near shrine",
-		"towers": [
+		"towers":
+		[
 			{pos = Vector2i(3, 3), id = "archer"},
 			{pos = Vector2i(4, 2), id = "archer"},
 			{pos = Vector2i(6, 3), id = "archer"}
@@ -46,18 +46,17 @@ func _get_strategy_b() -> Dictionary:
 		"walls": [] as Array[Vector2i]
 	}
 
+
 func _get_strategy_c() -> Dictionary:
 	## Strategy C: Flanking - towers on sides covering paths
 	## No walls, just good tower positioning
 	return {
 		"name": "Flanking",
 		"description": "Towers on flanks covering spawn paths",
-		"towers": [
-			{pos = Vector2i(1, 2), id = "archer"},
-			{pos = Vector2i(8, 2), id = "archer"}
-		],
+		"towers": [{pos = Vector2i(1, 2), id = "archer"}, {pos = Vector2i(8, 2), id = "archer"}],
 		"walls": [] as Array[Vector2i]
 	}
+
 
 func _get_strategy_d() -> Dictionary:
 	## Strategy D: Central Defense - towers clustered near shrine
@@ -65,10 +64,7 @@ func _get_strategy_d() -> Dictionary:
 	return {
 		"name": "CentralDefense",
 		"description": "Towers clustered defending shrine",
-		"towers": [
-			{pos = Vector2i(3, 4), id = "archer"},
-			{pos = Vector2i(6, 4), id = "archer"}
-		],
+		"towers": [{pos = Vector2i(3, 4), id = "archer"}, {pos = Vector2i(6, 4), id = "archer"}],
 		"walls": [] as Array[Vector2i]
 	}
 
@@ -93,7 +89,8 @@ func _ready() -> void:
 
 
 func _print_help() -> void:
-	print("""
+	print(
+		"""
 Bastion's Last Stand - Headless Simulation Engine
 
 Usage:
@@ -119,7 +116,8 @@ Examples:
   godot --headless -- --strategy all --count 1000 --json
   godot --headless -- --config balance.json --json
   godot --headless -- --save-config default_config.json
-""")
+"""
+	)
 
 
 func _run_simulation(args: Array) -> void:
@@ -131,7 +129,7 @@ func _run_simulation(args: Array) -> void:
 	var config_file := ""
 	var save_config_file := ""
 	var output_file := ""
-	
+
 	for i in range(args.size()):
 		match args[i]:
 			"--count":
@@ -154,7 +152,7 @@ func _run_simulation(args: Array) -> void:
 			"--output":
 				if i + 1 < args.size():
 					output_file = args[i + 1]
-	
+
 	# Load or create balance config
 	var config := BalanceConfig.new()
 	if config_file != "":
@@ -162,7 +160,7 @@ func _run_simulation(args: Array) -> void:
 		if err != OK:
 			push_error("Failed to load config: " + config_file)
 			return
-	
+
 	# Save config if requested
 	if save_config_file != "":
 		var err := config.save_to_file(save_config_file)
@@ -174,7 +172,7 @@ func _run_simulation(args: Array) -> void:
 		if config_file == "" and strategy_arg == "all" and count == 100:
 			# Just saving config, no simulation
 			return
-	
+
 	# Load base data (will be overridden by config)
 	var map := TestMap.create()
 	var waves := Waves1To10.create()
@@ -216,18 +214,18 @@ func _run_simulation(args: Array) -> void:
 	runner.register_enemy(stealth_data)
 	runner.register_enemy(breaker_data)
 	runner.register_enemy(boss_golem_data)
-	
+
 	# Determine which strategies to run
 	var strategies_to_run: Array[String] = []
 	if strategy_arg == "all":
 		strategies_to_run = ["a", "b", "c", "d"]
 	else:
 		strategies_to_run = [strategy_arg]
-	
+
 	# Collect results
 	var all_results := {}
 	var start_time := Time.get_ticks_msec()
-	
+
 	if not json_output:
 		print("=================================")
 		print("BASTION'S LAST STAND")
@@ -237,43 +235,60 @@ func _run_simulation(args: Array) -> void:
 		print("Config:")
 		print("  Starting gold: %d" % config.starting_gold)
 		print("  Wall cost: %d" % config.wall_cost)
-		print("  Archer: %dg, %d dmg, %dms, %d range" % [
-			config.archer_cost, config.archer_damage / 1000,
-			config.archer_attack_speed_ms, config.archer_range
-		])
-		print("  Grunt: %d HP, %d speed, %dg" % [
-			config.grunt_hp, config.grunt_speed, config.grunt_gold
-		])
-		print("  Runner: %d HP, %d speed, %dg" % [
-			config.runner_hp, config.runner_speed, config.runner_gold
-		])
+		print(
+			(
+				"  Archer: %dg, %d dmg, %dms, %d range"
+				% [
+					config.archer_cost,
+					config.archer_damage / 1000,
+					config.archer_attack_speed_ms,
+					config.archer_range
+				]
+			)
+		)
+		print(
+			(
+				"  Grunt: %d HP, %d speed, %dg"
+				% [config.grunt_hp, config.grunt_speed, config.grunt_gold]
+			)
+		)
+		print(
+			(
+				"  Runner: %d HP, %d speed, %dg"
+				% [config.runner_hp, config.runner_speed, config.runner_gold]
+			)
+		)
 		print("  Shrine: %d HP" % config.shrine_hp)
 		print("")
 		print("Running %d simulations per strategy..." % count)
 		print("")
-	
+
 	for strat_id in strategies_to_run:
 		var strategy: Dictionary
 		match strat_id:
-			"a": strategy = _get_strategy_a()
-			"b": strategy = _get_strategy_b()
-			"c": strategy = _get_strategy_c()
-			"d": strategy = _get_strategy_d()
+			"a":
+				strategy = _get_strategy_a()
+			"b":
+				strategy = _get_strategy_b()
+			"c":
+				strategy = _get_strategy_c()
+			"d":
+				strategy = _get_strategy_d()
 			_:
 				push_error("Unknown strategy: " + strat_id)
 				continue
-		
+
 		var towers: Array[Dictionary] = []
 		for t in strategy.towers:
 			towers.append(t)
-		
+
 		var walls: Array[Vector2i] = []
 		for w in strategy.walls:
 			walls.append(w)
-		
+
 		var results := runner.run_batch(count, base_seed, towers, walls)
 		var analysis := SimulationRunner.analyze_results(results)
-		
+
 		all_results[strat_id] = {
 			"name": strategy.name,
 			"description": strategy.description,
@@ -286,7 +301,7 @@ func _run_simulation(args: Array) -> void:
 			"avg_leaked": analysis.avg_leaked,
 			"avg_duration_ms": analysis.avg_duration_ms,
 		}
-		
+
 		if not json_output:
 			print("Strategy %s (%s):" % [strat_id.to_upper(), strategy.name])
 			print("  Win rate: %.1f%%" % [analysis.win_rate * 100])
@@ -294,9 +309,9 @@ func _run_simulation(args: Array) -> void:
 			print("  Avg gold: %.1f" % analysis.avg_gold)
 			print("  Avg killed/leaked: %.0f / %.0f" % [analysis.avg_killed, analysis.avg_leaked])
 			print("")
-	
+
 	var end_time := Time.get_ticks_msec()
-	
+
 	# Find best strategy
 	var best_strategy := ""
 	var best_win_rate := -1.0
@@ -304,7 +319,7 @@ func _run_simulation(args: Array) -> void:
 		if all_results[strat_id].win_rate > best_win_rate:
 			best_win_rate = all_results[strat_id].win_rate
 			best_strategy = strat_id
-	
+
 	# Output results
 	if json_output:
 		var output := {
@@ -319,9 +334,11 @@ func _run_simulation(args: Array) -> void:
 	else:
 		print("=================================")
 		print("Completed in %dms" % (end_time - start_time))
-		print("Best strategy: %s (%.1f%% win rate)" % [best_strategy.to_upper(), best_win_rate * 100])
+		print(
+			"Best strategy: %s (%.1f%% win rate)" % [best_strategy.to_upper(), best_win_rate * 100]
+		)
 		print("=================================")
-	
+
 	# Save to file if requested
 	if output_file != "":
 		var file := FileAccess.open(output_file, FileAccess.WRITE)

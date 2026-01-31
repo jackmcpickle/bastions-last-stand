@@ -19,6 +19,7 @@ func before_each() -> void:
 # process_tick() basic tests
 # ============================================
 
+
 func test_process_tick_returns_waiting_no_wave() -> void:
 	var result := _tick_processor.process_tick()
 
@@ -97,6 +98,7 @@ func test_process_tick_enemies_die() -> void:
 # Game over tests
 # ============================================
 
+
 func test_process_tick_game_over_on_shrine_death() -> void:
 	_game_state.shrine.hp = 1
 	_game_state.start_wave(1)
@@ -123,6 +125,7 @@ func test_process_tick_returns_loss_on_game_over() -> void:
 # Wave completion tests
 # ============================================
 
+
 func test_process_tick_wave_complete() -> void:
 	_game_state.gold = 500
 	# Place powerful towers
@@ -148,6 +151,7 @@ func test_process_tick_wave_complete() -> void:
 # ============================================
 # run_wave() tests
 # ============================================
+
 
 func test_run_wave_returns_result() -> void:
 	_game_state.gold = 1000
@@ -198,6 +202,7 @@ func test_run_wave_invalid_wave() -> void:
 # ============================================
 # run_all_waves() tests
 # ============================================
+
 
 func test_run_all_waves_tracks_results() -> void:
 	_game_state.gold = 5000
@@ -263,6 +268,7 @@ func test_run_all_waves_tower_stats() -> void:
 # Status effects integration
 # ============================================
 
+
 func test_tick_processes_status_effects() -> void:
 	_game_state.gold = 500
 	var frost_data := TestHelpers.create_frost_tower_data()
@@ -310,6 +316,7 @@ func test_tick_processes_burn_damage() -> void:
 # ============================================
 # Determinism tests
 # ============================================
+
 
 func test_same_seed_same_result() -> void:
 	# First run

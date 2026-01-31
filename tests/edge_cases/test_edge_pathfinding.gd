@@ -14,6 +14,7 @@ func before_each() -> void:
 # No valid path edge cases
 # ============================================
 
+
 func test_no_path_completely_blocked() -> void:
 	# Block entire column
 	for y in range(20):
@@ -68,6 +69,7 @@ func test_no_path_sparse_blocking() -> void:
 # Path invalidation edge cases
 # ============================================
 
+
 func test_path_invalidation_mid_enemy_movement() -> void:
 	var enemy_data := TestHelpers.create_basic_enemy_data()
 	var enemy := SimEnemy.new()
@@ -105,6 +107,7 @@ func test_rapid_invalidation() -> void:
 # Flying unit edge cases
 # ============================================
 
+
 func test_flying_unit_ignores_obstacles() -> void:
 	# Block entire path
 	for y in range(20):
@@ -130,6 +133,7 @@ func test_flying_unit_direct_path_diagonal() -> void:
 # ============================================
 # Multiple spawn points edge cases
 # ============================================
+
 
 func test_multiple_spawns_same_target() -> void:
 	var path1 := _pathfinding.get_path(Vector2i(0, 5))
@@ -166,6 +170,7 @@ func test_spawn_at_shrine() -> void:
 # Boundary edge cases
 # ============================================
 
+
 func test_path_along_top_edge() -> void:
 	# Block interior, force path along edge
 	for x in range(5, 15):
@@ -196,6 +201,7 @@ func test_spawn_at_corner() -> void:
 # Large grid edge cases
 # ============================================
 
+
 func test_large_grid_performance() -> void:
 	var large_pf := SimPathfinding.new(100, 100)
 	large_pf.set_shrine_position(Vector2i(99, 50))
@@ -220,6 +226,7 @@ func test_small_grid() -> void:
 # ============================================
 # Degenerate cases
 # ============================================
+
 
 func test_1x1_grid() -> void:
 	var tiny_pf := SimPathfinding.new(1, 1)
@@ -259,6 +266,7 @@ func test_narrow_corridor() -> void:
 # ============================================
 # Cache edge cases
 # ============================================
+
 
 func test_cache_after_many_queries() -> void:
 	# Query many different positions

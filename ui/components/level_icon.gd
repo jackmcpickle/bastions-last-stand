@@ -45,7 +45,8 @@ func _show_best_stars() -> void:
 func _show_locked() -> void:
 	if not star_display:
 		return
-	star_display.clear()
+	for child in star_display.get_children():
+		child.queue_free()
 
 
 func _display_stars(count: int) -> void:

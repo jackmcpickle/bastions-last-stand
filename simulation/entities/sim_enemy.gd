@@ -86,14 +86,14 @@ func initialize(p_data: EnemyData, p_spawn_point: Vector2i, pathfinding: SimPath
 	id = data.id
 	spawn_point = p_spawn_point
 	grid_pos = Vector2(p_spawn_point)
-	
+
 	# Copy base stats
 	hp = data.hp
 	max_hp = data.hp
 	speed = data.speed
 	armor = data.armor
 	gold_value = data.gold_value
-	
+
 	# Parse special flags
 	is_flying = data.special.get("flying", false)
 	is_stealth = data.special.get("stealth", false)
@@ -135,14 +135,14 @@ func initialize(p_data: EnemyData, p_spawn_point: Vector2i, pathfinding: SimPath
 	resurrect_hp_percent = data.special.get("resurrect_hp_percent", 0)
 	resurrect_interval_ms = data.special.get("resurrect_interval_ms", 0)
 	resurrect_timer_ms = resurrect_interval_ms
-	
+
 	# Get path (flyers don't need one - they go direct)
 	if not is_flying and not is_wall_breaker:
 		path = pathfinding.get_path(spawn_point)
 	else:
 		# Direct path to shrine
 		path = [spawn_point, pathfinding.get_shrine_position()]
-	
+
 	path_index = 0
 	if not path.is_empty():
 		path_progress = 0.0
@@ -151,24 +151,24 @@ func initialize(p_data: EnemyData, p_spawn_point: Vector2i, pathfinding: SimPath
 func move(delta_ms: int) -> void:
 	if is_stunned:
 		return
-	
+
 	if path.is_empty() or path_index >= path.size():
 		return
-	
+
 	# Calculate effective speed (with slow)
 	var effective_speed := speed
 	if slow_amount > 0:
 		effective_speed = speed * (1000 - slow_amount) / 1000
-	
+
 	# Convert to distance per tick
 	# speed is x1000 tiles/sec, delta_ms is milliseconds
 	var move_distance := float(effective_speed) / 1000.0 * float(delta_ms) / 1000.0
-	
+
 	while move_distance > 0 and path_index < path.size():
 		var target := Vector2(path[path_index])
 		var to_target := target - grid_pos
 		var dist_to_target := to_target.length()
-		
+
 		if dist_to_target <= move_distance:
 			# Reached waypoint
 			grid_pos = target
@@ -181,7 +181,7 @@ func move(delta_ms: int) -> void:
 			grid_pos += direction * move_distance
 			distance_traveled += move_distance
 			move_distance = 0
-	
+
 	# Update progress
 	if not path.is_empty():
 		path_progress = float(path_index) / float(path.size())

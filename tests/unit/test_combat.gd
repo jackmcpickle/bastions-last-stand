@@ -15,6 +15,7 @@ func before_each() -> void:
 # process_tower_attacks() tests
 # ============================================
 
+
 func test_tower_attacks_enemy_in_range() -> void:
 	var tower := _place_tower(Vector2i(8, 8))
 	var enemy := _spawn_enemy_at(Vector2(10, 10))
@@ -107,6 +108,7 @@ func test_tower_targets_revealed_stealth() -> void:
 # _apply_tower_effects() tests
 # ============================================
 
+
 func test_apply_slow_effect() -> void:
 	var tower := _create_tower_with_special({"slow": 400, "slow_duration_ms": 2000})
 	var enemy := _spawn_enemy_at(Vector2(10, 10))
@@ -128,7 +130,8 @@ func test_apply_burn_effect() -> void:
 
 
 func test_apply_stun_effect_probabilistic() -> void:
-	var tower := _create_tower_with_special({"stun_chance": 1000, "stun_duration_ms": 500})  # 100% chance
+	# 100% chance
+	var tower := _create_tower_with_special({"stun_chance": 1000, "stun_duration_ms": 500})
 	var enemy := _spawn_enemy_at(Vector2(10, 10))
 
 	Combat._apply_tower_effects(tower, enemy, _game_state)
@@ -149,6 +152,7 @@ func test_no_stun_when_unlucky() -> void:
 # ============================================
 # process_enemy_deaths() tests
 # ============================================
+
 
 func test_process_deaths_removes_dead_enemy() -> void:
 	var enemy := _spawn_enemy_at(Vector2(10, 10))
@@ -192,6 +196,7 @@ func test_process_deaths_leaves_alive_enemies() -> void:
 # ============================================
 # process_enemy_leaks() tests
 # ============================================
+
 
 func test_process_leaks_damages_shrine() -> void:
 	var enemy := _spawn_enemy_at(Vector2(19, 10))
@@ -248,6 +253,7 @@ func test_process_leaks_scaled_damage_for_boss() -> void:
 # process_status_effects() tests
 # ============================================
 
+
 func test_process_status_effects_applies_burn() -> void:
 	var enemy := _spawn_enemy_at(Vector2(10, 10))
 	enemy.apply_burn(10000, 2000)
@@ -275,6 +281,7 @@ func test_process_status_effects_multiple_enemies() -> void:
 # ============================================
 # Helpers
 # ============================================
+
 
 func _place_tower(pos: Vector2i) -> SimTower:
 	_game_state.gold = 10000

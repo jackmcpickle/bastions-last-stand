@@ -13,6 +13,7 @@ func before_each() -> void:
 # place_tower() tests
 # ============================================
 
+
 func test_place_tower_basic() -> void:
 	_game_state.gold = 200
 	var data := TestHelpers.create_basic_tower_data()
@@ -89,6 +90,7 @@ func test_place_tower_overlapping() -> void:
 # can_place_tower() tests
 # ============================================
 
+
 func test_can_place_tower_valid() -> void:
 	_game_state.gold = 200
 	var data := TestHelpers.create_basic_tower_data()
@@ -136,6 +138,7 @@ func test_can_place_tower_existing_structure() -> void:
 # place_wall() tests
 # ============================================
 
+
 func test_place_wall_basic() -> void:
 	_game_state.gold = 200
 
@@ -175,6 +178,7 @@ func test_place_wall_insufficient_gold() -> void:
 # can_place_wall() tests
 # ============================================
 
+
 func test_can_place_wall_valid() -> void:
 	_game_state.gold = 200
 
@@ -203,6 +207,7 @@ func test_can_place_wall_existing_structure() -> void:
 # ============================================
 # start_wave() tests
 # ============================================
+
 
 func test_start_wave_basic() -> void:
 	var data := TestHelpers.create_basic_enemy_data()
@@ -245,6 +250,7 @@ func test_start_wave_invalid_wave() -> void:
 # process_spawns() tests
 # ============================================
 
+
 func test_process_spawns_spawns_enemies() -> void:
 	var data := TestHelpers.create_basic_enemy_data()
 	_game_state.register_enemy_data(data)
@@ -272,6 +278,7 @@ func test_process_spawns_respects_delay() -> void:
 # remove_enemy() tests
 # ============================================
 
+
 func test_remove_enemy_killed() -> void:
 	var enemy := _spawn_enemy()
 	var initial_gold := _game_state.gold
@@ -298,6 +305,7 @@ func test_remove_enemy_leaked() -> void:
 # damage_shrine() tests
 # ============================================
 
+
 func test_damage_shrine_reduces_hp() -> void:
 	var initial_hp := _game_state.shrine.hp
 
@@ -319,6 +327,7 @@ func test_damage_shrine_ends_game() -> void:
 # ============================================
 # State query tests
 # ============================================
+
 
 func test_is_wave_complete_no_enemies() -> void:
 	var data := TestHelpers.create_basic_enemy_data()
@@ -367,6 +376,7 @@ func test_is_victory() -> void:
 # Upgrade tests
 # ============================================
 
+
 func test_can_upgrade_tower() -> void:
 	_game_state.gold = 500
 	var data := TestHelpers.create_basic_tower_data()
@@ -411,6 +421,7 @@ func test_upgrade_tower_deducts_gold() -> void:
 # ============================================
 # Helpers
 # ============================================
+
 
 func _spawn_enemy() -> SimEnemy:
 	var data := TestHelpers.create_basic_enemy_data()

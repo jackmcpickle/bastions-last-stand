@@ -4,19 +4,26 @@ extends Control
 
 const TOWER_UPGRADE_SCENE = "res://ui/screens/tower_upgrade.tscn"
 
-const LIGHT_STORY := """For centuries, the Lightwell has protected these lands. Its holy radiance kept the darkness at bay, its waters healed the sick, its light guided the lost home.
+const LIGHT_STORY := """For centuries, the Lightwell has protected these lands. \
+Its holy radiance kept the darkness at bay, its waters healed the sick, \
+its light guided the lost home.
 
-Now the corruption spreads. Twisted creatures pour from the shadows, drawn to the Lightwell's power. They seek to extinguish its light forever.
+Now the corruption spreads. Twisted creatures pour from the shadows, \
+drawn to the Lightwell's power. They seek to extinguish its light forever.
 
-You are the last defender. Marshal your towers. Hold the line. The Lightwell must not fall."""
+You are the last defender. Marshal your towers. Hold the line. \
+The Lightwell must not fall."""
 
 const DARK_STORY := """They called us heretics. Exiled us to the wastes. Left us to die.
 
-But in the darkness, we found power. The Soul Crucible burns with forbidden energy—souls freely given by those who chose survival over salvation.
+But in the darkness, we found power. The Soul Crucible burns with \
+forbidden energy—souls freely given by those who chose survival over salvation.
 
-Now the crusaders come. They call us evil. They would destroy everything we've built.
+Now the crusaders come. They call us evil. \
+They would destroy everything we've built.
 
-Let them come. We did not survive exile to fall now. Defend the Crucible. Show them the strength of the shadows."""
+Let them come. We did not survive exile to fall now. \
+Defend the Crucible. Show them the strength of the shadows."""
 
 @export var chars_per_second: float = 40.0
 @export var skip_to_end_on_input: bool = true

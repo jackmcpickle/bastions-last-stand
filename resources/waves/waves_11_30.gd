@@ -305,7 +305,9 @@ static func _wave_30() -> SingleWaveData:
 	return wave
 
 
-static func _spawn(enemy_id: String, count: int, spawn_point: int = -1, delay_ms: int = 0) -> WaveSpawnData:
+static func _spawn(
+	enemy_id: String, count: int, spawn_point: int = -1, delay_ms: int = 0
+) -> WaveSpawnData:
 	var spawn := WaveSpawnData.new()
 	spawn.enemy_id = enemy_id
 	spawn.count = count
