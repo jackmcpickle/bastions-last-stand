@@ -9,9 +9,9 @@
 
 The game uses **3D pixel art rendering** - 3D models rendered at low resolution with specific post-processing to achieve a handcrafted pixel art look while maintaining the benefits of 3D (dynamic lighting, camera angles, depth).
 
-**Target Resolution**: 384×216 internal → upscaled to device resolution  
-**Aspect Ratio**: 16:9  
-**Camera**: Orthographic, top-down at 45-60° angle  
+**Target Resolution**: 384×216 internal → upscaled to device resolution
+**Aspect Ratio**: 16:9
+**Camera**: Orthographic, top-down at 45-60° angle
 
 ### 1.2 Core Visual Pillars
 
@@ -76,13 +76,13 @@ func _process(_delta):
         global_position.y,
         snappedf(global_position.z, texel_size)
     )
-    
+
     # Calculate sub-pixel offset for smooth scrolling
     snap_offset = Vector2(
         (global_position.x - snapped_pos.x) * pixels_per_unit,
         (global_position.z - snapped_pos.z) * pixels_per_unit
     )
-    
+
     global_position = snapped_pos
 
 # Apply snap_offset in post-processing to shift final image
@@ -104,33 +104,33 @@ uniform float normal_threshold = 0.5;
 
 void fragment() {
     vec2 pixel_size = 1.0 / vec2(textureSize(screen_texture, 0));
-    
+
     // Sample depth in cardinal directions
     float depth_c = texture(depth_texture, UV).r;
     float depth_u = texture(depth_texture, UV + vec2(0, -pixel_size.y)).r;
     float depth_d = texture(depth_texture, UV + vec2(0, pixel_size.y)).r;
     float depth_l = texture(depth_texture, UV + vec2(-pixel_size.x, 0)).r;
     float depth_r = texture(depth_texture, UV + vec2(pixel_size.x, 0)).r;
-    
+
     // Depth edge detection
-    float depth_diff = abs(depth_u - depth_c) + abs(depth_d - depth_c) 
+    float depth_diff = abs(depth_u - depth_c) + abs(depth_d - depth_c)
                      + abs(depth_l - depth_c) + abs(depth_r - depth_c);
     float depth_edge = step(depth_threshold, depth_diff);
-    
+
     // Normal edge detection
     vec3 normal_c = texture(normal_texture, UV).rgb * 2.0 - 1.0;
     vec3 normal_u = texture(normal_texture, UV + vec2(0, -pixel_size.y)).rgb * 2.0 - 1.0;
     vec3 normal_d = texture(normal_texture, UV + vec2(0, pixel_size.y)).rgb * 2.0 - 1.0;
     vec3 normal_l = texture(normal_texture, UV + vec2(-pixel_size.x, 0)).rgb * 2.0 - 1.0;
     vec3 normal_r = texture(normal_texture, UV + vec2(pixel_size.x, 0)).rgb * 2.0 - 1.0;
-    
+
     float normal_diff = (1.0 - dot(normal_c, normal_u)) + (1.0 - dot(normal_c, normal_d))
                       + (1.0 - dot(normal_c, normal_l)) + (1.0 - dot(normal_c, normal_r));
     float normal_edge = step(normal_threshold, normal_diff);
-    
+
     // Combine edges
     float edge = max(depth_edge, normal_edge);
-    
+
     // Output
     vec4 scene_color = texture(screen_texture, UV);
     COLOR = mix(scene_color, outline_color, edge);
@@ -157,17 +157,17 @@ void fragment() {
 void light() {
     // Calculate light intensity
     float NdotL = dot(NORMAL, LIGHT);
-    
+
     // Sharp toon shading with slight softness
     float light_intensity = smoothstep(
         shadow_threshold - shadow_softness,
         shadow_threshold + shadow_softness,
         NdotL
     );
-    
+
     // Apply shadow color in dark areas
     vec3 shaded_color = mix(shadow_color.rgb * ALBEDO, ALBEDO, light_intensity);
-    
+
     DIFFUSE_LIGHT += shaded_color * LIGHT_COLOR * ATTENUATION;
 }
 ```
@@ -242,9 +242,9 @@ Players choose their faction at the start of a campaign. This affects:
 
 ### 3.2 The Radiant Order (Light Faction)
 
-**Theme**: Holy knights, divine magic, righteous defense  
-**Color Scheme**: Gold, white, silver, sky blue  
-**Architecture**: White stone, golden trim, blue banners, crystalline elements  
+**Theme**: Holy knights, divine magic, righteous defense
+**Color Scheme**: Gold, white, silver, sky blue
+**Architecture**: White stone, golden trim, blue banners, crystalline elements
 **Magic Style**: Glowing light, holy symbols, cleansing fire, protective barriers
 
 #### Tower Reskins
@@ -311,9 +311,9 @@ Tier 1: Golden obelisk with single crystal cap
 
 ### 3.3 The Shadow Covenant (Dark Faction)
 
-**Theme**: Dark sorcerers, forbidden magic, corrupted power  
-**Color Scheme**: Purple, black, dark red, sickly green  
-**Architecture**: Dark stone, bone/skull motifs, twisted metal, glowing runes  
+**Theme**: Dark sorcerers, forbidden magic, corrupted power
+**Color Scheme**: Purple, black, dark red, sickly green
+**Architecture**: Dark stone, bone/skull motifs, twisted metal, glowing runes
 **Magic Style**: Dark energy, fire and brimstone, poison clouds, void portals
 
 #### Tower Reskins
@@ -486,7 +486,7 @@ Project Settings:
 
 - [ ] Base model (low-poly, hard edges)
 - [ ] Tier 2A model variant
-- [ ] Tier 2B model variant  
+- [ ] Tier 2B model variant
 - [ ] Tier 3A1 model variant
 - [ ] Tier 3A2 model variant
 - [ ] Tier 3B1 model variant
@@ -549,25 +549,25 @@ Project Settings:
 ```
 1. Blockout (Blender)
    └── Simple shapes, correct scale, test in engine
-   
+
 2. Low-poly Model (Blender)
    └── Final geo, hard edges, clean topology
-   
+
 3. UV Mapping (Blender)
    └── Efficient islands, palette-based texturing
-   
+
 4. Texturing (Aseprite or similar)
    └── Pixel art texture on atlas, limited palette
-   
+
 5. Rigging/Animation (Blender)
    └── Simple bones, keyframe animation
-   
+
 6. Export to Godot
    └── GLTF format, test with shaders
-   
+
 7. VFX (Godot)
    └── Particle systems, shader effects
-   
+
 8. Polish
    └── Iterate based on in-game appearance
 ```

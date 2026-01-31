@@ -1,10 +1,10 @@
 # Bastion's Last Stand
 ## Game Design Document v1.0
 
-**Genre:** Tower Defense  
-**Platform:** Mobile (iOS & Android)  
-**Engine:** Godot 4.6  
-**Target Audience:** Casual to mid-core strategy gamers  
+**Genre:** Tower Defense
+**Platform:** Mobile (iOS & Android)
+**Engine:** Godot 4.6
+**Target Audience:** Casual to mid-core strategy gamers
 
 ---
 
@@ -24,7 +24,7 @@ A top-down tower defense game where players protect a sacred Shrine by building 
 ### 1.3 Core Loop
 
 ```
-Place Shrine → Build Maze/Towers → Start Wave → Enemies Pathfind → 
+Place Shrine → Build Maze/Towers → Start Wave → Enemies Pathfind →
 Earn Gold → Upgrade/Expand → Next Wave → Repeat
 ```
 
@@ -108,7 +108,7 @@ Once a branch is chosen, the other is locked. This creates 4 possible final form
 
 ### 3.1 Archer Tower
 
-**Role**: Fast single-target damage, anti-priority  
+**Role**: Fast single-target damage, anti-priority
 **Base Cost**: 100 gold
 
 | Tier | Name | Stats | Special |
@@ -127,7 +127,7 @@ Once a branch is chosen, the other is locked. This creates 4 possible final form
 
 ### 3.2 Cannon Tower
 
-**Role**: AOE damage, anti-cluster  
+**Role**: AOE damage, anti-cluster
 **Base Cost**: 150 gold
 
 | Tier | Name | Stats | Special |
@@ -146,7 +146,7 @@ Once a branch is chosen, the other is locked. This creates 4 possible final form
 
 ### 3.3 Frost Tower
 
-**Role**: Crowd control, slow/freeze  
+**Role**: Crowd control, slow/freeze
 **Base Cost**: 125 gold
 
 | Tier | Name | Stats | Special |
@@ -165,7 +165,7 @@ Once a branch is chosen, the other is locked. This creates 4 possible final form
 
 ### 3.4 Lightning Tower
 
-**Role**: Chain damage, anti-swarm  
+**Role**: Chain damage, anti-swarm
 **Base Cost**: 175 gold
 
 | Tier | Name | Stats | Special |
@@ -184,7 +184,7 @@ Once a branch is chosen, the other is locked. This creates 4 possible final form
 
 ### 3.5 Flame Tower
 
-**Role**: DOT damage, area denial  
+**Role**: DOT damage, area denial
 **Base Cost**: 150 gold
 
 | Tier | Name | Stats | Special |
@@ -203,7 +203,7 @@ Once a branch is chosen, the other is locked. This creates 4 possible final form
 
 ### 3.6 Support Tower
 
-**Role**: Buffs allies, debuffs enemies  
+**Role**: Buffs allies, debuffs enemies
 **Base Cost**: 200 gold
 
 | Tier | Name | Stats | Special |
@@ -222,7 +222,7 @@ Once a branch is chosen, the other is locked. This creates 4 possible final form
 
 ### 3.7 Wall Block
 
-**Role**: Path manipulation, defense  
+**Role**: Path manipulation, defense
 **Base Cost**: 25 gold
 
 | Tier | Name | Stats | Special |

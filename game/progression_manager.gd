@@ -189,5 +189,3 @@ func _get_chapter_index(chapter_id: String) -> int:
 		if all_chapters[i].id == chapter_id:
 			return i
 	return -1
-
-

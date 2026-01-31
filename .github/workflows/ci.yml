@@ -16,9 +16,9 @@ jobs:
           python-version: "3.11"
       - run: pip install gdtoolkit
       - name: Check formatting
-        run: gdformat --check simulation/ tests/ resources/ maps/ ui/ main.gd
+        run: gdformat --check simulation/ tests/ resources/ maps/ ui/ game/ main.gd
       - name: Lint
-        run: gdlint simulation/ tests/ resources/ maps/ ui/ main.gd
+        run: gdlint simulation/ tests/ resources/ maps/ ui/ game/ main.gd
 
   godot-tests:
     runs-on: ubuntu-latest

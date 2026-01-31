@@ -21,8 +21,8 @@ pre-commit install
 
 ## Before Submitting PR
 
-1. **Format code**: `gdformat simulation/ tests/ resources/ maps/ ui/ main.gd`
-2. **Lint code**: `gdlint simulation/ tests/ resources/ maps/ ui/ main.gd`
+1. **Format code**: `gdformat simulation/ tests/ resources/ maps/ ui/ game/ main.gd`
+2. **Lint code**: `gdlint simulation/ tests/ resources/ maps/ ui/ game/ main.gd`
 3. **Run tests**: `godot --headless -s addons/gut/gut_cmdln.gd -gdir=res://tests -gexit`
 4. All tests must pass
 5. No lint errors

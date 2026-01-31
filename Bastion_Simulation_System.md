@@ -77,7 +77,7 @@ func tick(delta: float = 0.1):
         if enemy.reached_shrine():
             shrine_hp -= enemy.damage
             enemy.queue_free()
-    
+
     # 2. Towers attack
     for tower in towers:
         tower.cooldown -= delta
@@ -86,19 +86,19 @@ func tick(delta: float = 0.1):
             if target:
                 tower.attack(target)
                 tower.cooldown = tower.attack_speed
-    
+
     # 3. Process enemy deaths
     for enemy in enemies:
         if enemy.hp <= 0:
             gold += enemy.gold_value
             enemies.erase(enemy)
-    
+
     # 4. Check win/loss
     if shrine_hp <= 0:
         return SimResult.LOSS
     if enemies.is_empty() and wave_complete:
         return SimResult.WAVE_CLEAR
-    
+
     return SimResult.ONGOING
 ```
 
@@ -120,26 +120,26 @@ func find_path(start: Vector2i, goal: Vector2i) -> Array[Vector2i]:
     var came_from = {}
     var g_score = {start: 0}
     var f_score = {start: heuristic(start, goal)}
-    
+
     while not open_set.is_empty():
         var current = get_lowest_f(open_set, f_score)
-        
+
         if current == goal:
             return reconstruct_path(came_from, current)
-        
+
         open_set.erase(current)
-        
+
         for neighbor in get_neighbors(current):
             var tentative_g = g_score[current] + 1
-            
+
             if tentative_g < g_score.get(neighbor, INF):
                 came_from[neighbor] = current
                 g_score[neighbor] = tentative_g
                 f_score[neighbor] = tentative_g + heuristic(neighbor, goal)
-                
+
                 if neighbor not in open_set:
                     open_set.append(neighbor)
-    
+
     return []  # No path found - enemies will attack walls
 
 func heuristic(a: Vector2i, b: Vector2i) -> float:
@@ -168,13 +168,13 @@ var cooldown: float = 0
 var total_damage_dealt: float = 0  # For analytics
 
 func find_target(enemies: Array[SimEnemy]) -> SimEnemy:
-    var in_range = enemies.filter(func(e): 
+    var in_range = enemies.filter(func(e):
         return position.distance_to(e.grid_pos) <= range_tiles
     )
     if in_range.is_empty():
         return null
     # Default: First (furthest along path)
-    return in_range.reduce(func(a, b): 
+    return in_range.reduce(func(a, b):
         return a if a.path_progress > b.path_progress else b
     )
 
@@ -206,11 +206,11 @@ var path_progress: float = 0  # 0-1 along total path
 func move(delta: float, path: Array[Vector2i]):
     if path_index >= path.size():
         return  # Reached shrine
-    
+
     var target = Vector2(path[path_index])
     var direction = (target - grid_pos).normalized()
     grid_pos += direction * speed * delta
-    
+
     if grid_pos.distance_to(target) < 0.1:
         path_index += 1
         path_progress = float(path_index) / path.size()
@@ -236,35 +236,35 @@ var ai_player: AIPlayer
 
 func run_batch(num_games: int, config: SimulationConfig) -> Array[SimulationResults]:
     var all_results = []
-    
+
     for i in range(num_games):
         var game = SimGameState.new()
         game.load_config(config)
-        
+
         var ai = ai_player.duplicate()
         var result = run_single_game(game, ai)
         all_results.append(result)
-        
+
         # Progress callback
         if i % 100 == 0:
             print("Completed %d / %d simulations" % [i, num_games])
-    
+
     return all_results
 
 func run_single_game(game: SimGameState, ai: AIPlayer) -> SimulationResults:
     var results = SimulationResults.new()
     results.start_time = Time.get_ticks_msec()
-    
+
     for wave in range(1, 31):  # 30 waves
         game.start_wave(wave)
-        
+
         # AI makes decisions at wave start
         ai.make_decisions(game)
-        
+
         # Run wave until complete
         while true:
             var tick_result = game.tick(0.1)
-            
+
             if tick_result == SimResult.LOSS:
                 results.outcome = "loss"
                 results.final_wave = wave
@@ -272,10 +272,10 @@ func run_single_game(game: SimGameState, ai: AIPlayer) -> SimulationResults:
                 break
             elif tick_result == SimResult.WAVE_CLEAR:
                 break
-        
+
         if results.outcome == "loss":
             break
-        
+
         # Record wave stats
         results.wave_stats.append({
             "wave": wave,
@@ -284,16 +284,16 @@ func run_single_game(game: SimGameState, ai: AIPlayer) -> SimulationResults:
             "towers": game.towers.size(),
             "tower_types": get_tower_breakdown(game.towers)
         })
-    
+
     if results.outcome != "loss":
         results.outcome = "win"
         results.final_wave = 30
-    
+
     results.end_time = Time.get_ticks_msec()
-    results.total_damage_dealt = game.towers.reduce(func(sum, t): 
+    results.total_damage_dealt = game.towers.reduce(func(sum, t):
         return sum + t.total_damage_dealt, 0
     )
-    
+
     return results
 ```
 
@@ -341,14 +341,14 @@ func make_decisions(game: SimGameState):
 # Balanced AI - tries to maintain good coverage
 func balanced_decision(game: SimGameState):
     var gold = game.gold
-    
+
     # Priority 1: Ensure path exists (walls)
     if should_build_walls(game):
         var wall_pos = find_optimal_wall_position(game)
         if wall_pos and gold >= 25:
             game.place_wall(wall_pos)
             gold -= 25
-    
+
     # Priority 2: Build towers for coverage
     var uncovered = find_uncovered_path_sections(game)
     if not uncovered.is_empty() and gold >= 100:
@@ -357,7 +357,7 @@ func balanced_decision(game: SimGameState):
         if pos:
             game.place_tower(pos, tower_type)
             gold -= get_tower_cost(tower_type)
-    
+
     # Priority 3: Upgrade existing towers
     if gold >= 150:
         var best_upgrade = find_best_upgrade(game)
@@ -368,7 +368,7 @@ func balanced_decision(game: SimGameState):
 func aoe_focus_decision(game: SimGameState):
     var gold = game.gold
     var tower_priority = ["cannon", "lightning", "flame", "frost", "archer"]
-    
+
     # Always try to build/upgrade AOE towers first
     for tower_type in tower_priority:
         if can_afford(tower_type, gold):
@@ -382,36 +382,36 @@ func optimal_decision(game: SimGameState):
     var all_actions = generate_all_valid_actions(game)
     var best_action = null
     var best_score = -INF
-    
+
     for action in all_actions:
         var score = evaluate_action(game, action)
         if score > best_score:
             best_score = score
             best_action = action
-    
+
     if best_action:
         execute_action(game, best_action)
 
 func evaluate_action(game: SimGameState, action: Dictionary) -> float:
     var score = 0.0
-    
+
     match action.type:
         "place_tower":
             # Score based on: coverage, synergy, cost efficiency
             score += coverage_score(game, action.position, action.tower_type)
             score += synergy_score(game, action.position, action.tower_type)
             score -= action.cost / 100.0  # Penalize expensive options slightly
-        
+
         "upgrade_tower":
             # Score based on: DPS increase per gold
             var dps_increase = calculate_dps_increase(action.tower, action.branch)
             score += dps_increase / action.cost * 100
-        
+
         "place_wall":
             # Score based on: path length increase
             var path_increase = calculate_path_increase(game, action.position)
             score += path_increase * 10
-    
+
     return score
 ```
 
@@ -480,24 +480,24 @@ class_name SimulationAnalysis
 
 static func analyze_batch(results: Array[SimulationResults]) -> Dictionary:
     var analysis = {}
-    
+
     # Win rate
     var wins = results.filter(func(r): return r.outcome == "win")
     analysis["win_rate"] = float(wins.size()) / results.size()
-    
+
     # Average final wave (for losses)
     var losses = results.filter(func(r): return r.outcome == "loss")
     if not losses.is_empty():
-        analysis["avg_loss_wave"] = losses.reduce(func(sum, r): 
+        analysis["avg_loss_wave"] = losses.reduce(func(sum, r):
             return sum + r.final_wave, 0) / losses.size()
-    
+
     # Tower popularity
     var tower_counts = {}
     for result in results:
         for tower_type in result.towers_built:
             tower_counts[tower_type] = tower_counts.get(tower_type, 0) + result.towers_built[tower_type]
     analysis["tower_popularity"] = tower_counts
-    
+
     # Tower effectiveness (damage per gold)
     var tower_efficiency = {}
     for result in results:
@@ -508,11 +508,11 @@ static func analyze_batch(results: Array[SimulationResults]) -> Dictionary:
             if key not in tower_efficiency:
                 tower_efficiency[key] = []
             tower_efficiency[key].append(efficiency)
-    
+
     # Average efficiency per tower type
     for key in tower_efficiency:
         analysis["tower_efficiency_" + key] = average(tower_efficiency[key])
-    
+
     # Difficulty curve (damage taken per wave)
     var wave_difficulty = {}
     for result in results:
@@ -521,11 +521,11 @@ static func analyze_batch(results: Array[SimulationResults]) -> Dictionary:
             if wave not in wave_difficulty:
                 wave_difficulty[wave] = []
             wave_difficulty[wave].append(100 - wave_stat.shrine_hp)
-    
+
     analysis["difficulty_curve"] = {}
     for wave in wave_difficulty:
         analysis["difficulty_curve"][wave] = average(wave_difficulty[wave])
-    
+
     return analysis
 ```
 
@@ -571,11 +571,11 @@ func start_simulation():
 func _process(_delta):
     if not is_simulating:
         return
-    
+
     # AI makes decisions during build phase
     if GameManager.phase == GameManager.Phase.BUILD:
         ai_player.make_decisions(GameManager.get_state())
-        
+
         # Auto-start wave
         await get_tree().create_timer(0.1).timeout  # Brief pause
         GameManager.start_wave()
@@ -583,7 +583,7 @@ func _process(_delta):
 func _on_game_over(won: bool):
     Engine.time_scale = 1.0
     is_simulating = false
-    
+
     # Log results
     var results = collect_results()
     save_results(results)
@@ -673,14 +673,14 @@ extends GutTest
 func test_optimal_ai_win_rate():
     var results = SimulationRunner.run_batch(1000, default_config, AIPlayer.Strategy.OPTIMAL)
     var analysis = SimulationAnalysis.analyze_batch(results)
-    
-    assert_between(analysis.win_rate, 0.85, 0.95, 
+
+    assert_between(analysis.win_rate, 0.85, 0.95,
         "Optimal AI win rate should be 85-95%")
 
 func test_tower_balance():
     var results = SimulationRunner.run_batch(1000, default_config, AIPlayer.Strategy.OPTIMAL)
     var analysis = SimulationAnalysis.analyze_batch(results)
-    
+
     for tower_type in ["archer", "cannon", "frost", "lightning", "flame", "support"]:
         var usage = analysis.tower_popularity.get(tower_type, 0)
         assert_gt(usage, 50, "Tower %s should be used in >5%% of games" % tower_type)
@@ -688,10 +688,10 @@ func test_tower_balance():
 
 func test_no_impossible_waves():
     var results = SimulationRunner.run_batch(100, default_config, AIPlayer.Strategy.OPTIMAL)
-    
+
     for result in results:
         if result.outcome == "loss":
-            assert_gt(result.final_wave, 5, 
+            assert_gt(result.final_wave, 5,
                 "Optimal AI should never lose before wave 5")
 ```
 
@@ -704,10 +704,10 @@ func test_no_impossible_waves():
 ```gdscript
 func export_results_csv(results: Array[SimulationResults], filename: String):
     var file = FileAccess.open(filename, FileAccess.WRITE)
-    
+
     # Header
     file.store_line("game_id,outcome,final_wave,shrine_hp,gold_earned,gold_spent,towers_built,damage_dealt")
-    
+
     # Data
     for i in range(results.size()):
         var r = results[i]
@@ -717,7 +717,7 @@ func export_results_csv(results: Array[SimulationResults], filename: String):
             r.towers_built.values().reduce(func(a,b): return a+b, 0),
             r.total_damage_dealt
         ])
-    
+
     file.close()
 ```
 
@@ -768,15 +768,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Setup Godot
         uses: chickensoft-games/setup-godot@v1
         with:
           version: 4.6
-      
+
       - name: Run Balance Tests
         run: godot --headless --script tests/run_balance_tests.gd
-      
+
       - name: Upload Results
         uses: actions/upload-artifact@v3
         with:
@@ -797,22 +797,22 @@ extends Node
 
 func _ready():
     print("Starting balance simulation...")
-    
+
     # Load default config
     var config = SimulationConfig.new()
     config.load_defaults()
-    
+
     # Create AI player
     var ai = AIPlayer.new()
     ai.strategy = AIPlayer.Strategy.BALANCED
-    
+
     # Run simulations
     var runner = SimulationRunner.new()
     var results = runner.run_batch(100, config)
-    
+
     # Analyze
     var analysis = SimulationAnalysis.analyze_batch(results)
-    
+
     # Print summary
     print("=== SIMULATION RESULTS ===")
     print("Win Rate: %.1f%%" % [analysis.win_rate * 100])
@@ -829,16 +829,16 @@ func _ready():
 func test_archer_buff():
     var base_config = SimulationConfig.new()
     base_config.load_defaults()
-    
+
     var buffed_config = base_config.duplicate()
     buffed_config.tower_stats["archer"]["damage"] *= 1.2
-    
+
     var base_results = SimulationRunner.run_batch(500, base_config)
     var buffed_results = SimulationRunner.run_batch(500, buffed_config)
-    
+
     var base_analysis = SimulationAnalysis.analyze_batch(base_results)
     var buffed_analysis = SimulationAnalysis.analyze_batch(buffed_results)
-    
+
     print("Base win rate: %.1f%%" % [base_analysis.win_rate * 100])
     print("Buffed win rate: %.1f%%" % [buffed_analysis.win_rate * 100])
     print("Archer usage base: %d" % base_analysis.tower_popularity.get("archer", 0))
@@ -874,11 +874,11 @@ def fitness(params):
     """Run simulations with params, return fitness score"""
     config = create_config(params)
     results = run_simulations(config, n=100)
-    
+
     # Fitness = close to 85% win rate + even tower usage
     win_rate_score = 1.0 - abs(results.win_rate - 0.85)
     balance_score = calculate_tower_balance(results)
-    
+
     return win_rate_score * 0.7 + balance_score * 0.3
 
 # Evolve parameters over generations
