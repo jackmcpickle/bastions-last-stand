@@ -5,6 +5,8 @@ extends Control
 const VolumeSliderScene = preload("res://ui/components/volume_slider.tscn")
 const SignInButtonScene = preload("res://ui/components/sign_in_button.tscn")
 
+enum Platform { APPLE = 0, GOOGLE = 1 }
+
 @onready var background: ColorRect = %Background
 @onready var title_label: Label = %TitleLabel
 @onready var audio_section: VBoxContainer = %AudioSection
@@ -69,12 +71,12 @@ func _setup_account_controls() -> void:
 
 	_apple_button = SignInButtonScene.instantiate()
 	buttons_container.add_child(_apple_button)
-	_apple_button.setup(SignInButton.Platform.APPLE)
+	_apple_button.setup(Platform.APPLE)
 	_apple_button.sign_in_requested.connect(_on_apple_sign_in)
 
 	_google_button = SignInButtonScene.instantiate()
 	buttons_container.add_child(_google_button)
-	_google_button.setup(SignInButton.Platform.GOOGLE)
+	_google_button.setup(Platform.GOOGLE)
 	_google_button.sign_in_requested.connect(_on_google_sign_in)
 
 	account_section.add_child(buttons_container)

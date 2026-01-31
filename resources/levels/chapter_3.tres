@@ -1,13 +1,14 @@
 [gd_resource type="Resource" script_class="ChapterData"]
+
 id = "chapter_3"
 display_name = "Final Trial"
 description = "Endgame challenges. Only the most skilled survive."
 unlock_requirement = "chapter_2"
-levels = [SubResource("Resource_1"), SubResource("Resource_2"), SubResource("Resource_3")]
+levels = [SubResource("LevelData_ch3_lv1"), SubResource("LevelData_ch3_lv2"), SubResource("LevelData_ch3_lv3")]
 
 [sub_resources]
 
-[SubResource type="Resource" class_name="LevelData" id="Resource_1"]
+[SubResource type="Resource" class_name="LevelData" id="LevelData_ch3_lv1"]
 id = "ch3_lv1"
 display_name = "Shadow Strike"
 chapter_id = "chapter_3"
@@ -21,7 +22,7 @@ description = "Invisible enemies move unseen. Detection and AOE prevail."
 recommended_towers = ["cannon_tower", "lightning_tower"]
 enemy_types = ["stealth", "grunt"]
 
-[SubResource type="Resource" class_name="LevelData" id="Resource_2"]
+[SubResource type="Resource" class_name="LevelData" id="LevelData_ch3_lv2"]
 id = "ch3_lv2"
 display_name = "Siege"
 chapter_id = "chapter_3"
@@ -35,7 +36,7 @@ description = "Enemies destroy walls. Rebuild defenses strategically."
 recommended_towers = ["cannon_tower", "frost_tower"]
 enemy_types = ["breaker", "tank"]
 
-[SubResource type="Resource" class_name="LevelData" id="Resource_3"]
+[SubResource type="Resource" class_name="LevelData" id="LevelData_ch3_lv3"]
 id = "ch3_lv3"
 display_name = "Boss Battle"
 chapter_id = "chapter_3"

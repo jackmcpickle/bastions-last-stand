@@ -1,13 +1,14 @@
 [gd_resource type="Resource" script_class="ChapterData"]
+
 id = "chapter_1"
 display_name = "The First Stand"
 description = "Tutorial chapter. Learn tower placement and enemy patterns."
 unlock_requirement = ""
-levels = [SubResource("Resource_1"), SubResource("Resource_2"), SubResource("Resource_3")]
+levels = [SubResource("LevelData_ch1_lv1"), SubResource("LevelData_ch1_lv2"), SubResource("LevelData_ch1_lv3")]
 
 [sub_resources]
 
-[SubResource type="Resource" class_name="LevelData" id="Resource_1"]
+[SubResource type="Resource" class_name="LevelData" id="LevelData_ch1_lv1"]
 id = "ch1_lv1"
 display_name = "First Steps"
 chapter_id = "chapter_1"
@@ -21,7 +22,7 @@ description = "Face your first wave of enemies. Learn tower placement basics."
 recommended_towers = ["archer_tower"]
 enemy_types = ["grunt"]
 
-[SubResource type="Resource" class_name="LevelData" id="Resource_2"]
+[SubResource type="Resource" class_name="LevelData" id="LevelData_ch1_lv2"]
 id = "ch1_lv2"
 display_name = "Speed Threat"
 chapter_id = "chapter_1"
@@ -35,7 +36,7 @@ description = "Fast enemies require defensive positioning. Use slowing towers!"
 recommended_towers = ["archer_tower", "frost_tower"]
 enemy_types = ["grunt", "runner"]
 
-[SubResource type="Resource" class_name="LevelData" id="Resource_3"]
+[SubResource type="Resource" class_name="LevelData" id="LevelData_ch1_lv3"]
 id = "ch1_lv3"
 display_name = "Rush Defense"
 chapter_id = "chapter_1"

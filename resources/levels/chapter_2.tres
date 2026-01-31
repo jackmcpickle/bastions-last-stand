@@ -1,13 +1,14 @@
 [gd_resource type="Resource" script_class="ChapterData"]
+
 id = "chapter_2"
 display_name = "Escalation"
 description = "Mid-game challenges. New enemy types and tactics required."
 unlock_requirement = "chapter_1"
-levels = [SubResource("Resource_1"), SubResource("Resource_2"), SubResource("Resource_3"), SubResource("Resource_4")]
+levels = [SubResource("LevelData_ch2_lv1"), SubResource("LevelData_ch2_lv2"), SubResource("LevelData_ch2_lv3"), SubResource("LevelData_ch2_lv4")]
 
 [sub_resources]
 
-[SubResource type="Resource" class_name="LevelData" id="Resource_1"]
+[SubResource type="Resource" class_name="LevelData" id="LevelData_ch2_lv1"]
 id = "ch2_lv1"
 display_name = "Heavy Units"
 chapter_id = "chapter_2"
@@ -21,7 +22,7 @@ description = "Tanks arrive. Single-target towers struggle. Use AOE!"
 recommended_towers = ["cannon_tower", "lightning_tower"]
 enemy_types = ["grunt", "tank"]
 
-[SubResource type="Resource" class_name="LevelData" id="Resource_2"]
+[SubResource type="Resource" class_name="LevelData" id="LevelData_ch2_lv2"]
 id = "ch2_lv2"
 display_name = "Mixed Army"
 chapter_id = "chapter_2"
@@ -35,7 +36,7 @@ description = "Balanced enemy composition. Adapt your tower mix."
 recommended_towers = ["archer_tower", "cannon_tower", "frost_tower"]
 enemy_types = ["grunt", "runner", "tank"]
 
-[SubResource type="Resource" class_name="LevelData" id="Resource_3"]
+[SubResource type="Resource" class_name="LevelData" id="LevelData_ch2_lv3"]
 id = "ch2_lv3"
 display_name = "Air Raid"
 chapter_id = "chapter_2"
@@ -49,7 +50,7 @@ description = "Flying enemies bypass ground defenses. Plan your towers carefully
 recommended_towers = ["lightning_tower", "flame_tower"]
 enemy_types = ["flyer", "grunt"]
 
-[SubResource type="Resource" class_name="LevelData" id="Resource_4"]
+[SubResource type="Resource" class_name="LevelData" id="LevelData_ch2_lv4"]
 id = "ch2_lv4"
 display_name = "Swarm Onslaught"
 chapter_id = "chapter_2"

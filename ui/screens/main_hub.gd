@@ -2,18 +2,12 @@ extends Control
 
 ## Main hub with tabbed interface (book-style pages)
 
-const LEVEL_SELECT_SCENE = preload("res://ui/screens/level_select.tscn")
-const TOWER_UPGRADE_SCENE = preload("res://ui/screens/tower_upgrade.tscn")
-const SHRINE_UPGRADE_SCENE = preload("res://ui/screens/shrine_upgrade.tscn")
-const STORY_INTRO_SCENE = preload("res://ui/screens/story_intro.tscn")
-const SETTINGS_SCENE = preload("res://ui/screens/settings.tscn")
-
 @onready var tab_container: TabContainer = %TabContainer
-@onready var tab_level_select: Control = %TabLevelSelect
-@onready var tab_towers: Control = %TabTowers
-@onready var tab_shrine: Control = %TabShrine
-@onready var tab_lore: Control = %TabLore
-@onready var tab_settings: Control = %TabSettings
+@onready var tab_level_select: Control = %LevelSelectTab
+@onready var tab_towers: Control = %TowersTab
+@onready var tab_shrine: Control = %ShrineTab
+@onready var tab_lore: Control = %LoreTab
+@onready var tab_settings: Control = %SettingsTab
 
 var _last_tab: int = 0
 var _selected_level: LevelData = null
@@ -44,7 +38,7 @@ func _apply_faction_theme() -> void:
 	var faction = SceneManager.current_faction
 	var theme = SceneManager.current_theme
 	if theme:
-		theme_overrides = theme.theme_overrides
+		add_theme_overrides_from(theme)
 
 
 func _connect_signals() -> void:
@@ -53,41 +47,9 @@ func _connect_signals() -> void:
 
 
 func _setup_level_select() -> void:
-	if not tab_level_select:
-		return
-
-	# Get the chapters container from the scene
-	var chapters_container = tab_level_select.find_child("ChaptersContainer", true, false)
-	if not chapters_container:
-		return
-
-	# Clear any existing children
-	for child in chapters_container.get_children():
-		child.queue_free()
-
-	# Populate chapters
-	for chapter in ProgressionManager.all_chapters:
-		var card = ChapterCard.new()
-		card.setup(chapter)
-		card.level_selected.connect(_on_level_selected)
-		chapters_container.add_child(card)
-
-	# Connect start button
-	var start_button = tab_level_select.find_child("StartButton", true, false)
-	if start_button:
-		start_button.pressed.connect(_on_start_battle_pressed)
-
-	# Connect difficulty buttons
-	var difficulty_buttons = tab_level_select.find_child("DifficultyButtons", true, false)
-	if difficulty_buttons:
-		for button in difficulty_buttons.get_children():
-			if button is Button:
-				button.pressed.connect(_on_difficulty_changed.bind(button.name.to_lower()))
-				button.toggle_mode = true
-
-	# Connect level select signal
-	if tab_level_select and tab_level_select.has_method("_on_level_selected"):
-		pass  # Will be connected during tab setup
+	# Level select is already embedded in main_hub.tscn as LevelSelectTab
+	# and has level_select.gd script handling its logic
+	pass
 
 
 func _restore_last_tab() -> void:
