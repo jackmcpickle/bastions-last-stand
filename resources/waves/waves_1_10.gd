@@ -1,6 +1,8 @@
 class_name Waves1To10
 extends RefCounted
 
+const Waves11To30Script = preload("res://resources/waves/waves_11_30.gd")
+
 ## Factory for waves 1-10
 ## Wave composition from GDD:
 ## 1-5: Grunts only (tutorial)
@@ -22,6 +24,25 @@ static func create() -> WaveData:
 		_wave_9(),
 		_wave_10(),
 	]
+	return data
+
+
+static func create_full() -> WaveData:
+	## Creates full 30 wave dataset
+	var data := WaveData.new()
+	data.waves = [
+		_wave_1(),
+		_wave_2(),
+		_wave_3(),
+		_wave_4(),
+		_wave_5(),
+		_wave_6(),
+		_wave_7(),
+		_wave_8(),  # Rush
+		_wave_9(),
+		_wave_10(),
+	]
+	data.waves.append_array(Waves11To30Script.create())
 	return data
 
 

@@ -1,6 +1,91 @@
-[gd_resource type="Resource" script_class="TowerData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="TowerData" load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://resources/tower_data.gd" id="1"]
+[ext_resource type="Script" path="res://resources/tower_upgrade_data.gd" id="2"]
+
+[sub_resource type="Resource" id="archer_marksman"]
+script = ExtResource("2")
+id = "archer_marksman"
+display_name = "Marksman"
+tier = 2
+branch = "A"
+parent_branch = ""
+damage = 25000
+attack_speed_ms = 1000
+range_tiles = 7
+aoe_radius = 0
+special = {"crit_chance": 500}
+description = "Precision shots with 50% crit chance"
+
+[sub_resource type="Resource" id="archer_rapid_fire"]
+script = ExtResource("2")
+id = "archer_rapid_fire"
+display_name = "Rapid Fire"
+tier = 2
+branch = "B"
+parent_branch = ""
+damage = 12000
+attack_speed_ms = 400
+range_tiles = 4
+aoe_radius = 0
+special = {}
+description = "Fast attacks, shorter range"
+
+[sub_resource type="Resource" id="archer_sniper"]
+script = ExtResource("2")
+id = "archer_sniper"
+display_name = "Sniper"
+tier = 3
+branch = "A1"
+parent_branch = "A"
+damage = 80000
+attack_speed_ms = 2000
+range_tiles = 12
+aoe_radius = 0
+special = {"instakill_threshold": 100}
+description = "Long range, execute enemies below 100 HP"
+
+[sub_resource type="Resource" id="archer_hunter"]
+script = ExtResource("2")
+id = "archer_hunter"
+display_name = "Hunter"
+tier = 3
+branch = "A2"
+parent_branch = "A"
+damage = 35000
+attack_speed_ms = 800
+range_tiles = 7
+aoe_radius = 0
+special = {"crit_chance": 500, "fast_bonus": 1000}
+description = "100% bonus damage vs fast enemies"
+
+[sub_resource type="Resource" id="archer_machine_bow"]
+script = ExtResource("2")
+id = "archer_machine_bow"
+display_name = "Machine Bow"
+tier = 3
+branch = "B1"
+parent_branch = "B"
+damage = 8000
+attack_speed_ms = 150
+range_tiles = 4
+aoe_radius = 0
+special = {}
+description = "Extremely fast attack rate"
+
+[sub_resource type="Resource" id="archer_splinter_shot"]
+script = ExtResource("2")
+id = "archer_splinter_shot"
+display_name = "Splinter Shot"
+tier = 3
+branch = "B2"
+parent_branch = "B"
+damage = 15000
+attack_speed_ms = 500
+range_tiles = 5
+aoe_radius = 0
+special = {"pierce": 3}
+description = "Arrows pierce through 3 enemies"
 
 [resource]
 script = ExtResource("1")
@@ -14,4 +99,4 @@ aoe_radius = 0
 special = {}
 upgrade_cost_t2 = 150
 upgrade_cost_t3 = 300
-upgrades = []
+upgrades = [SubResource("archer_marksman"), SubResource("archer_rapid_fire"), SubResource("archer_sniper"), SubResource("archer_hunter"), SubResource("archer_machine_bow"), SubResource("archer_splinter_shot")]

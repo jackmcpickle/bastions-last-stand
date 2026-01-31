@@ -316,6 +316,89 @@ func test_is_targetable_stealth_revealed() -> void:
 
 
 # ============================================
+# Burn stacks tests
+# ============================================
+
+func test_apply_burn_with_stacks_accumulates() -> void:
+	var enemy := _create_enemy(100, 0)
+
+	enemy.apply_burn(5000, 3000, 5)  # max 5 stacks
+	enemy.apply_burn(5000, 3000, 5)
+	enemy.apply_burn(5000, 3000, 5)
+
+	assert_eq(enemy.burn_stacks.size(), 3)
+
+
+func test_burn_stacks_all_deal_damage() -> void:
+	var enemy := _create_enemy(100, 0)
+	enemy.apply_burn(10000, 3000, 5)  # 10 dps
+	enemy.apply_burn(10000, 3000, 5)  # 10 dps
+	# Total: 20 dps
+
+	enemy.process_status_effects(1000)  # 1 second = 20 damage
+
+	assert_eq(enemy.hp, 80)
+
+
+func test_burn_stacks_expire_independently() -> void:
+	var enemy := _create_enemy(100, 0)
+	enemy.apply_burn(5000, 500, 5)   # Short duration
+	enemy.apply_burn(5000, 3000, 5)  # Long duration
+
+	enemy.process_status_effects(600)
+
+	# First stack expired, second remains
+	assert_eq(enemy.burn_stacks.size(), 1)
+
+
+func test_burn_stacks_respects_max_limit() -> void:
+	var enemy := _create_enemy(100, 0)
+
+	for i in range(10):
+		enemy.apply_burn(5000, 3000, 3)  # max 3 stacks
+
+	assert_eq(enemy.burn_stacks.size(), 3)
+
+
+func test_burn_stacks_refresh_weakest() -> void:
+	var enemy := _create_enemy(100, 0)
+	enemy.apply_burn(5000, 1000, 2)  # Weak (5000 dps * 1000ms = 5M value)
+	enemy.apply_burn(10000, 2000, 2) # Strong (10000 dps * 2000ms = 20M value)
+
+	# Now at max, new burn should replace weakest
+	enemy.apply_burn(8000, 3000, 2)  # Medium-strong
+
+	# Should have replaced the weak one
+	assert_eq(enemy.burn_stacks.size(), 2)
+	var has_strong := false
+	var has_medium := false
+	for stack in enemy.burn_stacks:
+		if stack.dps == 10000:
+			has_strong = true
+		if stack.dps == 8000:
+			has_medium = true
+	assert_true(has_strong)
+	assert_true(has_medium)
+
+
+# ============================================
+# Disable flag tests
+# ============================================
+
+func test_is_disabled_prevents_regen() -> void:
+	var data := TestHelpers.create_regen_enemy_data()
+	var enemy := SimEnemy.new()
+	enemy.initialize(data, Vector2i.ZERO, _pathfinding)
+	enemy.hp = 400
+	enemy.is_disabled = true
+
+	enemy.process_status_effects(1000)
+
+	# Should not regen when disabled
+	assert_eq(enemy.hp, 400)
+
+
+# ============================================
 # Other tests
 # ============================================
 

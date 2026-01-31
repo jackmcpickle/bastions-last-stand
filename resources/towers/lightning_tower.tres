@@ -1,0 +1,102 @@
+[gd_resource type="Resource" script_class="TowerData" load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://resources/tower_data.gd" id="1"]
+[ext_resource type="Script" path="res://resources/tower_upgrade_data.gd" id="2"]
+
+[sub_resource type="Resource" id="lightning_tesla"]
+script = ExtResource("2")
+id = "lightning_tesla"
+display_name = "Tesla Coil"
+tier = 2
+branch = "A"
+parent_branch = ""
+damage = 20000
+attack_speed_ms = 1000
+range_tiles = 5
+aoe_radius = 0
+special = {"chain": 5, "chain_range": 2.5}
+description = "Chains to 5 enemies"
+
+[sub_resource type="Resource" id="lightning_arc_pylon"]
+script = ExtResource("2")
+id = "lightning_arc_pylon"
+display_name = "Arc Pylon"
+tier = 2
+branch = "B"
+parent_branch = ""
+damage = 15000
+attack_speed_ms = 100
+range_tiles = 4
+aoe_radius = 0
+special = {"beam": true}
+description = "Continuous beam damage"
+
+[sub_resource type="Resource" id="lightning_storm_spire"]
+script = ExtResource("2")
+id = "lightning_storm_spire"
+display_name = "Storm Spire"
+tier = 3
+branch = "A1"
+parent_branch = "A"
+damage = 25000
+attack_speed_ms = 800
+range_tiles = 6
+aoe_radius = 0
+special = {"chain": 8, "chain_range": 3.0, "stun_ms": 500}
+description = "8-chain with 0.5s stun"
+
+[sub_resource type="Resource" id="lightning_overload"]
+script = ExtResource("2")
+id = "lightning_overload"
+display_name = "Overload"
+tier = 3
+branch = "A2"
+parent_branch = "A"
+damage = 60000
+attack_speed_ms = 1500
+range_tiles = 4
+aoe_radius = 0
+special = {"chain": 2, "chain_range": 2.5}
+description = "Massive damage, short chain"
+
+[sub_resource type="Resource" id="lightning_disruptor"]
+script = ExtResource("2")
+id = "lightning_disruptor"
+display_name = "Disruptor"
+tier = 3
+branch = "B1"
+parent_branch = "B"
+damage = 12000
+attack_speed_ms = 100
+range_tiles = 5
+aoe_radius = 0
+special = {"beam": true, "disable": true}
+description = "Beam disables enemy abilities"
+
+[sub_resource type="Resource" id="lightning_capacitor"]
+script = ExtResource("2")
+id = "lightning_capacitor"
+display_name = "Capacitor"
+tier = 3
+branch = "B2"
+parent_branch = "B"
+damage = 200000
+attack_speed_ms = 5000
+range_tiles = 5
+aoe_radius = 3000
+special = {}
+description = "Slow charge, massive AOE burst"
+
+[resource]
+script = ExtResource("1")
+id = "lightning"
+display_name = "Lightning Tower"
+base_cost = 140
+damage = 12000
+attack_speed_ms = 1200
+range_tiles = 5
+aoe_radius = 0
+special = {"chain": 4, "chain_range": 2.5}
+upgrade_cost_t2 = 220
+upgrade_cost_t3 = 450
+upgrades = [SubResource("lightning_tesla"), SubResource("lightning_arc_pylon"), SubResource("lightning_storm_spire"), SubResource("lightning_overload"), SubResource("lightning_disruptor"), SubResource("lightning_capacitor")]

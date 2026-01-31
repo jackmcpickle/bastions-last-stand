@@ -1,0 +1,102 @@
+[gd_resource type="Resource" script_class="TowerData" load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://resources/tower_data.gd" id="1"]
+[ext_resource type="Script" path="res://resources/tower_upgrade_data.gd" id="2"]
+
+[sub_resource type="Resource" id="frost_blizzard"]
+script = ExtResource("2")
+id = "frost_blizzard"
+display_name = "Blizzard"
+tier = 2
+branch = "A"
+parent_branch = ""
+damage = 0
+attack_speed_ms = 600
+range_tiles = 4
+aoe_radius = 0
+special = {"slow": 400, "slow_duration_ms": 2500}
+description = "Pure slow, no damage"
+
+[sub_resource type="Resource" id="frost_ice_shard"]
+script = ExtResource("2")
+id = "frost_ice_shard"
+display_name = "Ice Shard"
+tier = 2
+branch = "B"
+parent_branch = ""
+damage = 20000
+attack_speed_ms = 1500
+range_tiles = 4
+aoe_radius = 0
+special = {"slow": 250, "slow_duration_ms": 2000}
+description = "Balanced damage and slow"
+
+[sub_resource type="Resource" id="frost_permafrost"]
+script = ExtResource("2")
+id = "frost_permafrost"
+display_name = "Permafrost"
+tier = 3
+branch = "A1"
+parent_branch = "A"
+damage = 0
+attack_speed_ms = 600
+range_tiles = 5
+aoe_radius = 0
+special = {"slow": 500, "slow_duration_ms": 3000, "freeze_chance": 100}
+description = "50% slow + 10% freeze chance"
+
+[sub_resource type="Resource" id="frost_frostbite"]
+script = ExtResource("2")
+id = "frost_frostbite"
+display_name = "Frostbite"
+tier = 3
+branch = "A2"
+parent_branch = "A"
+damage = 0
+attack_speed_ms = 600
+range_tiles = 4
+aoe_radius = 0
+special = {"slow": 400, "slow_duration_ms": 2500, "slow_damage_amp": 300}
+description = "Slowed enemies take 30% more damage"
+
+[sub_resource type="Resource" id="frost_cryo_cannon"]
+script = ExtResource("2")
+id = "frost_cryo_cannon"
+display_name = "Cryo Cannon"
+tier = 3
+branch = "B1"
+parent_branch = "B"
+damage = 45000
+attack_speed_ms = 1200
+range_tiles = 5
+aoe_radius = 0
+special = {"slow": 350, "slow_duration_ms": 2500}
+description = "High damage frost attack"
+
+[sub_resource type="Resource" id="frost_shatter"]
+script = ExtResource("2")
+id = "frost_shatter"
+display_name = "Shatter"
+tier = 3
+branch = "B2"
+parent_branch = "B"
+damage = 25000
+attack_speed_ms = 1500
+range_tiles = 4
+aoe_radius = 0
+special = {"slow": 250, "slow_duration_ms": 2000, "shatter_damage": 80000}
+description = "Kills shatter into AOE damage"
+
+[resource]
+script = ExtResource("1")
+id = "frost"
+display_name = "Frost Tower"
+base_cost = 100
+damage = 8000
+attack_speed_ms = 600
+range_tiles = 4
+aoe_radius = 0
+special = {"slow": 400, "slow_duration_ms": 2500}
+upgrade_cost_t2 = 180
+upgrade_cost_t3 = 350
+upgrades = [SubResource("frost_blizzard"), SubResource("frost_ice_shard"), SubResource("frost_permafrost"), SubResource("frost_frostbite"), SubResource("frost_cryo_cannon"), SubResource("frost_shatter")]

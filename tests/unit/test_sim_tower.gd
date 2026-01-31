@@ -15,7 +15,7 @@ func before_each() -> void:
 
 func test_attack_single_target() -> void:
 	var tower := _create_tower()
-	var enemies := [_create_enemy_at(Vector2(5, 5))]
+	var enemies: Array[SimEnemy] = [_create_enemy_at(Vector2(5, 5))]
 
 	var hit := tower.attack(enemies[0], enemies)
 
@@ -25,7 +25,7 @@ func test_attack_single_target() -> void:
 
 func test_attack_sets_cooldown() -> void:
 	var tower := _create_tower()
-	var enemies := [_create_enemy_at(Vector2(5, 5))]
+	var enemies: Array[SimEnemy] = [_create_enemy_at(Vector2(5, 5))]
 
 	tower.attack(enemies[0], enemies)
 
@@ -34,7 +34,7 @@ func test_attack_sets_cooldown() -> void:
 
 func test_attack_increments_shots_fired() -> void:
 	var tower := _create_tower()
-	var enemies := [_create_enemy_at(Vector2(5, 5))]
+	var enemies: Array[SimEnemy] = [_create_enemy_at(Vector2(5, 5))]
 
 	assert_eq(tower.shots_fired, 0)
 
@@ -45,7 +45,7 @@ func test_attack_increments_shots_fired() -> void:
 
 func test_attack_on_cooldown_returns_empty() -> void:
 	var tower := _create_tower()
-	var enemies := [_create_enemy_at(Vector2(5, 5))]
+	var enemies: Array[SimEnemy] = [_create_enemy_at(Vector2(5, 5))]
 
 	tower.attack(enemies[0], enemies)
 	var hit := tower.attack(enemies[0], enemies)

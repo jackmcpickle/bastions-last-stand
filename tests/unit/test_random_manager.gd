@@ -235,7 +235,7 @@ func test_pick_returns_element() -> void:
 	var rng := RandomManager.new(0)
 	var array := ["a", "b", "c"]
 
-	var picked := rng.pick(array)
+	var picked = rng.pick(array)
 
 	assert_has(array, picked)
 
@@ -244,7 +244,7 @@ func test_pick_empty_returns_null() -> void:
 	var rng := RandomManager.new(0)
 	var array := []
 
-	var picked := rng.pick(array)
+	var picked = rng.pick(array)
 
 	assert_null(picked)
 

@@ -32,6 +32,8 @@ var shrine: SimShrine
 var towers: Array[SimTower] = []
 var walls: Array[SimWall] = []
 var enemies: Array[SimEnemy] = []
+var ground_effects: Array = []  # Array of SimGroundEffect
+var delayed_damage_queue: Array[Dictionary] = []  # {time_ms, position, damage, aoe_radius}
 
 ## Tracking
 var total_gold_earned: int = 0
@@ -90,6 +92,8 @@ func initialize_with_config(p_map_data: MapData, p_wave_data: WaveData, config: 
 	towers.clear()
 	walls.clear()
 	enemies.clear()
+	ground_effects.clear()
+	delayed_damage_queue.clear()
 	total_gold_earned = 0
 	total_gold_spent = 0
 	total_damage_dealt = 0
@@ -206,6 +210,46 @@ func _has_structure_at(pos: Vector2i) -> bool:
 func _tower_occupies(tower: SimTower, pos: Vector2i) -> bool:
 	return (pos.x >= tower.position.x and pos.x < tower.position.x + 2 and
 			pos.y >= tower.position.y and pos.y < tower.position.y + 2)
+
+
+## Tower upgrades
+func can_upgrade_tower(tower: SimTower, upgrade_id: String) -> bool:
+	var upgrade := _find_upgrade(tower.data, upgrade_id)
+	if not upgrade:
+		return false
+	var cost := _get_upgrade_cost(tower, upgrade)
+	if cost > gold:
+		return false
+	return tower.can_upgrade_to(upgrade)
+
+
+func upgrade_tower(tower: SimTower, upgrade_id: String) -> bool:
+	if not can_upgrade_tower(tower, upgrade_id):
+		return false
+
+	var upgrade := _find_upgrade(tower.data, upgrade_id)
+	var cost := _get_upgrade_cost(tower, upgrade)
+
+	gold -= cost
+	total_gold_spent += cost
+	tower.total_cost += cost
+	tower.apply_upgrade(upgrade)
+	return true
+
+
+func _find_upgrade(data: TowerData, upgrade_id: String) -> TowerUpgradeData:
+	for upgrade in data.upgrades:
+		if upgrade.id == upgrade_id:
+			return upgrade
+	return null
+
+
+func _get_upgrade_cost(tower: SimTower, upgrade: TowerUpgradeData) -> int:
+	if upgrade.tier == 2:
+		return tower.data.upgrade_cost_t2
+	elif upgrade.tier == 3:
+		return tower.data.upgrade_cost_t3
+	return 0
 
 
 ## Wave management
@@ -331,6 +375,20 @@ func damage_shrine(amount: int) -> void:
 func complete_wave() -> void:
 	wave_in_progress = false
 	wave_completed.emit(current_wave)
-	
+
 	if current_wave >= wave_data.get_total_waves():
 		game_over.emit(true)
+
+
+## Ground effects
+func add_ground_effect(effect) -> void:
+	ground_effects.append(effect)
+
+
+func add_delayed_damage(time_ms: int, position: Vector2, damage: int, aoe_radius: float) -> void:
+	delayed_damage_queue.append({
+		"time_ms": time_ms,
+		"position": position,
+		"damage": damage,
+		"aoe_radius": aoe_radius
+	})

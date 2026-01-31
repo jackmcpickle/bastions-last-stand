@@ -1,0 +1,102 @@
+[gd_resource type="Resource" script_class="TowerData" load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://resources/tower_data.gd" id="1"]
+[ext_resource type="Script" path="res://resources/tower_upgrade_data.gd" id="2"]
+
+[sub_resource type="Resource" id="cannon_mortar"]
+script = ExtResource("2")
+id = "cannon_mortar"
+display_name = "Mortar"
+tier = 2
+branch = "A"
+parent_branch = ""
+damage = 60000
+attack_speed_ms = 3000
+range_tiles = 5
+aoe_radius = 2500
+special = {}
+description = "Larger AOE, slower fire rate"
+
+[sub_resource type="Resource" id="cannon_artillery"]
+script = ExtResource("2")
+id = "cannon_artillery"
+display_name = "Artillery"
+tier = 2
+branch = "B"
+parent_branch = ""
+damage = 45000
+attack_speed_ms = 2500
+range_tiles = 7
+aoe_radius = 1500
+special = {}
+description = "Extended range bombardment"
+
+[sub_resource type="Resource" id="cannon_siege"]
+script = ExtResource("2")
+id = "cannon_siege"
+display_name = "Siege Cannon"
+tier = 3
+branch = "A1"
+parent_branch = "A"
+damage = 150000
+attack_speed_ms = 4000
+range_tiles = 5
+aoe_radius = 3500
+special = {"breaker_bonus": 1000}
+description = "Massive damage, 100% bonus vs breakers"
+
+[sub_resource type="Resource" id="cannon_cluster"]
+script = ExtResource("2")
+id = "cannon_cluster"
+display_name = "Cluster Bomb"
+tier = 3
+branch = "A2"
+parent_branch = "A"
+damage = 30000
+attack_speed_ms = 3500
+range_tiles = 5
+aoe_radius = 1000
+special = {"cluster": 4}
+description = "Splits into 4 smaller explosions"
+
+[sub_resource type="Resource" id="cannon_railgun"]
+script = ExtResource("2")
+id = "cannon_railgun"
+display_name = "Railgun"
+tier = 3
+branch = "B1"
+parent_branch = "B"
+damage = 100000
+attack_speed_ms = 3000
+range_tiles = 10
+aoe_radius = 0
+special = {"pierce_line": true}
+description = "Piercing shot hits all enemies in a line"
+
+[sub_resource type="Resource" id="cannon_howitzer"]
+script = ExtResource("2")
+id = "cannon_howitzer"
+display_name = "Howitzer"
+tier = 3
+branch = "B2"
+parent_branch = "B"
+damage = 25000
+attack_speed_ms = 3000
+range_tiles = 6
+aoe_radius = 2000
+special = {"barrage": true}
+description = "Fires barrage of 4 shells over 3 seconds"
+
+[resource]
+script = ExtResource("1")
+id = "cannon"
+display_name = "Cannon Tower"
+base_cost = 120
+damage = 25000
+attack_speed_ms = 1500
+range_tiles = 4
+aoe_radius = 1500
+special = {}
+upgrade_cost_t2 = 200
+upgrade_cost_t3 = 400
+upgrades = [SubResource("cannon_mortar"), SubResource("cannon_artillery"), SubResource("cannon_siege"), SubResource("cannon_cluster"), SubResource("cannon_railgun"), SubResource("cannon_howitzer")]

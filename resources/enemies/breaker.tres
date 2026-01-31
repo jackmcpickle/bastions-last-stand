@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/enemy_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "breaker"
+display_name = "Breaker"
+hp = 180
+speed = 700
+armor = 200
+gold_value = 20
+special = {"wall_breaker": true, "wall_damage": 25}
+is_boss = false
+boss_abilities = []

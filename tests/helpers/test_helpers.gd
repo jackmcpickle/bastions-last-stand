@@ -236,3 +236,44 @@ static func create_tower_at_position(pos: Vector2i, data: TowerData = null) -> S
 	var tower := SimTower.new()
 	tower.initialize(data, pos)
 	return tower
+
+
+static func create_tier2_upgrade(branch: String, special: Dictionary = {}) -> TowerUpgradeData:
+	var data := TowerUpgradeData.new()
+	data.id = "test_t2_%s" % branch
+	data.display_name = "Test T2 %s" % branch
+	data.tier = 2
+	data.branch = branch
+	data.parent_branch = ""
+	data.damage = 20000
+	data.attack_speed_ms = 700
+	data.range_tiles = 6
+	data.aoe_radius = 0
+	data.special = special
+	return data
+
+
+static func create_tower_with_upgrades() -> TowerData:
+	var data := create_basic_tower_data("upgradeable")
+
+	var t2a := create_upgrade_data(2, "A")
+	var t2b := create_upgrade_data(2, "B")
+	var t3a1 := create_upgrade_data(3, "A1")
+	t3a1.parent_branch = "A"
+	var t3a2 := create_upgrade_data(3, "A2")
+	t3a2.parent_branch = "A"
+	var t3b1 := create_upgrade_data(3, "B1")
+	t3b1.parent_branch = "B"
+	var t3b2 := create_upgrade_data(3, "B2")
+	t3b2.parent_branch = "B"
+
+	data.upgrades = [t2a, t2b, t3a1, t3a2, t3b1, t3b2]
+	return data
+
+
+static func create_test_ground_effect(pos: Vector2, dps: int, duration_ms: int, radius: float = 1.5) -> SimGroundEffect:
+	return SimGroundEffect.new(pos, radius, dps, duration_ms)
+
+
+static func create_breaker_enemy_data() -> EnemyData:
+	return create_wall_breaker_enemy_data()

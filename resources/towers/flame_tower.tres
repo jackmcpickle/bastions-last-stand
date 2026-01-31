@@ -1,0 +1,102 @@
+[gd_resource type="Resource" script_class="TowerData" load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://resources/tower_data.gd" id="1"]
+[ext_resource type="Script" path="res://resources/tower_upgrade_data.gd" id="2"]
+
+[sub_resource type="Resource" id="flame_inferno"]
+script = ExtResource("2")
+id = "flame_inferno"
+display_name = "Inferno"
+tier = 2
+branch = "A"
+parent_branch = ""
+damage = 15000
+attack_speed_ms = 400
+range_tiles = 3
+aoe_radius = 0
+special = {"burn_dps": 10000, "burn_duration_ms": 3000}
+description = "Standard burn damage"
+
+[sub_resource type="Resource" id="flame_focused"]
+script = ExtResource("2")
+id = "flame_focused"
+display_name = "Focused Flame"
+tier = 2
+branch = "B"
+parent_branch = ""
+damage = 25000
+attack_speed_ms = 400
+range_tiles = 3
+aoe_radius = 0
+special = {"burn_dps": 12000, "burn_duration_ms": 3000}
+description = "Higher direct and burn damage"
+
+[sub_resource type="Resource" id="flame_hellfire"]
+script = ExtResource("2")
+id = "flame_hellfire"
+display_name = "Hellfire"
+tier = 3
+branch = "A1"
+parent_branch = "A"
+damage = 15000
+attack_speed_ms = 400
+range_tiles = 3
+aoe_radius = 0
+special = {"burn_dps": 10000, "burn_duration_ms": 3000, "ground_burn": true}
+description = "Leaves burning ground"
+
+[sub_resource type="Resource" id="flame_napalm"]
+script = ExtResource("2")
+id = "flame_napalm"
+display_name = "Napalm"
+tier = 3
+branch = "A2"
+parent_branch = "A"
+damage = 12000
+attack_speed_ms = 400
+range_tiles = 3
+aoe_radius = 0
+special = {"burn_dps": 15000, "burn_duration_ms": 5000, "burn_stacks": 3}
+description = "Burns stack up to 3 times"
+
+[sub_resource type="Resource" id="flame_plasma"]
+script = ExtResource("2")
+id = "flame_plasma"
+display_name = "Plasma Torch"
+tier = 3
+branch = "B1"
+parent_branch = "B"
+damage = 40000
+attack_speed_ms = 400
+range_tiles = 3
+aoe_radius = 0
+special = {"burn_dps": 8000, "burn_duration_ms": 3000, "armor_pen": 500}
+description = "50% armor penetration"
+
+[sub_resource type="Resource" id="flame_dragon"]
+script = ExtResource("2")
+id = "flame_dragon"
+display_name = "Dragon Breath"
+tier = 3
+branch = "B2"
+parent_branch = "B"
+damage = 60000
+attack_speed_ms = 400
+range_tiles = 6
+aoe_radius = 0
+special = {"burn_dps": 10000, "burn_duration_ms": 3000}
+description = "Extended range flamethrower"
+
+[resource]
+script = ExtResource("1")
+id = "flame"
+display_name = "Flame Tower"
+base_cost = 90
+damage = 6000
+attack_speed_ms = 400
+range_tiles = 3
+aoe_radius = 0
+special = {"burn_dps": 10000, "burn_duration_ms": 4000}
+upgrade_cost_t2 = 160
+upgrade_cost_t3 = 320
+upgrades = [SubResource("flame_inferno"), SubResource("flame_focused"), SubResource("flame_hellfire"), SubResource("flame_napalm"), SubResource("flame_plasma"), SubResource("flame_dragon")]

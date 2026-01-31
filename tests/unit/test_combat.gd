@@ -111,7 +111,7 @@ func test_apply_slow_effect() -> void:
 	var tower := _create_tower_with_special({"slow": 400, "slow_duration_ms": 2000})
 	var enemy := _spawn_enemy_at(Vector2(10, 10))
 
-	Combat._apply_tower_effects(tower, enemy, _game_state.rng)
+	Combat._apply_tower_effects(tower, enemy, _game_state)
 
 	assert_eq(enemy.slow_amount, 400)
 	assert_eq(enemy.slow_duration_ms, 2000)
@@ -121,7 +121,7 @@ func test_apply_burn_effect() -> void:
 	var tower := _create_tower_with_special({"burn_dps": 8000, "burn_duration_ms": 3000})
 	var enemy := _spawn_enemy_at(Vector2(10, 10))
 
-	Combat._apply_tower_effects(tower, enemy, _game_state.rng)
+	Combat._apply_tower_effects(tower, enemy, _game_state)
 
 	assert_eq(enemy.burn_dps, 8000)
 	assert_eq(enemy.burn_duration_ms, 3000)
@@ -131,7 +131,7 @@ func test_apply_stun_effect_probabilistic() -> void:
 	var tower := _create_tower_with_special({"stun_chance": 1000, "stun_duration_ms": 500})  # 100% chance
 	var enemy := _spawn_enemy_at(Vector2(10, 10))
 
-	Combat._apply_tower_effects(tower, enemy, _game_state.rng)
+	Combat._apply_tower_effects(tower, enemy, _game_state)
 
 	assert_true(enemy.is_stunned)
 	assert_eq(enemy.stun_duration_ms, 500)
@@ -141,7 +141,7 @@ func test_no_stun_when_unlucky() -> void:
 	var tower := _create_tower_with_special({"stun_chance": 0, "stun_duration_ms": 500})  # 0% chance
 	var enemy := _spawn_enemy_at(Vector2(10, 10))
 
-	Combat._apply_tower_effects(tower, enemy, _game_state.rng)
+	Combat._apply_tower_effects(tower, enemy, _game_state)
 
 	assert_false(enemy.is_stunned)
 

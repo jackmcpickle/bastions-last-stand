@@ -34,10 +34,19 @@ func process_tick() -> TickResult:
 	# 2. Move enemies
 	for enemy in game_state.enemies:
 		enemy.move(TICK_MS)
-	
+
+	# 2.5. Process wall breaker attacks
+	Combat.process_wall_breaker_attacks(game_state, TICK_MS)
+
 	# 3. Process status effects (DOTs, slow decay, etc.)
 	Combat.process_status_effects(game_state, TICK_MS)
-	
+
+	# 3.5 Process ground effects
+	_process_ground_effects(TICK_MS)
+
+	# 3.6 Process delayed damage
+	_process_delayed_damage(TICK_MS)
+
 	# 4. Tower attacks
 	Combat.process_tower_attacks(game_state, TICK_MS)
 	
@@ -181,7 +190,7 @@ class GameResult:
 	
 	func get_duration_ms() -> int:
 		return end_time - start_time
-	
+
 	func to_dict() -> Dictionary:
 		return {
 			"won": won,
@@ -196,3 +205,56 @@ class GameResult:
 			"total_damage_dealt": total_damage_dealt,
 			"tower_stats": tower_stats,
 		}
+
+
+func _process_ground_effects(delta_ms: int) -> void:
+	## Process all ground effects and remove expired ones
+	var expired: Array[int] = []
+
+	for i in range(game_state.ground_effects.size()):
+		var effect = game_state.ground_effects[i]
+		var damage: int = effect.process(delta_ms, game_state.enemies)
+		game_state.total_damage_dealt += damage
+
+		if effect.is_expired():
+			expired.push_front(i)
+
+	for idx in expired:
+		game_state.ground_effects.remove_at(idx)
+
+
+func _process_delayed_damage(delta_ms: int) -> void:
+	## Process delayed damage queue (barrage, etc)
+	var triggered: Array[int] = []
+
+	for i in range(game_state.delayed_damage_queue.size()):
+		var entry: Dictionary = game_state.delayed_damage_queue[i]
+		entry.time_ms -= delta_ms
+
+		if entry.time_ms <= 0:
+			triggered.push_front(i)
+			_apply_delayed_damage(entry)
+
+	for idx in triggered:
+		game_state.delayed_damage_queue.remove_at(idx)
+
+
+func _apply_delayed_damage(entry: Dictionary) -> void:
+	## Apply AOE damage at position
+	var pos: Vector2 = entry.position
+	var damage: int = entry.damage
+	var radius: float = entry.aoe_radius
+
+	if radius <= 0:
+		return
+
+	var radius_sq := radius * radius
+
+	for enemy in game_state.enemies:
+		var dx := enemy.grid_pos.x - pos.x
+		var dy := enemy.grid_pos.y - pos.y
+		var dist_sq := dx * dx + dy * dy
+
+		if dist_sq <= radius_sq:
+			enemy.take_damage(damage)
+			game_state.total_damage_dealt += damage

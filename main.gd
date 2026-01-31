@@ -178,16 +178,44 @@ func _run_simulation(args: Array) -> void:
 	# Load base data (will be overridden by config)
 	var map := TestMap.create()
 	var waves := Waves1To10.create()
+
+	# Load all tower data
 	var archer_data: TowerData = load("res://resources/towers/archer_tower.tres")
+	var cannon_data: TowerData = load("res://resources/towers/cannon_tower.tres")
+	var frost_data: TowerData = load("res://resources/towers/frost_tower.tres")
+	var lightning_data: TowerData = load("res://resources/towers/lightning_tower.tres")
+	var flame_data: TowerData = load("res://resources/towers/flame_tower.tres")
+
+	# Load all enemy data
 	var grunt_data: EnemyData = load("res://resources/enemies/grunt.tres")
 	var runner_data: EnemyData = load("res://resources/enemies/runner.tres")
-	
+	var tank_data: EnemyData = load("res://resources/enemies/tank.tres")
+	var flyer_data: EnemyData = load("res://resources/enemies/flyer.tres")
+	var swarm_data: EnemyData = load("res://resources/enemies/swarm.tres")
+	var stealth_data: EnemyData = load("res://resources/enemies/stealth.tres")
+	var breaker_data: EnemyData = load("res://resources/enemies/breaker.tres")
+	var boss_golem_data: EnemyData = load("res://resources/enemies/boss_golem.tres")
+
 	# Setup runner with config
 	var runner := SimulationRunner.new()
 	runner.setup(map, waves, config)
+
+	# Register all towers
 	runner.register_tower(archer_data)
+	runner.register_tower(cannon_data)
+	runner.register_tower(frost_data)
+	runner.register_tower(lightning_data)
+	runner.register_tower(flame_data)
+
+	# Register all enemies
 	runner.register_enemy(grunt_data)
 	runner.register_enemy(runner_data)
+	runner.register_enemy(tank_data)
+	runner.register_enemy(flyer_data)
+	runner.register_enemy(swarm_data)
+	runner.register_enemy(stealth_data)
+	runner.register_enemy(breaker_data)
+	runner.register_enemy(boss_golem_data)
 	
 	# Determine which strategies to run
 	var strategies_to_run: Array[String] = []

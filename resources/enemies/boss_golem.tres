@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/enemy_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "boss_golem"
+display_name = "Stone Golem"
+hp = 1500
+speed = 400
+armor = 400
+gold_value = 100
+special = {"regen_per_sec": 5000}
+is_boss = true
+boss_abilities = ["regen", "armor"]
