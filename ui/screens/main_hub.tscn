@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://br2r4kx00001"]
+[gd_scene load_steps=3 format=3 uid="uid://br2r4kx00001"]
 
 [ext_resource type="Script" path="res://ui/screens/main_hub.gd" id="1"]
+[ext_resource type="Script" path="res://ui/screens/level_select.gd" id="2"]
 
 [node name="MainHub" type="Control"]
 layout_mode = 3
@@ -25,6 +26,7 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+script = ExtResource("2")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/LevelSelectTab/LevelSelect"]
 layout_mode = 1
