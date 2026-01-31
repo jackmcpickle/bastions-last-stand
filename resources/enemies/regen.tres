@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/enemy_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "regen"
+display_name = "Regenerator"
+hp = 120
+speed = 700
+armor = 0
+gold_value = 22
+special = {"regen_per_sec": 8000}
+is_boss = false
+boss_abilities = []

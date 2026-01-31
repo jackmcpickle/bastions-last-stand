@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/enemy_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "phase_phantom"
+display_name = "Phase Phantom"
+hp = 1000
+speed = 1000
+armor = 0
+gold_value = 200
+special = {"teleport_interval_ms": 5000, "stealth_delay_ms": 2000}
+is_boss = true
+boss_abilities = ["teleport", "stealth"]

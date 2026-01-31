@@ -43,6 +43,43 @@ var is_wall_breaker: bool = false
 var is_revealed: bool = false  # Stealth broken
 var regen_per_sec: int = 0  # x1000: HP regen per second
 
+## Shield mechanic
+var shield_hp: int = 0
+var max_shield_hp: int = 0
+var shield_regen_per_sec: int = 0  # x1000
+
+## Healer mechanic
+var healer_range: float = 0
+var heal_per_sec: int = 0  # x1000
+
+## Splitter mechanic
+var splits_into: String = ""
+var split_count: int = 0
+
+## Boss abilities
+var is_boss: bool = false
+var spawns_enemy: String = ""
+var spawn_interval_ms: int = 0
+var spawn_count: int = 0
+var spawn_timer_ms: int = 0
+var spawns_remaining: int = 0
+
+var teleport_interval_ms: int = 0
+var stealth_delay_ms: int = 0
+var teleport_timer_ms: int = 0
+
+var cc_immune: bool = false
+
+var freeze_towers_range: float = 0
+var freeze_duration_ms: int = 0
+var freeze_interval_ms: int = 0
+var freeze_timer_ms: int = 0
+
+var resurrect_range: float = 0
+var resurrect_hp_percent: int = 0
+var resurrect_interval_ms: int = 0
+var resurrect_timer_ms: int = 0
+
 
 func initialize(p_data: EnemyData, p_spawn_point: Vector2i, pathfinding: SimPathfinding) -> void:
 	data = p_data
@@ -62,6 +99,42 @@ func initialize(p_data: EnemyData, p_spawn_point: Vector2i, pathfinding: SimPath
 	is_stealth = data.special.get("stealth", false)
 	is_wall_breaker = data.special.get("wall_breaker", false)
 	regen_per_sec = data.special.get("regen_per_sec", 0)
+
+	# Shield mechanic
+	shield_hp = data.special.get("shield_hp", 0)
+	max_shield_hp = shield_hp
+	shield_regen_per_sec = data.special.get("shield_regen_per_sec", 0)
+
+	# Healer mechanic
+	healer_range = data.special.get("healer_range", 0)
+	heal_per_sec = data.special.get("heal_per_sec", 0)
+
+	# Splitter mechanic
+	splits_into = data.special.get("splits_into", "")
+	split_count = data.special.get("split_count", 0)
+
+	# Boss abilities
+	is_boss = data.is_boss
+	spawns_enemy = data.special.get("spawns_enemy", "")
+	spawn_interval_ms = data.special.get("spawn_interval_ms", 0)
+	spawn_count = data.special.get("spawn_count", 0)
+	spawns_remaining = spawn_count
+
+	teleport_interval_ms = data.special.get("teleport_interval_ms", 0)
+	stealth_delay_ms = data.special.get("stealth_delay_ms", 0)
+	teleport_timer_ms = teleport_interval_ms
+
+	cc_immune = data.special.get("cc_immune", false)
+
+	freeze_towers_range = data.special.get("freeze_towers_range", 0)
+	freeze_duration_ms = data.special.get("freeze_duration_ms", 0)
+	freeze_interval_ms = data.special.get("freeze_interval_ms", 0)
+	freeze_timer_ms = freeze_interval_ms
+
+	resurrect_range = data.special.get("resurrect_range", 0)
+	resurrect_hp_percent = data.special.get("resurrect_hp_percent", 0)
+	resurrect_interval_ms = data.special.get("resurrect_interval_ms", 0)
+	resurrect_timer_ms = resurrect_interval_ms
 	
 	# Get path (flyers don't need one - they go direct)
 	if not is_flying and not is_wall_breaker:
@@ -154,6 +227,11 @@ func process_status_effects(delta_ms: int) -> int:
 		var regen := regen_per_sec * delta_ms / 1000 / 1000  # Convert from x1000 to actual HP
 		hp = mini(hp + regen, max_hp)
 
+	# Shield regen (disabled enemies can't regen)
+	if shield_regen_per_sec > 0 and shield_hp < max_shield_hp and not is_disabled:
+		var shield_regen := shield_regen_per_sec * delta_ms / 1000 / 1000
+		shield_hp = mini(shield_hp + shield_regen, max_shield_hp)
+
 	# Apply DOT damage
 	if damage_taken > 0:
 		take_damage(damage_taken)
@@ -166,11 +244,21 @@ func take_damage(amount: int) -> void:
 	# Apply armor
 	var effective_damage := amount * (1000 - armor) / 1000
 	total_damage_taken += effective_damage
-	
+
 	# Convert to actual HP (HP is not fixed-point)
 	var hp_damage := effective_damage / 1000
+
+	# Shield absorbs damage first
+	if shield_hp > 0:
+		if hp_damage <= shield_hp:
+			shield_hp -= hp_damage
+			hp_damage = 0
+		else:
+			hp_damage -= shield_hp
+			shield_hp = 0
+
 	hp -= hp_damage
-	
+
 	# Reveal stealth on damage
 	if is_stealth and not is_revealed:
 		is_revealed = true
@@ -178,6 +266,8 @@ func take_damage(amount: int) -> void:
 
 func apply_slow(amount: int, duration_ms: int) -> void:
 	## amount is x1000 (300 = 30% slow)
+	if duration_ms <= 0 or cc_immune:
+		return
 	# Take the stronger slow
 	if amount > slow_amount:
 		slow_amount = amount
@@ -189,6 +279,8 @@ func apply_slow(amount: int, duration_ms: int) -> void:
 func apply_burn(dps: int, duration_ms: int, max_stacks: int = 1) -> void:
 	## dps is x1000
 	## max_stacks: how many burn instances can stack (1 = no stacking)
+	if duration_ms <= 0:
+		return
 	if max_stacks <= 1:
 		# Legacy behavior - take stronger
 		if dps > burn_dps:
@@ -214,6 +306,8 @@ func apply_burn(dps: int, duration_ms: int, max_stacks: int = 1) -> void:
 
 
 func apply_stun(duration_ms: int) -> void:
+	if duration_ms <= 0 or cc_immune:
+		return
 	is_stunned = true
 	if duration_ms > stun_duration_ms:
 		stun_duration_ms = duration_ms

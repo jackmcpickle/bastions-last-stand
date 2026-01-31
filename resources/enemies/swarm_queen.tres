@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/enemy_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "swarm_queen"
+display_name = "Swarm Queen"
+hp = 1500
+speed = 500
+armor = 0
+gold_value = 200
+special = {"spawns_enemy": "swarm", "spawn_interval_ms": 3000, "spawn_count": 5}
+is_boss = true
+boss_abilities = ["spawner"]

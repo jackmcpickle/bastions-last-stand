@@ -277,7 +277,7 @@ func test_very_long_burn() -> void:
 
 	enemy.apply_burn(1000, 1000000)  # 1 dps for very long
 
-	enemy.process_status_effects(100)
+	enemy.process_status_effects(1000)  # 1 second to accumulate 1 HP damage
 
 	assert_lt(enemy.hp, 1000)
 

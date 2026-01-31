@@ -73,6 +73,8 @@ func invalidate_cache() -> void:
 
 func _compute_path(start: Vector2i, goal: Vector2i) -> Array[Vector2i]:
 	## Standard A* implementation
+	if not is_walkable(start):
+		return []
 	if start == goal:
 		return [goal]
 	

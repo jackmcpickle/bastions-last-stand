@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/enemy_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "frost_wyrm"
+display_name = "Frost Wyrm"
+hp = 1200
+speed = 800
+armor = 0
+gold_value = 200
+special = {"freeze_towers_range": 4, "freeze_duration_ms": 3000, "freeze_interval_ms": 8000}
+is_boss = true
+boss_abilities = ["freeze_towers"]

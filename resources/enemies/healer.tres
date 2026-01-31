@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/enemy_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "healer"
+display_name = "Healer"
+hp = 60
+speed = 800
+armor = 0
+gold_value = 15
+special = {"healer_range": 3, "heal_per_sec": 5000}
+is_boss = false
+boss_abilities = []

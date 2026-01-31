@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/enemy_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "necromancer"
+display_name = "Necromancer"
+hp = 800
+speed = 600
+armor = 0
+gold_value = 200
+special = {"resurrect_range": 5, "resurrect_hp_percent": 50, "resurrect_interval_ms": 5000}
+is_boss = true
+boss_abilities = ["resurrect"]

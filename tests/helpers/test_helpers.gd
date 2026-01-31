@@ -277,3 +277,67 @@ static func create_test_ground_effect(pos: Vector2, dps: int, duration_ms: int, 
 
 static func create_breaker_enemy_data() -> EnemyData:
 	return create_wall_breaker_enemy_data()
+
+
+static func create_healer_enemy_data() -> EnemyData:
+	var data := create_basic_enemy_data("healer")
+	data.hp = 60
+	data.speed = 800
+	data.special = {"healer_range": 3, "heal_per_sec": 5000}
+	data.gold_value = 15
+	return data
+
+
+static func create_shielded_enemy_data() -> EnemyData:
+	var data := create_basic_enemy_data("shielded")
+	data.hp = 80
+	data.speed = 900
+	data.special = {"shield_hp": 50, "shield_regen_per_sec": 10000}
+	data.gold_value = 18
+	return data
+
+
+static func create_splitter_enemy_data() -> EnemyData:
+	var data := create_basic_enemy_data("splitter")
+	data.hp = 80
+	data.speed = 800
+	data.special = {"splits_into": "mini", "split_count": 3}
+	data.gold_value = 12
+	return data
+
+
+static func create_mini_enemy_data() -> EnemyData:
+	var data := create_basic_enemy_data("mini")
+	data.hp = 25
+	data.speed = 1200
+	data.gold_value = 2
+	return data
+
+
+static func create_swarm_queen_data() -> EnemyData:
+	var data := create_basic_enemy_data("swarm_queen")
+	data.hp = 1500
+	data.speed = 500
+	data.special = {"spawns_enemy": "swarm", "spawn_interval_ms": 3000, "spawn_count": 5}
+	data.is_boss = true
+	data.gold_value = 200
+	return data
+
+
+static func create_cc_immune_enemy_data() -> EnemyData:
+	var data := create_basic_enemy_data("colossus")
+	data.hp = 3000
+	data.speed = 300
+	data.armor = 600
+	data.special = {"cc_immune": true}
+	data.is_boss = true
+	data.gold_value = 250
+	return data
+
+
+static func create_swarm_enemy_data() -> EnemyData:
+	var data := create_basic_enemy_data("swarm")
+	data.hp = 15
+	data.speed = 1500
+	data.gold_value = 2
+	return data

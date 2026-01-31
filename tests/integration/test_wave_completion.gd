@@ -152,12 +152,12 @@ func test_wave_completion_updates_wave_in_progress() -> void:
 
 func test_wave_completion_emits_signal() -> void:
 	_setup_powerful_towers()
-	var signal_emitted := false
-	_game_state.wave_completed.connect(func(_n): signal_emitted = true)
+	var signal_data := {"emitted": false}
+	_game_state.wave_completed.connect(func(_n): signal_data.emitted = true)
 
 	_tick_processor.run_wave(1)
 
-	assert_true(signal_emitted)
+	assert_true(signal_data.emitted)
 
 
 # ============================================

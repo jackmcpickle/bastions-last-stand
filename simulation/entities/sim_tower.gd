@@ -24,6 +24,7 @@ var total_cost: int = 0  # For sell value calculation
 ## Combat state
 var cooldown_ms: int = 0
 var target_priority: Targeting.Priority = Targeting.Priority.FIRST
+var frozen_ms: int = 0  # Frost Wyrm freeze duration
 
 ## Tracking
 var total_damage_dealt: int = 0  # x1000
@@ -53,7 +54,7 @@ func get_center() -> Vector2:
 
 
 func can_attack() -> bool:
-	return cooldown_ms <= 0
+	return cooldown_ms <= 0 and frozen_ms <= 0
 
 
 func process_cooldown(delta_ms: int) -> void:
@@ -61,6 +62,10 @@ func process_cooldown(delta_ms: int) -> void:
 		cooldown_ms -= delta_ms
 		if cooldown_ms < 0:
 			cooldown_ms = 0
+	if frozen_ms > 0:
+		frozen_ms -= delta_ms
+		if frozen_ms < 0:
+			frozen_ms = 0
 
 
 func attack(target: SimEnemy, all_enemies: Array[SimEnemy]) -> Array[SimEnemy]:

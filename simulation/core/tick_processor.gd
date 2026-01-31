@@ -41,6 +41,12 @@ func process_tick() -> TickResult:
 	# 3. Process status effects (DOTs, slow decay, etc.)
 	Combat.process_status_effects(game_state, TICK_MS)
 
+	# 3.3 Process healer effects
+	Combat.process_healer_effects(game_state, TICK_MS)
+
+	# 3.4 Process boss abilities
+	Combat.process_boss_abilities(game_state, TICK_MS)
+
 	# 3.5 Process ground effects
 	_process_ground_effects(TICK_MS)
 

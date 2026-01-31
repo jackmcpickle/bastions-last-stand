@@ -288,12 +288,24 @@ static func _handle_kill_effects(tower: SimTower, enemy: SimEnemy, game_state: G
 static func process_enemy_deaths(game_state: GameState) -> void:
 	## Remove dead enemies and award gold
 	var to_remove: Array[SimEnemy] = []
-	
+
 	for enemy in game_state.enemies:
 		if enemy.is_dead():
 			to_remove.append(enemy)
-	
+
 	for enemy in to_remove:
+		# Handle splitter spawning before removal
+		if enemy.splits_into != "" and enemy.split_count > 0:
+			for i in range(enemy.split_count):
+				var offset := Vector2(
+					game_state.rng.randf_range(-0.3, 0.3),
+					game_state.rng.randf_range(-0.3, 0.3)
+				)
+				game_state.spawn_enemy_at_position(enemy.splits_into, enemy.grid_pos + offset)
+
+		# Track for necromancer resurrection
+		game_state.track_dead_enemy(enemy)
+
 		game_state.remove_enemy(enemy, true)
 
 
@@ -325,6 +337,128 @@ static func process_status_effects(game_state: GameState, delta_ms: int) -> void
 	## Process DOTs and status effect decay
 	for enemy in game_state.enemies:
 		enemy.process_status_effects(delta_ms)
+
+
+static func process_healer_effects(game_state: GameState, delta_ms: int) -> void:
+	## Healers heal nearby allies each tick
+	for enemy in game_state.enemies:
+		if enemy.healer_range <= 0 or enemy.heal_per_sec <= 0:
+			continue
+		if enemy.is_disabled or enemy.is_stunned:
+			continue
+
+		var heal_amount := enemy.heal_per_sec * delta_ms / 1000 / 1000  # x1000 to actual HP
+		var range_sq := enemy.healer_range * enemy.healer_range
+
+		for ally in game_state.enemies:
+			if ally == enemy:
+				continue
+			if ally.hp >= ally.max_hp:
+				continue
+
+			var dx := ally.grid_pos.x - enemy.grid_pos.x
+			var dy := ally.grid_pos.y - enemy.grid_pos.y
+			var dist_sq := dx * dx + dy * dy
+
+			if dist_sq <= range_sq:
+				ally.hp = mini(ally.hp + heal_amount, ally.max_hp)
+
+
+static func process_boss_abilities(game_state: GameState, delta_ms: int) -> void:
+	## Process boss-specific abilities
+	for enemy in game_state.enemies:
+		if not enemy.is_boss:
+			continue
+		if enemy.is_stunned:
+			continue
+
+		# Swarm Queen spawning
+		if enemy.spawns_enemy != "" and enemy.spawns_remaining > 0:
+			enemy.spawn_timer_ms -= delta_ms
+			if enemy.spawn_timer_ms <= 0:
+				enemy.spawn_timer_ms = enemy.spawn_interval_ms
+				enemy.spawns_remaining -= 1
+				game_state.spawn_enemy_at_position(enemy.spawns_enemy, enemy.grid_pos)
+
+		# Phase Phantom teleport
+		if enemy.teleport_interval_ms > 0:
+			enemy.teleport_timer_ms -= delta_ms
+			if enemy.teleport_timer_ms <= 0:
+				enemy.teleport_timer_ms = enemy.teleport_interval_ms
+				_teleport_enemy_forward(enemy, game_state)
+				# Enter stealth after teleport
+				if enemy.stealth_delay_ms > 0:
+					enemy.is_stealth = true
+					enemy.is_revealed = false
+
+		# Frost Wyrm tower freeze
+		if enemy.freeze_towers_range > 0:
+			enemy.freeze_timer_ms -= delta_ms
+			if enemy.freeze_timer_ms <= 0:
+				enemy.freeze_timer_ms = enemy.freeze_interval_ms
+				_freeze_nearby_towers(enemy, game_state)
+
+		# Necromancer resurrect
+		if enemy.resurrect_range > 0:
+			enemy.resurrect_timer_ms -= delta_ms
+			if enemy.resurrect_timer_ms <= 0:
+				enemy.resurrect_timer_ms = enemy.resurrect_interval_ms
+				_resurrect_nearby_dead(enemy, game_state)
+
+
+static func _teleport_enemy_forward(enemy: SimEnemy, game_state: GameState) -> void:
+	## Teleport enemy forward along its path
+	if enemy.path.is_empty():
+		return
+
+	# Jump forward 3-5 tiles along path
+	var jump_distance := 4
+	var new_index := mini(enemy.path_index + jump_distance, enemy.path.size() - 1)
+
+	if new_index > enemy.path_index:
+		enemy.path_index = new_index
+		enemy.grid_pos = Vector2(enemy.path[new_index])
+
+
+static func _freeze_nearby_towers(enemy: SimEnemy, game_state: GameState) -> void:
+	## Frost Wyrm freezes nearby towers
+	var range_sq := enemy.freeze_towers_range * enemy.freeze_towers_range
+
+	for tower in game_state.towers:
+		var tower_center := tower.get_center()
+		var dx := tower_center.x - enemy.grid_pos.x
+		var dy := tower_center.y - enemy.grid_pos.y
+		var dist_sq := dx * dx + dy * dy
+
+		if dist_sq <= range_sq:
+			tower.frozen_ms = enemy.freeze_duration_ms
+
+
+static func _resurrect_nearby_dead(enemy: SimEnemy, game_state: GameState) -> void:
+	## Necromancer resurrects dead enemies
+	if game_state.dead_enemies.is_empty():
+		return
+
+	var range_sq := enemy.resurrect_range * enemy.resurrect_range
+	var resurrected_idx := -1
+
+	for i in range(game_state.dead_enemies.size()):
+		var dead_info: Dictionary = game_state.dead_enemies[i]
+		var dead_pos: Vector2 = dead_info.position
+		var dx: float = dead_pos.x - enemy.grid_pos.x
+		var dy: float = dead_pos.y - enemy.grid_pos.y
+		var dist_sq: float = dx * dx + dy * dy
+
+		if dist_sq <= range_sq:
+			# Resurrect this enemy
+			var new_enemy := game_state.spawn_enemy_at_position(dead_info.id, dead_pos)
+			if new_enemy:
+				new_enemy.hp = new_enemy.max_hp * enemy.resurrect_hp_percent / 100
+			resurrected_idx = i
+			break
+
+	if resurrected_idx >= 0:
+		game_state.dead_enemies.remove_at(resurrected_idx)
 
 
 static func process_wall_breaker_attacks(game_state: GameState, delta_ms: int) -> void:

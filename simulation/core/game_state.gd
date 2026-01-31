@@ -34,6 +34,8 @@ var walls: Array[SimWall] = []
 var enemies: Array[SimEnemy] = []
 var ground_effects: Array = []  # Array of SimGroundEffect
 var delayed_damage_queue: Array[Dictionary] = []  # {time_ms, position, damage, aoe_radius}
+var dead_enemies: Array[Dictionary] = []  # {id, position} for necromancer resurrection
+const MAX_DEAD_ENEMIES := 20  # Limit tracked dead enemies
 
 ## Tracking
 var total_gold_earned: int = 0
@@ -94,6 +96,7 @@ func initialize_with_config(p_map_data: MapData, p_wave_data: WaveData, config: 
 	enemies.clear()
 	ground_effects.clear()
 	delayed_damage_queue.clear()
+	dead_enemies.clear()
 	total_gold_earned = 0
 	total_gold_spent = 0
 	total_damage_dealt = 0
@@ -392,3 +395,36 @@ func add_delayed_damage(time_ms: int, position: Vector2, damage: int, aoe_radius
 		"damage": damage,
 		"aoe_radius": aoe_radius
 	})
+
+
+func spawn_enemy_at_position(enemy_id: String, pos: Vector2) -> SimEnemy:
+	## Spawn enemy at specific grid position (for splitters, boss spawns)
+	var data := get_enemy_data(enemy_id)
+	if not data:
+		push_error("Unknown enemy type: " + enemy_id)
+		return null
+
+	var enemy := SimEnemy.new()
+	var spawn_tile := Vector2i(roundi(pos.x), roundi(pos.y))
+	enemy.initialize(data, spawn_tile, pathfinding)
+	enemy.grid_pos = pos  # Override to exact position
+
+	enemies.append(enemy)
+	enemy_spawned.emit(enemy)
+	return enemy
+
+
+func track_dead_enemy(enemy: SimEnemy) -> void:
+	## Track dead enemy for necromancer resurrection
+	# Don't track mini/spawned enemies or bosses
+	if enemy.id == "mini" or enemy.is_boss:
+		return
+
+	dead_enemies.append({
+		"id": enemy.id,
+		"position": enemy.grid_pos
+	})
+
+	# Limit tracked enemies
+	while dead_enemies.size() > MAX_DEAD_ENEMIES:
+		dead_enemies.pop_front()
