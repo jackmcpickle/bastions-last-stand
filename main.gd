@@ -3,15 +3,28 @@ extends Node
 ## Main entry point for headless simulation
 ## Run with: godot --headless --script main.gd
 
+# Preload all required classes
+const TowerData = preload("res://resources/tower_data.gd")
+const EnemyData = preload("res://resources/enemy_data.gd")
+const WaveData = preload("res://resources/wave_data.gd")
+const MapData = preload("res://resources/map_data.gd")
+const TestMap = preload("res://maps/test_map.gd")
+const Waves1To10 = preload("res://resources/waves/waves_1_10.gd")
+const SimulationRunner = preload("res://simulation/runner/simulation_runner.gd")
+const SimulationResults = preload("res://simulation/runner/simulation_results.gd")
+
 func _ready() -> void:
-	if OS.has_feature("editor"):
-		# Running in editor - show info
+	# Check if running headless
+	var is_headless := DisplayServer.get_name() == "headless"
+	
+	if not is_headless:
+		# Running in editor/GUI - show info
 		print("Bastion's Last Stand - Simulation Engine")
-		print("Run with --headless for CLI mode")
+		print("Run with: godot --headless")
 		return
 	
-	# Parse command line args
-	var args := OS.get_cmdline_args()
+	# Parse user args (after --)
+	var args := OS.get_cmdline_user_args()
 	
 	if "--help" in args or "-h" in args:
 		_print_help()
@@ -83,8 +96,8 @@ func _run_test_simulation() -> void:
 	var count := 10
 	var base_seed := 12345
 	
-	# Parse args for count/seed
-	var args := OS.get_cmdline_args()
+	# Parse args for count/seed (use user args after --)
+	var args := OS.get_cmdline_user_args()
 	for i in range(args.size()):
 		if args[i] == "--count" and i + 1 < args.size():
 			count = int(args[i + 1])

@@ -90,12 +90,12 @@ func _compute_path(start: Vector2i, goal: Vector2i) -> Array[Vector2i]:
 		open_set.erase(current)
 		
 		for direction in DIRECTIONS:
-			var neighbor := current + direction
+			var neighbor: Vector2i = current + direction
 			
 			if not is_walkable(neighbor):
 				continue
 			
-			var tentative_g := g_score[current] + 1
+			var tentative_g: int = g_score[current] + 1
 			
 			if tentative_g < g_score.get(neighbor, 999999):
 				came_from[neighbor] = current
