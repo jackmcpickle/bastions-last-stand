@@ -86,9 +86,8 @@ func test_regen_stronger_than_burn() -> void:
 
 	enemy.process_status_effects(1000)
 
-	# Regen should outpace burn
-	# Note: burn applies first as damage, then regen heals
-	# Exact HP depends on order of operations
+	# 50 regen vs 10 burn = net +40 HP/sec
+	assert_gt(enemy.hp, 400, "Regen (50/s) should outpace burn (10/s)")
 
 
 func test_burn_kills_before_regen() -> void:

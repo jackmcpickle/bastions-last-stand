@@ -75,19 +75,19 @@ func _get_strategy_d() -> Dictionary:
 
 func _ready() -> void:
 	var is_headless := DisplayServer.get_name() == "headless"
-	
+
 	if not is_headless:
-		print("Bastion's Last Stand - Simulation Engine")
-		print("Run with: godot --headless -- [options]")
+		# Visual mode - load splash screen (deferred to avoid node removal during _ready)
+		get_tree().change_scene_to_file.call_deferred("res://ui/screens/splash_screen.tscn")
 		return
-	
+
 	var args := OS.get_cmdline_user_args()
-	
+
 	if "--help" in args or "-h" in args:
 		_print_help()
 		get_tree().quit()
 		return
-	
+
 	_run_simulation(args)
 	get_tree().quit()
 

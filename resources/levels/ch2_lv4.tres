@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="LevelData"]
+
+id = "ch2_lv4"
+display_name = "Swarm Onslaught"
+chapter_id = "chapter_2"
+level_in_chapter = 3
+map_id = "test_map"
+wave_start = 16
+wave_end = 20
+difficulty_modifiers = {"easy": {"dmg_mult": 0.75, "gold": 80, "hp_mult": 0.75}, "hard": {"dmg_mult": 1.5, "gold": 150, "hp_mult": 1.5}, "normal": {"dmg_mult": 1.0, "gold": 100, "hp_mult": 1.0}}
+unlock_requirement = "ch2_lv3"
+description = "Many weak enemies flood your defenses. AOE is essential."
+recommended_towers = ["cannon_tower", "flame_tower"]
+enemy_types = ["swarm", "grunt"]

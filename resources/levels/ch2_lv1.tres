@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="LevelData"]
+
+id = "ch2_lv1"
+display_name = "Heavy Units"
+chapter_id = "chapter_2"
+level_in_chapter = 0
+map_id = "test_map"
+wave_start = 11
+wave_end = 15
+difficulty_modifiers = {"easy": {"dmg_mult": 0.75, "gold": 80, "hp_mult": 0.75}, "hard": {"dmg_mult": 1.5, "gold": 150, "hp_mult": 1.5}, "normal": {"dmg_mult": 1.0, "gold": 100, "hp_mult": 1.0}}
+unlock_requirement = ""
+description = "Tanks arrive. Single-target towers struggle. Use AOE!"
+recommended_towers = ["cannon_tower", "lightning_tower"]
+enemy_types = ["grunt", "tank"]

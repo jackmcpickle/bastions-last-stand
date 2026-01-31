@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="LevelData"]
+
+id = "ch3_lv2"
+display_name = "Siege"
+chapter_id = "chapter_3"
+level_in_chapter = 1
+map_id = "test_map"
+wave_start = 26
+wave_end = 29
+difficulty_modifiers = {"easy": {"dmg_mult": 0.75, "gold": 80, "hp_mult": 0.75}, "hard": {"dmg_mult": 1.5, "gold": 150, "hp_mult": 1.5}, "normal": {"dmg_mult": 1.0, "gold": 100, "hp_mult": 1.0}}
+unlock_requirement = "ch3_lv1"
+description = "Enemies destroy walls. Rebuild defenses strategically."
+recommended_towers = ["cannon_tower", "frost_tower"]
+enemy_types = ["breaker", "tank"]

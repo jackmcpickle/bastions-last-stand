@@ -1,0 +1,160 @@
+[gd_scene load_steps=2 format=3 uid="uid://br2r4kx00001"]
+
+[ext_resource type="Script" path="res://ui/screens/main_hub.gd"]
+
+[node name="MainHub" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("res://ui/screens/main_hub.gd")
+
+[node name="TabContainer" type="TabContainer" parent="." node_paths=PackedStringArray("tab_0_panel", "tab_1_panel", "tab_2_panel", "tab_3_panel", "tab_4_panel")]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="LevelSelectTab" type="Control" parent="TabContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="LevelSelect" type="Control" parent="TabContainer/LevelSelectTab"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/LevelSelectTab/LevelSelect"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Title" type="Label" parent="TabContainer/LevelSelectTab/LevelSelect/VBoxContainer"]
+layout_mode = 2
+text = "Level Select"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="TabContainer/LevelSelectTab/LevelSelect/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ChaptersContainer" type="VBoxContainer" parent="TabContainer/LevelSelectTab/LevelSelect/VBoxContainer/ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HSeparator" type="HSeparator" parent="TabContainer/LevelSelectTab/LevelSelect/VBoxContainer"]
+layout_mode = 2
+
+[node name="DetailPanel" type="PanelContainer" parent="TabContainer/LevelSelectTab/LevelSelect/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 150)
+
+[node name="DetailVBox" type="VBoxContainer" parent="TabContainer/LevelSelectTab/LevelSelect/VBoxContainer/DetailPanel"]
+layout_mode = 2
+
+[node name="DetailTitle" type="Label" parent="TabContainer/LevelSelectTab/LevelSelect/VBoxContainer/DetailPanel/DetailVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Select a level"
+
+[node name="DetailDescription" type="Label" parent="TabContainer/LevelSelectTab/LevelSelect/VBoxContainer/DetailPanel/DetailVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = ""
+
+[node name="HSeparator2" type="HSeparator" parent="TabContainer/LevelSelectTab/LevelSelect/VBoxContainer/DetailPanel/DetailVBox"]
+layout_mode = 2
+
+[node name="DetailStats" type="VBoxContainer" parent="TabContainer/LevelSelectTab/LevelSelect/VBoxContainer/DetailPanel/DetailVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="DifficultyButtons" type="HBoxContainer" parent="TabContainer/LevelSelectTab/LevelSelect/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Easy" type="Button" parent="TabContainer/LevelSelectTab/LevelSelect/VBoxContainer/DifficultyButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Easy"
+
+[node name="Normal" type="Button" parent="TabContainer/LevelSelectTab/LevelSelect/VBoxContainer/DifficultyButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Normal"
+
+[node name="Hard" type="Button" parent="TabContainer/LevelSelectTab/LevelSelect/VBoxContainer/DifficultyButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Hard"
+
+[node name="BottomHBox" type="HBoxContainer" parent="TabContainer/LevelSelectTab/LevelSelect/VBoxContainer"]
+layout_mode = 2
+
+[node name="BackButton" type="Button" parent="TabContainer/LevelSelectTab/LevelSelect/VBoxContainer/BottomHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Back"
+
+[node name="StartButton" type="Button" parent="TabContainer/LevelSelectTab/LevelSelect/VBoxContainer/BottomHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Start Battle"
+
+[node name="TowersTab" type="Control" parent="TabContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/TowersTab"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = "Towers Tab"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ShrineTab" type="Control" parent="TabContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/ShrineTab"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = "Shrine Tab"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LoreTab" type="Control" parent="TabContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/LoreTab"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = "Lore Tab"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SettingsTab" type="Control" parent="TabContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/SettingsTab"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = "Settings Tab"
+horizontal_alignment = 1
+vertical_alignment = 1

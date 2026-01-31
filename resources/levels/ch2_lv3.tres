@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="LevelData"]
+
+id = "ch2_lv3"
+display_name = "Air Raid"
+chapter_id = "chapter_2"
+level_in_chapter = 2
+map_id = "test_map"
+wave_start = 16
+wave_end = 20
+difficulty_modifiers = {"easy": {"dmg_mult": 0.75, "gold": 80, "hp_mult": 0.75}, "hard": {"dmg_mult": 1.5, "gold": 150, "hp_mult": 1.5}, "normal": {"dmg_mult": 1.0, "gold": 100, "hp_mult": 1.0}}
+unlock_requirement = "ch2_lv2"
+description = "Flying enemies bypass ground defenses. Plan your towers carefully."
+recommended_towers = ["lightning_tower", "flame_tower"]
+enemy_types = ["flyer", "grunt"]

@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="LevelData"]
+
+id = "ch2_lv2"
+display_name = "Mixed Army"
+chapter_id = "chapter_2"
+level_in_chapter = 1
+map_id = "test_map"
+wave_start = 16
+wave_end = 20
+difficulty_modifiers = {"easy": {"dmg_mult": 0.75, "gold": 80, "hp_mult": 0.75}, "hard": {"dmg_mult": 1.5, "gold": 150, "hp_mult": 1.5}, "normal": {"dmg_mult": 1.0, "gold": 100, "hp_mult": 1.0}}
+unlock_requirement = "ch2_lv1"
+description = "Balanced enemy composition. Adapt your tower mix."
+recommended_towers = ["archer_tower", "cannon_tower", "frost_tower"]
+enemy_types = ["grunt", "runner", "tank"]

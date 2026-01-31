@@ -49,8 +49,7 @@ func test_no_path_spawn_blocked() -> void:
 	# Spawn in blocked area
 	var path := _pathfinding.get_path(Vector2i(0, 10))
 
-	# May find path or may not depending on exact blocks
-	# The key is it doesn't crash
+	assert_true(path.is_empty(), "Blocked spawn should return empty path")
 
 
 func test_no_path_sparse_blocking() -> void:
@@ -62,7 +61,7 @@ func test_no_path_sparse_blocking() -> void:
 
 	var path := _pathfinding.get_path(Vector2i(0, 10))
 
-	# Should still find path around blocked areas
+	assert_false(path.is_empty(), "Checkerboard pattern should be navigable")
 
 
 # ============================================

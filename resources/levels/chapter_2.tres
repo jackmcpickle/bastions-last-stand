@@ -1,0 +1,69 @@
+[gd_resource type="Resource" script_class="ChapterData"]
+
+id = "chapter_2"
+display_name = "Escalation"
+description = "Mid-game challenges. New enemy types and tactics required."
+unlock_requirement = "chapter_1"
+levels = [SubResource("Resource_1"), SubResource("Resource_2"), SubResource("Resource_3"), SubResource("Resource_4")]
+
+[sub_resources]
+
+[SubResource type="Resource" class_name="LevelData" id="Resource_1"]
+script = ExtResource("res://resources/level_data.gd")
+id = "ch2_lv1"
+display_name = "Heavy Units"
+chapter_id = "chapter_2"
+level_in_chapter = 0
+map_id = "test_map"
+wave_start = 11
+wave_end = 15
+difficulty_modifiers = {"easy": {"dmg_mult": 0.75, "gold": 80, "hp_mult": 0.75}, "hard": {"dmg_mult": 1.5, "gold": 150, "hp_mult": 1.5}, "normal": {"dmg_mult": 1.0, "gold": 100, "hp_mult": 1.0}}
+unlock_requirement = ""
+description = "Tanks arrive. Single-target towers struggle. Use AOE!"
+recommended_towers = ["cannon_tower", "lightning_tower"]
+enemy_types = ["grunt", "tank"]
+
+[SubResource type="Resource" class_name="LevelData" id="Resource_2"]
+script = ExtResource("res://resources/level_data.gd")
+id = "ch2_lv2"
+display_name = "Mixed Army"
+chapter_id = "chapter_2"
+level_in_chapter = 1
+map_id = "test_map"
+wave_start = 16
+wave_end = 20
+difficulty_modifiers = {"easy": {"dmg_mult": 0.75, "gold": 80, "hp_mult": 0.75}, "hard": {"dmg_mult": 1.5, "gold": 150, "hp_mult": 1.5}, "normal": {"dmg_mult": 1.0, "gold": 100, "hp_mult": 1.0}}
+unlock_requirement = "ch2_lv1"
+description = "Balanced enemy composition. Adapt your tower mix."
+recommended_towers = ["archer_tower", "cannon_tower", "frost_tower"]
+enemy_types = ["grunt", "runner", "tank"]
+
+[SubResource type="Resource" class_name="LevelData" id="Resource_3"]
+script = ExtResource("res://resources/level_data.gd")
+id = "ch2_lv3"
+display_name = "Air Raid"
+chapter_id = "chapter_2"
+level_in_chapter = 2
+map_id = "test_map"
+wave_start = 16
+wave_end = 20
+difficulty_modifiers = {"easy": {"dmg_mult": 0.75, "gold": 80, "hp_mult": 0.75}, "hard": {"dmg_mult": 1.5, "gold": 150, "hp_mult": 1.5}, "normal": {"dmg_mult": 1.0, "gold": 100, "hp_mult": 1.0}}
+unlock_requirement = "ch2_lv2"
+description = "Flying enemies bypass ground defenses. Plan your towers carefully."
+recommended_towers = ["lightning_tower", "flame_tower"]
+enemy_types = ["flyer", "grunt"]
+
+[SubResource type="Resource" class_name="LevelData" id="Resource_4"]
+script = ExtResource("res://resources/level_data.gd")
+id = "ch2_lv4"
+display_name = "Swarm Onslaught"
+chapter_id = "chapter_2"
+level_in_chapter = 3
+map_id = "test_map"
+wave_start = 16
+wave_end = 20
+difficulty_modifiers = {"easy": {"dmg_mult": 0.75, "gold": 80, "hp_mult": 0.75}, "hard": {"dmg_mult": 1.5, "gold": 150, "hp_mult": 1.5}, "normal": {"dmg_mult": 1.0, "gold": 100, "hp_mult": 1.0}}
+unlock_requirement = "ch2_lv3"
+description = "Many weak enemies flood your defenses. AOE is essential."
+recommended_towers = ["cannon_tower", "flame_tower"]
+enemy_types = ["swarm", "grunt"]

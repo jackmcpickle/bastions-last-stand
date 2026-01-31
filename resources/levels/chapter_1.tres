@@ -1,0 +1,54 @@
+[gd_resource type="Resource" script_class="ChapterData"]
+
+id = "chapter_1"
+display_name = "The First Stand"
+description = "Tutorial chapter. Learn tower placement and enemy patterns."
+unlock_requirement = ""
+levels = [SubResource("Resource_1"), SubResource("Resource_2"), SubResource("Resource_3")]
+
+[sub_resources]
+
+[SubResource type="Resource" class_name="LevelData" id="Resource_1"]
+script = ExtResource("res://resources/level_data.gd")
+id = "ch1_lv1"
+display_name = "First Steps"
+chapter_id = "chapter_1"
+level_in_chapter = 0
+map_id = "test_map"
+wave_start = 1
+wave_end = 5
+difficulty_modifiers = {"easy": {"dmg_mult": 0.75, "gold": 80, "hp_mult": 0.75}, "hard": {"dmg_mult": 1.5, "gold": 150, "hp_mult": 1.5}, "normal": {"dmg_mult": 1.0, "gold": 100, "hp_mult": 1.0}}
+unlock_requirement = ""
+description = "Face your first wave of enemies. Learn tower placement basics."
+recommended_towers = ["archer_tower"]
+enemy_types = ["grunt"]
+
+[SubResource type="Resource" class_name="LevelData" id="Resource_2"]
+script = ExtResource("res://resources/level_data.gd")
+id = "ch1_lv2"
+display_name = "Speed Threat"
+chapter_id = "chapter_1"
+level_in_chapter = 1
+map_id = "test_map"
+wave_start = 6
+wave_end = 10
+difficulty_modifiers = {"easy": {"dmg_mult": 0.75, "gold": 80, "hp_mult": 0.75}, "hard": {"dmg_mult": 1.5, "gold": 150, "hp_mult": 1.5}, "normal": {"dmg_mult": 1.0, "gold": 100, "hp_mult": 1.0}}
+unlock_requirement = "ch1_lv1"
+description = "Fast enemies require defensive positioning. Use slowing towers!"
+recommended_towers = ["archer_tower", "frost_tower"]
+enemy_types = ["grunt", "runner"]
+
+[SubResource type="Resource" class_name="LevelData" id="Resource_3"]
+script = ExtResource("res://resources/level_data.gd")
+id = "ch1_lv3"
+display_name = "Rush Defense"
+chapter_id = "chapter_1"
+level_in_chapter = 2
+map_id = "test_map"
+wave_start = 8
+wave_end = 10
+difficulty_modifiers = {"easy": {"dmg_mult": 0.75, "gold": 80, "hp_mult": 0.75}, "hard": {"dmg_mult": 1.5, "gold": 150, "hp_mult": 1.5}, "normal": {"dmg_mult": 1.0, "gold": 100, "hp_mult": 1.0}}
+unlock_requirement = "ch1_lv2"
+description = "Intense waves test your tower network. Adapt and survive!"
+recommended_towers = ["archer_tower", "cannon_tower"]
+enemy_types = ["grunt", "runner"]

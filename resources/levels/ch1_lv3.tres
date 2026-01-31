@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="LevelData"]
+
+id = "ch1_lv3"
+display_name = "Rush Defense"
+chapter_id = "chapter_1"
+level_in_chapter = 2
+map_id = "test_map"
+wave_start = 8
+wave_end = 10
+difficulty_modifiers = {"easy": {"dmg_mult": 0.75, "gold": 80, "hp_mult": 0.75}, "hard": {"dmg_mult": 1.5, "gold": 150, "hp_mult": 1.5}, "normal": {"dmg_mult": 1.0, "gold": 100, "hp_mult": 1.0}}
+unlock_requirement = "ch1_lv2"
+description = "Intense waves test your tower network. Adapt and survive!"
+recommended_towers = ["archer_tower", "cannon_tower"]
+enemy_types = ["grunt", "runner"]
