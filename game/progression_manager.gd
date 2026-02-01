@@ -31,7 +31,7 @@ func _ready() -> void:
 
 func _load_chapter_data() -> void:
 	var ch1 = load("res://resources/levels/chapter_1.tres")
-	ch1.levels = [
+	var levels_ch1: Array = [
 		_create_level(
 			"ch1_lv1",
 			"First Steps",
@@ -60,8 +60,9 @@ func _load_chapter_data() -> void:
 			["grunt", "runner"]
 		),
 	]
+	ch1.set("levels", levels_ch1)
 	var ch2 = load("res://resources/levels/chapter_2.tres")
-	ch2.levels = [
+	var levels_ch2: Array = [
 		_create_level(
 			"ch2_lv1",
 			"Heavy Units",
@@ -99,8 +100,9 @@ func _load_chapter_data() -> void:
 			["grunt", "runner"]
 		),
 	]
+	ch2.set("levels", levels_ch2)
 	var ch3 = load("res://resources/levels/chapter_3.tres")
-	ch3.levels = [
+	var levels_ch3: Array = [
 		_create_level(
 			"ch3_lv1",
 			"Shadow Strike",
@@ -129,6 +131,7 @@ func _load_chapter_data() -> void:
 			["boss"]
 		),
 	]
+	ch3.set("levels", levels_ch3)
 	all_chapters = [ch1, ch2, ch3]
 
 
@@ -138,10 +141,11 @@ func _create_level(
 	chapter_id: String,
 	level_in_chapter: int,
 	description: String,
-	recommended_towers: Array,
-	enemy_types: Array
-) -> LevelData:
-	var level = LevelData.new()
+	recommended_towers: Array[String],
+	enemy_types: Array[String]
+) -> Resource:
+	var LevelDataClass = load("res://resources/level_data.gd")
+	var level = LevelDataClass.new()
 	level.id = level_id
 	level.display_name = display_name
 	level.chapter_id = chapter_id
