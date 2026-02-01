@@ -584,6 +584,112 @@ Project Settings:
 
 ---
 
+## 9. Asset Loading System (Implemented)
+
+### 9.1 Directory Structure
+
+```
+/assets/
+└── models/
+    ├── towers/
+    │   ├── archer_t1.glb          # Base archer tower
+    │   ├── archer_t1_light.tscn   # Light faction variant (optional)
+    │   └── archer_t1_dark.tscn    # Dark faction variant (optional)
+    ├── enemies/
+    │   ├── grunt.glb
+    │   ├── runner.glb
+    │   └── [future enemy models]
+    └── shrines/
+        └── shrine_base.glb
+```
+
+**Naming conventions:**
+- Towers: `{tower_id}_t{tier}{branch}.glb` (e.g., `archer_t1.glb`, `cannon_t2a.glb`)
+- Enemies: `{enemy_id}.glb` (e.g., `grunt.glb`, `boss_golem.glb`)
+- Shrines: `shrine_base.glb` (faction color applied dynamically)
+
+### 9.2 ModelLoader Singleton
+
+The `ModelLoader` autoload (`/visuals/core/model_loader.gd`) handles all 3D model loading:
+
+```gdscript
+# Load tower model with faction color
+var model := ModelLoader.load_tower_model("archer", 1, "", "light")
+
+# Load enemy model (bosses auto-scaled 2x)
+var model := ModelLoader.load_enemy_model("grunt", is_boss)
+
+# Load shrine with faction glow
+var model := ModelLoader.load_shrine_model("dark")
+
+# Find animation target in model tree
+var mesh := ModelLoader.find_mesh_instance(model)
+```
+
+**Features:**
+- Caches loaded PackedScenes for performance
+- Falls back to colored placeholder cubes when models missing
+- Applies faction colors via `StandardMaterial3D.albedo_color`
+- Console warnings for missing models (debug builds)
+
+### 9.3 Fallback System
+
+When a model file is missing, the system creates placeholder geometry:
+
+| Entity Type | Placeholder | Color |
+|-------------|-------------|-------|
+| Tower | 1.8×1.5×1.8 cube | Faction (gold/purple) |
+| Enemy | 0.6×0.6×0.6 cube | Enemy type color |
+| Shrine | 1.5×2.0×1.5 cube | Faction + emission |
+
+This enables incremental asset development - game runs with placeholders until models are added.
+
+### 9.4 Adding New Models
+
+**Step 1: Acquire model**
+- Download GLTF/GLB from asset store (Kenney, Quaternius, itch.io)
+- Target: <500 tris, medieval fantasy style
+
+**Step 2: Import to Godot**
+1. Copy `.glb` to `/assets/models/{type}/`
+2. Godot auto-imports on project focus
+3. Test in isolation with DirectionalLight3D
+
+**Step 3: Verify integration**
+- Run game - model should appear automatically
+- Check faction colors apply correctly
+- Verify animations work (attack pulse, damage flash)
+
+**Optional: Create .tscn variant**
+If model needs material tweaks beyond faction tinting:
+1. Open imported `.glb` in Godot
+2. Override materials, apply toon shader
+3. Save as `.tscn` in same directory
+4. ModelLoader prefers `.tscn` over `.glb`
+
+### 9.5 Faction Color Application
+
+Models use neutral gray/white base textures. Faction colors applied at runtime:
+
+| Faction | Albedo Color |
+|---------|--------------|
+| Light | `#FFD700` (Gold) |
+| Dark | `#8B00FF` (Purple) |
+
+The system recursively applies colors to all `MeshInstance3D` nodes with `StandardMaterial3D`.
+
+### 9.6 Visual Entity Integration
+
+Visual entities (`VisualTower`, `VisualEnemy`, `VisualShrine`) use ModelLoader:
+
+- `_create_model()` - Loads model via ModelLoader, adds as child
+- `cube` var - Cached `MeshInstance3D` for animation tweens
+- `_base_material` - Cached material for runtime effects (stealth, damage flash)
+
+All existing animations (attack pulse, stealth transparency, damage flash) work with both real models and placeholders.
+
+---
+
 ## Appendix: Quick Faction Reference Card
 
 ```
@@ -610,5 +716,5 @@ Project Settings:
 
 ---
 
-*Art Direction Document v1.0 - January 2026*
+*Art Direction Document v1.1 - February 2026*
 *For use with Bastion's Last Stand GDD*

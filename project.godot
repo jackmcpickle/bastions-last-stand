@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 
 SceneManager="*res://ui/autoload/scene_manager.gd"
 ProgressionManager="*res://game/progression_manager.gd"
+ModelLoader="*res://visuals/core/model_loader.gd"
 
 [display]
 

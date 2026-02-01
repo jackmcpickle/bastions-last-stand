@@ -23,10 +23,10 @@ source .venv/bin/activate  # Windows: .venv\Scripts\activate
 pip install -r requirements-dev.txt
 
 # Format GDScript
-gdformat simulation/ tests/ resources/ maps/ ui/ game/ main.gd
+gdformat simulation/ tests/ resources/ maps/ ui/ game/ visuals/ main.gd
 
 # Lint GDScript
-gdlint simulation/ tests/ resources/ maps/ ui/ game/ main.gd
+gdlint simulation/ tests/ resources/ maps/ ui/ game/ visuals/ main.gd
 
 # Install pre-commit hooks
 pre-commit install
@@ -48,6 +48,13 @@ godot --headless -s addons/gut/gut_cmdln.gd -gdir=res://tests -gexit
 │   ├── entities/    # SimTower, SimEnemy, SimGroundEffect
 │   ├── ai/          # AI player for balance testing
 │   └── runner/      # SimulationRunner for batch testing
+├── visuals/         # 3D rendering system
+│   ├── core/        # GridToWorld, VisualWorld, ModelLoader
+│   ├── entities/    # VisualTower, VisualEnemy, VisualShrine
+│   ├── materials/   # Toon shaders and materials
+│   └── shaders/     # Post-processing (outlines)
+├── assets/          # 3D models and textures
+│   └── models/      # GLTF models (towers/, enemies/, shrines/)
 ├── game/            # Game managers and autoloads
 ├── tests/           # GUT unit/integration tests
 ├── ui/              # UI screens and components

@@ -4,37 +4,36 @@ extends Node3D
 ## 3D visual for enemy entity
 
 var sim_enemy: SimEnemy
-var cube: MeshInstance3D
+var cube: MeshInstance3D  # Animation target (mesh or placeholder)
+var _model: Node3D
+var _base_material: StandardMaterial3D
 
 
 func initialize(enemy: SimEnemy) -> void:
 	sim_enemy = enemy
 	position = GridToWorld.to_world_v2(enemy.grid_pos)
-	_create_placeholder()
+	_create_model()
 
 
-func _create_placeholder() -> void:
-	cube = MeshInstance3D.new()
-	var box := BoxMesh.new()
+func _create_model() -> void:
+	_model = ModelLoader.load_enemy_model(sim_enemy.id, sim_enemy.is_boss)
+	add_child(_model)
+	cube = ModelLoader.find_mesh_instance(_model)
 
-	# Bosses are bigger
-	if sim_enemy.is_boss:
-		box.size = Vector3(1.2, 1.2, 1.2)
-		cube.position.y = 0.6
-	else:
-		box.size = Vector3(0.6, 0.6, 0.6)
-		cube.position.y = 0.3
-
-	cube.mesh = box
-
-	var mat := StandardMaterial3D.new()
-	mat.albedo_color = _get_enemy_color()
-	cube.material_override = mat
-	add_child(cube)
+	# Apply enemy color and cache material for stealth updates
+	if cube:
+		if not cube.material_override:
+			var mat := StandardMaterial3D.new()
+			mat.albedo_color = _get_enemy_color()
+			cube.material_override = mat
+		else:
+			var mat := cube.material_override as StandardMaterial3D
+			if mat:
+				mat.albedo_color = _get_enemy_color()
+		_base_material = cube.material_override as StandardMaterial3D
 
 
 func _get_enemy_color() -> Color:
-	# Color based on enemy type
 	match sim_enemy.id:
 		"grunt":
 			return Color("#CC4444")  # Red
@@ -69,12 +68,10 @@ func update_from_sim(delta: float) -> void:
 	position = position.lerp(target, delta * 10.0)
 
 	# Update stealth visual via material alpha
-	if cube and cube.material_override:
-		var mat := cube.material_override as StandardMaterial3D
-		if mat:
-			if sim_enemy.is_stealth and not sim_enemy.is_revealed:
-				mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-				mat.albedo_color.a = 0.3
-			else:
-				mat.transparency = BaseMaterial3D.TRANSPARENCY_DISABLED
-				mat.albedo_color.a = 1.0
+	if _base_material:
+		if sim_enemy.is_stealth and not sim_enemy.is_revealed:
+			_base_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+			_base_material.albedo_color.a = 0.3
+		else:
+			_base_material.transparency = BaseMaterial3D.TRANSPARENCY_DISABLED
+			_base_material.albedo_color.a = 1.0
