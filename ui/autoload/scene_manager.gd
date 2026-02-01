@@ -28,6 +28,7 @@ var _is_transitioning: bool = false
 func _ready() -> void:
 	_setup_transition_overlay()
 	_load_settings()
+	_sync_faction_from_progression()
 
 
 func _setup_transition_overlay() -> void:
@@ -73,6 +74,15 @@ func get_shrine_name() -> String:
 			return "The Soul Crucible"
 		_:
 			return ""
+
+
+func _sync_faction_from_progression() -> void:
+	## Sync faction from ProgressionManager on startup
+	match ProgressionManager.current_faction:
+		"light":
+			select_faction(Faction.LIGHT)
+		"dark":
+			select_faction(Faction.DARK)
 
 
 func change_scene(scene_path: String, with_fade: bool = true) -> void:

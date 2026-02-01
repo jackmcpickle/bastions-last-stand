@@ -142,10 +142,10 @@ func test_is_wave_complete_returns_true_when_no_enemies() -> void:
 
 ```bash
 # Check all code
-gdlint simulation/ tests/ ui/ game/ maps/ resources/
+uv run gdlint simulation/ tests/ ui/ game/ maps/ resources/
 
 # Check specific file
-gdlint simulation/core/game_state.gd
+uv run gdlint simulation/core/game_state.gd
 
 # Via pre-commit
 pre-commit run gdlint --all-files

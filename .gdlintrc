@@ -26,6 +26,7 @@ disable:
 - no-else-return           # Team preference; controversial rule
 - unused-argument          # Required by test framework, signal handlers, interfaces
 - private-method-call      # Unit tests must test private methods for coverage
+- max-returns              # visual_enemy._get_enemy_color needs >6 returns for enemy type mapping
 duplicated-load: null
 enum-element-name: '[A-Z][A-Z0-9]*(_[A-Z0-9]+)*'
 enum-name: ([A-Z][a-z0-9]*)+

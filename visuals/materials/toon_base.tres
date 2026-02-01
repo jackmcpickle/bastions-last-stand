@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://b5m2k8r4p1qwx"]
+
+[ext_resource type="Shader" path="res://visuals/shaders/toon_material.gdshader" id="1"]
+
+[resource]
+shader = ExtResource("1")
+shader_parameter/albedo_color = Color(1, 1, 1, 1)
+shader_parameter/shadow_threshold = 0.5
+shader_parameter/shadow_softness = 0.02
+shader_parameter/shadow_color = Color(0.2, 0.2, 0.3, 1)

@@ -11,6 +11,7 @@ var unlocked_levels: Array[String] = ["ch1_lv1"]
 var completed_levels: Dictionary = {}  # {level_id: {difficulty: stars}}
 var unlocked_chapters: Array[String] = ["chapter_1"]
 var total_gold: int = 0
+var current_faction: String = ""  # "light" or "dark"
 
 # Current session
 var current_level = null  # Will be LevelData
@@ -29,11 +30,135 @@ func _ready() -> void:
 
 
 func _load_chapter_data() -> void:
-	all_chapters = [
-		load("res://resources/levels/chapter_1.tres"),
-		load("res://resources/levels/chapter_2.tres"),
-		load("res://resources/levels/chapter_3.tres"),
+	var ch1 = load("res://resources/levels/chapter_1.tres")
+	ch1.levels = [
+		_create_level(
+			"ch1_lv1",
+			"First Steps",
+			"chapter_1",
+			0,
+			"Face your first wave of enemies. Learn tower placement basics.",
+			["archer_tower"],
+			["grunt"]
+		),
+		_create_level(
+			"ch1_lv2",
+			"Speed Threat",
+			"chapter_1",
+			1,
+			"Fast enemies require defensive positioning. Use slowing towers!",
+			["archer_tower", "frost_tower"],
+			["grunt", "runner"]
+		),
+		_create_level(
+			"ch1_lv3",
+			"Rush Defense",
+			"chapter_1",
+			2,
+			"Intense waves test your tower network. Adapt and survive!",
+			["archer_tower", "cannon_tower"],
+			["grunt", "runner"]
+		),
 	]
+	var ch2 = load("res://resources/levels/chapter_2.tres")
+	ch2.levels = [
+		_create_level(
+			"ch2_lv1",
+			"Heavy Units",
+			"chapter_2",
+			0,
+			"Tanks arrive. Single-target towers struggle. Use AOE!",
+			["cannon_tower", "lightning_tower"],
+			["grunt", "tank"]
+		),
+		_create_level(
+			"ch2_lv2",
+			"Mixed Army",
+			"chapter_2",
+			1,
+			"Balanced enemy composition. Adapt your tower mix.",
+			["archer_tower", "cannon_tower", "frost_tower"],
+			["grunt", "runner", "tank"]
+		),
+		_create_level(
+			"ch2_lv3",
+			"Air Raid",
+			"chapter_2",
+			2,
+			"Flying enemies bypass ground defenses. Plan your towers carefully.",
+			["lightning_tower", "flame_tower"],
+			["flyer", "grunt"]
+		),
+		_create_level(
+			"ch2_lv4",
+			"Swarm Onslaught",
+			"chapter_2",
+			3,
+			"Massive numbers require area control. Build wide!",
+			["cannon_tower", "flame_tower"],
+			["grunt", "runner"]
+		),
+	]
+	var ch3 = load("res://resources/levels/chapter_3.tres")
+	ch3.levels = [
+		_create_level(
+			"ch3_lv1",
+			"Shadow Strike",
+			"chapter_3",
+			0,
+			"Invisible enemies move unseen. Detection and AOE prevail.",
+			["cannon_tower", "lightning_tower"],
+			["stealth", "grunt"]
+		),
+		_create_level(
+			"ch3_lv2",
+			"Siege",
+			"chapter_3",
+			1,
+			"Enemies destroy walls. Rebuild defenses strategically.",
+			["cannon_tower", "frost_tower"],
+			["breaker", "tank"]
+		),
+		_create_level(
+			"ch3_lv3",
+			"Boss Battle",
+			"chapter_3",
+			2,
+			"Final confrontation. Everything you learned matters.",
+			["archer_tower", "cannon_tower", "lightning_tower"],
+			["boss"]
+		),
+	]
+	all_chapters = [ch1, ch2, ch3]
+
+
+func _create_level(
+	level_id: String,
+	display_name: String,
+	chapter_id: String,
+	level_in_chapter: int,
+	description: String,
+	recommended_towers: Array,
+	enemy_types: Array
+) -> LevelData:
+	var level = LevelData.new()
+	level.id = level_id
+	level.display_name = display_name
+	level.chapter_id = chapter_id
+	level.level_in_chapter = level_in_chapter
+	level.map_id = "test_map"
+	level.wave_start = 1 + level_in_chapter * 5
+	level.wave_end = level.wave_start + 4
+	level.description = description
+	level.recommended_towers = recommended_towers
+	level.enemy_types = enemy_types
+	level.difficulty_modifiers = {
+		"easy": {"dmg_mult": 0.75, "gold": 80, "hp_mult": 0.75},
+		"hard": {"dmg_mult": 1.5, "gold": 150, "hp_mult": 1.5},
+		"normal": {"dmg_mult": 1.0, "gold": 100, "hp_mult": 1.0},
+	}
+	level.unlock_requirement = ""
+	return level
 
 
 func is_level_unlocked(level_id: String) -> bool:
@@ -140,6 +265,7 @@ func save_progression() -> void:
 		"completed_levels": completed_levels,
 		"unlocked_chapters": unlocked_chapters,
 		"total_gold": total_gold,
+		"current_faction": current_faction,
 		"version": 1
 	}
 
@@ -167,6 +293,7 @@ func load_progression() -> void:
 		completed_levels = data.get("completed_levels", {})
 		unlocked_chapters = data.get("unlocked_chapters", ["chapter_1"])
 		total_gold = data.get("total_gold", 0)
+		current_faction = data.get("current_faction", "")
 
 
 func _get_level_data(level_id: String):

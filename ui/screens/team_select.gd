@@ -34,4 +34,11 @@ func _setup_faction_cards() -> void:
 
 func _on_faction_selected(faction: SceneManager.Faction) -> void:
 	SceneManager.select_faction(faction)
+	# Sync to ProgressionManager for visual layer
+	match faction:
+		SceneManager.Faction.LIGHT:
+			ProgressionManager.current_faction = "light"
+		SceneManager.Faction.DARK:
+			ProgressionManager.current_faction = "dark"
+	ProgressionManager.save_progression()
 	SceneManager.change_scene(MAIN_HUB_SCENE)
