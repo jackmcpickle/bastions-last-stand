@@ -61,10 +61,8 @@ func _show_level_details(level: LevelData) -> void:
 		max_stars = max(max_stars, stars)
 
 	var star_text = "★" * max_stars + "☆" * (3 - max_stars)
-	if max_stars > 0:
-		detail_description.text += "\n\n" + star_text
-	else:
-		detail_description.text += "\n\nNo attempts yet"
+	var suffix = star_text if max_stars > 0 else "No attempts yet"
+	detail_description.text += "\n\n" + suffix
 
 	# Update difficulty display
 	_update_difficulty_display()
