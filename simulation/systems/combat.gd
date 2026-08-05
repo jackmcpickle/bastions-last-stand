@@ -456,6 +456,52 @@ static func _resurrect_nearby_dead(enemy: SimEnemy, game_state: GameState) -> vo
 		game_state.dead_enemies.remove_at(resurrected_idx)
 
 
+static func process_siege_attacks(game_state: GameState, _delta_ms: int) -> void:
+	## Ground enemies with no path attack nearest blocking structures
+	var walls_to_remove: Array[SimWall] = []
+
+	for enemy in game_state.enemies:
+		if enemy.is_flying or enemy.is_wall_breaker:
+			continue
+		if not enemy.path.is_empty():
+			continue
+
+		var wall := _find_nearest_wall(enemy, game_state.walls)
+		if not wall:
+			continue
+
+		var wall_damage: int = enemy.data.special.get("wall_damage", 10)
+		wall.take_damage(wall_damage)
+
+		if wall.is_destroyed() and wall not in walls_to_remove:
+			walls_to_remove.append(wall)
+
+	for wall in walls_to_remove:
+		game_state.pathfinding.set_blocked(wall.position, false)
+		game_state.walls.erase(wall)
+		game_state.wall_destroyed.emit(wall)
+
+	if not walls_to_remove.is_empty():
+		game_state.repath_ground_enemies()
+
+
+static func _find_nearest_wall(enemy: SimEnemy, walls: Array[SimWall]) -> SimWall:
+	## Returns nearest wall to enemy, or null if none
+	var best: SimWall = null
+	var best_dist_sq := 999999.0
+	var pos := enemy.grid_pos
+
+	for wall in walls:
+		var dx := float(wall.position.x) - pos.x
+		var dy := float(wall.position.y) - pos.y
+		var dist_sq := dx * dx + dy * dy
+		if dist_sq < best_dist_sq:
+			best_dist_sq = dist_sq
+			best = wall
+
+	return best
+
+
 static func process_wall_breaker_attacks(game_state: GameState, delta_ms: int) -> void:
 	## Wall breakers attack adjacent walls
 	var walls_to_remove: Array[SimWall] = []
@@ -482,11 +528,7 @@ static func process_wall_breaker_attacks(game_state: GameState, delta_ms: int) -
 		game_state.walls.erase(wall)
 		game_state.wall_destroyed.emit(wall)
 
-		# Recompute paths for non-flying enemies
-		for enemy in game_state.enemies:
-			if not enemy.is_flying:
-				enemy.path = game_state.pathfinding.get_path(enemy.get_current_tile())
-				enemy.path_index = 0
+		game_state.repath_ground_enemies()
 
 
 static func _find_adjacent_wall(enemy: SimEnemy, walls: Array[SimWall]) -> SimWall:

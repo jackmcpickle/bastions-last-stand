@@ -250,6 +250,87 @@ func test_process_leaks_scaled_damage_for_boss() -> void:
 
 
 # ============================================
+# process_siege_attacks() tests
+# ============================================
+
+
+func test_siege_enemy_with_no_path_damages_nearest_wall() -> void:
+	var wall := SimWall.new()
+	wall.position = Vector2i(5, 10)
+	wall.hp = 100
+	wall.max_hp = 100
+	_game_state.walls.append(wall)
+
+	var enemy := _spawn_enemy_at(Vector2(4, 10))
+	enemy.path.clear()
+
+	Combat.process_siege_attacks(_game_state, 100)
+
+	assert_lt(wall.hp, 100)
+
+
+func test_siege_destroys_wall_and_unblocks() -> void:
+	var wall := SimWall.new()
+	wall.position = Vector2i(5, 10)
+	wall.hp = 5
+	wall.max_hp = 100
+	_game_state.walls.append(wall)
+	_pathfinding.set_blocked(wall.position, true)
+
+	var enemy := _spawn_enemy_at(Vector2(4, 10))
+	enemy.path.clear()
+
+	Combat.process_siege_attacks(_game_state, 100)
+
+	assert_false(_game_state.walls.has(wall))
+	assert_false(_pathfinding.is_blocked(Vector2i(5, 10)))
+
+
+func test_siege_destroy_repaths_ground_enemies() -> void:
+	# Block a full column so path is empty, leave one weak wall as the only gap filler
+	for y in range(20):
+		_pathfinding.set_blocked(Vector2i(10, y), true)
+
+	var wall := SimWall.new()
+	wall.position = Vector2i(10, 10)
+	wall.hp = 5
+	wall.max_hp = 100
+	_game_state.walls.append(wall)
+
+	var enemy := _spawn_enemy_at(Vector2(0, 10))
+	enemy.path.clear()
+
+	Combat.process_siege_attacks(_game_state, 100)
+
+	assert_false(enemy.path.is_empty())
+	assert_eq(enemy.path[-1], _pathfinding.get_shrine_position())
+
+
+func test_wall_breaker_keeps_direct_path_after_destroying_wall() -> void:
+	var wall := SimWall.new()
+	wall.position = Vector2i(5, 10)
+	wall.hp = 5
+	wall.max_hp = 100
+	_game_state.walls.append(wall)
+	_pathfinding.set_blocked(wall.position, true)
+
+	var data := TestHelpers.create_wall_breaker_enemy_data()
+	var breaker := SimEnemy.new()
+	breaker.initialize(data, Vector2i(4, 10), _pathfinding)
+	breaker.grid_pos = Vector2(4, 10)
+	_game_state.enemies.append(breaker)
+
+	var shrine := _pathfinding.get_shrine_position()
+	assert_eq(breaker.path.size(), 2)
+
+	Combat.process_wall_breaker_attacks(_game_state, 100)
+
+	assert_eq(breaker.path.size(), 2)
+	assert_eq(breaker.path[0], Vector2i(4, 10))
+	assert_eq(breaker.path[1], shrine)
+
+
+# ============================================
 # process_status_effects() tests
 # ============================================
 

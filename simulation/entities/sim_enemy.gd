@@ -318,6 +318,8 @@ func is_dead() -> bool:
 
 
 func has_reached_shrine() -> bool:
+	if path.is_empty():
+		return false
 	return path_index >= path.size()
 
 

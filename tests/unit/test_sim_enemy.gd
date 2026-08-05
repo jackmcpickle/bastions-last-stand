@@ -148,6 +148,14 @@ func test_move_stops_at_shrine() -> void:
 	assert_true(enemy.has_reached_shrine())
 
 
+func test_has_reached_shrine_false_when_path_empty() -> void:
+	var enemy := _create_enemy_at_pos(Vector2(0, 10))
+	enemy.path.clear()
+	enemy.path_index = 0
+
+	assert_false(enemy.has_reached_shrine())
+
+
 # ============================================
 # Status effects tests
 # ============================================

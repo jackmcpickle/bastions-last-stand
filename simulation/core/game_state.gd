@@ -162,6 +162,7 @@ func place_tower(pos: Vector2i, tower_id: String) -> SimTower:
 	for dx in range(2):
 		for dy in range(2):
 			pathfinding.set_blocked(Vector2i(pos.x + dx, pos.y + dy), true)
+	repath_ground_enemies()
 
 	tower_placed.emit(tower)
 	return tower
@@ -197,9 +198,19 @@ func place_wall(pos: Vector2i) -> SimWall:
 	walls.append(wall)
 
 	pathfinding.set_blocked(pos, true)
+	repath_ground_enemies()
 
 	wall_placed.emit(wall)
 	return wall
+
+
+func repath_ground_enemies() -> void:
+	## Recalculate A* paths for ground enemies after the block map changes
+	for enemy in enemies:
+		if enemy.is_flying or enemy.is_wall_breaker:
+			continue
+		enemy.path = pathfinding.get_path(enemy.get_current_tile())
+		enemy.path_index = 0
 
 
 func _has_structure_at(pos: Vector2i) -> bool:

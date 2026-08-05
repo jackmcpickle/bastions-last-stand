@@ -75,6 +75,27 @@ func test_process_tick_towers_attack() -> void:
 	assert_gt(tower.shots_fired, 0)
 
 
+func test_process_tick_siege_attacks_when_no_path() -> void:
+	_game_state.wave_in_progress = true
+
+	var wall := SimWall.new()
+	wall.position = Vector2i(5, 10)
+	wall.hp = 100
+	wall.max_hp = 100
+	_game_state.walls.append(wall)
+
+	var enemy := SimEnemy.new()
+	enemy.initialize(
+		TestHelpers.create_basic_enemy_data(), Vector2i(4, 10), _game_state.pathfinding
+	)
+	enemy.path.clear()
+	_game_state.enemies.append(enemy)
+
+	_tick_processor.process_tick()
+
+	assert_lt(wall.hp, 100)
+
+
 func test_process_tick_enemies_die() -> void:
 	_game_state.gold = 500
 	# Place multiple powerful towers
