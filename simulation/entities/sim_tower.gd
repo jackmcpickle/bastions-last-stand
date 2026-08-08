@@ -216,6 +216,11 @@ func apply_upgrade(upgrade: TowerUpgradeData) -> void:
 	if upgrade.range_tiles > 0:
 		range_tiles = upgrade.range_tiles
 	aoe_radius = upgrade.aoe_radius
+	if upgrade.hp > 0:
+		max_hp = upgrade.hp
+		# Keep current HP; only clamp if above new max
+		if hp > max_hp:
+			hp = max_hp
 
 	# Merge special abilities
 	for key in upgrade.special:

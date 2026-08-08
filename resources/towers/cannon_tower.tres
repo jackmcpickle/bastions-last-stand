@@ -14,6 +14,7 @@ damage = 60000
 attack_speed_ms = 3000
 range_tiles = 5
 aoe_radius = 2500
+hp = 150
 special = {}
 description = "Larger AOE, slower fire rate"
 
@@ -28,6 +29,7 @@ damage = 45000
 attack_speed_ms = 2500
 range_tiles = 7
 aoe_radius = 1500
+hp = 150
 special = {}
 description = "Extended range bombardment"
 
@@ -42,6 +44,7 @@ damage = 150000
 attack_speed_ms = 4000
 range_tiles = 5
 aoe_radius = 3500
+hp = 200
 special = {"breaker_bonus": 1000}
 description = "Massive damage, 100% bonus vs breakers"
 
@@ -56,6 +59,7 @@ damage = 30000
 attack_speed_ms = 3500
 range_tiles = 5
 aoe_radius = 1000
+hp = 200
 special = {"cluster": 4}
 description = "Splits into 4 smaller explosions"
 
@@ -70,6 +74,7 @@ damage = 100000
 attack_speed_ms = 3000
 range_tiles = 10
 aoe_radius = 0
+hp = 200
 special = {"pierce_line": true}
 description = "Piercing shot hits all enemies in a line"
 
@@ -84,6 +89,7 @@ damage = 25000
 attack_speed_ms = 3000
 range_tiles = 6
 aoe_radius = 2000
+hp = 200
 special = {"barrage": true}
 description = "Fires barrage of 4 shells over 3 seconds"
 

@@ -277,6 +277,48 @@ func test_apply_upgrade_merges_special() -> void:
 	assert_eq(tower.special.burn_dps, 5000)
 
 
+func test_apply_upgrade_sets_max_hp_without_healing() -> void:
+	var tower := _create_tower()
+	tower.hp = 40
+	tower.max_hp = 100
+
+	var upgrade := TestHelpers.create_upgrade_data(2, "A")
+	upgrade.hp = 150
+
+	tower.apply_upgrade(upgrade)
+
+	assert_eq(tower.max_hp, 150)
+	assert_eq(tower.hp, 40)
+
+
+func test_apply_upgrade_clamps_hp_when_new_max_is_lower() -> void:
+	var tower := _create_tower()
+	tower.hp = 100
+	tower.max_hp = 100
+
+	var upgrade := TestHelpers.create_upgrade_data(2, "A")
+	upgrade.hp = 60
+
+	tower.apply_upgrade(upgrade)
+
+	assert_eq(tower.max_hp, 60)
+	assert_eq(tower.hp, 60)
+
+
+func test_apply_upgrade_zero_hp_leaves_max_hp_unchanged() -> void:
+	var tower := _create_tower()
+	tower.hp = 40
+	tower.max_hp = 100
+
+	var upgrade := TestHelpers.create_upgrade_data(2, "A")
+	upgrade.hp = 0
+
+	tower.apply_upgrade(upgrade)
+
+	assert_eq(tower.max_hp, 100)
+	assert_eq(tower.hp, 40)
+
+
 # ============================================
 # get_dps() tests
 # ============================================

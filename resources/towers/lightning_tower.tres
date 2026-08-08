@@ -14,6 +14,7 @@ damage = 20000
 attack_speed_ms = 1000
 range_tiles = 5
 aoe_radius = 0
+hp = 150
 special = {"chain": 5, "chain_range": 2.5}
 description = "Chains to 5 enemies"
 
@@ -28,6 +29,7 @@ damage = 15000
 attack_speed_ms = 100
 range_tiles = 4
 aoe_radius = 0
+hp = 150
 special = {"beam": true}
 description = "Continuous beam damage"
 
@@ -42,6 +44,7 @@ damage = 25000
 attack_speed_ms = 800
 range_tiles = 6
 aoe_radius = 0
+hp = 200
 special = {"chain": 8, "chain_range": 3.0, "stun_ms": 500}
 description = "8-chain with 0.5s stun"
 
@@ -56,6 +59,7 @@ damage = 60000
 attack_speed_ms = 1500
 range_tiles = 4
 aoe_radius = 0
+hp = 200
 special = {"chain": 2, "chain_range": 2.5}
 description = "Massive damage, short chain"
 
@@ -70,6 +74,7 @@ damage = 12000
 attack_speed_ms = 100
 range_tiles = 5
 aoe_radius = 0
+hp = 200
 special = {"beam": true, "disable": true}
 description = "Beam disables enemy abilities"
 
@@ -84,6 +89,7 @@ damage = 200000
 attack_speed_ms = 5000
 range_tiles = 5
 aoe_radius = 3000
+hp = 200
 special = {}
 description = "Slow charge, massive AOE burst"
 

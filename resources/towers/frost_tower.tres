@@ -14,6 +14,7 @@ damage = 0
 attack_speed_ms = 600
 range_tiles = 4
 aoe_radius = 0
+hp = 150
 special = {"slow": 400, "slow_duration_ms": 2500}
 description = "Pure slow, no damage"
 
@@ -28,6 +29,7 @@ damage = 20000
 attack_speed_ms = 1500
 range_tiles = 4
 aoe_radius = 0
+hp = 150
 special = {"slow": 250, "slow_duration_ms": 2000}
 description = "Balanced damage and slow"
 
@@ -42,6 +44,7 @@ damage = 0
 attack_speed_ms = 600
 range_tiles = 5
 aoe_radius = 0
+hp = 200
 special = {"slow": 500, "slow_duration_ms": 3000, "freeze_chance": 100}
 description = "50% slow + 10% freeze chance"
 
@@ -56,6 +59,7 @@ damage = 0
 attack_speed_ms = 600
 range_tiles = 4
 aoe_radius = 0
+hp = 200
 special = {"slow": 400, "slow_duration_ms": 2500, "slow_damage_amp": 300}
 description = "Slowed enemies take 30% more damage"
 
@@ -70,6 +74,7 @@ damage = 45000
 attack_speed_ms = 1200
 range_tiles = 5
 aoe_radius = 0
+hp = 200
 special = {"slow": 350, "slow_duration_ms": 2500}
 description = "High damage frost attack"
 
@@ -84,6 +89,7 @@ damage = 25000
 attack_speed_ms = 1500
 range_tiles = 4
 aoe_radius = 0
+hp = 200
 special = {"slow": 250, "slow_duration_ms": 2000, "shatter_damage": 80000}
 description = "Kills shatter into AOE damage"
 
