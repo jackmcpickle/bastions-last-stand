@@ -43,6 +43,11 @@ var is_wall_breaker: bool = false
 var is_revealed: bool = false  # Stealth broken
 var regen_per_sec: int = 0  # x1000: HP regen per second
 
+## Ephemeral mark state (set each tick by support towers)
+var is_marked: bool = false
+var mark_damage_amp: int = 0  # x1000: +% damage taken
+var mark_crit_chance: int = 0  # x1000: crit chance vs this enemy
+
 ## Shield mechanic
 var shield_hp: int = 0
 var max_shield_hp: int = 0
@@ -325,6 +330,12 @@ func has_reached_shrine() -> bool:
 
 func get_current_tile() -> Vector2i:
 	return Vector2i(roundi(grid_pos.x), roundi(grid_pos.y))
+
+
+func clear_mark_state() -> void:
+	is_marked = false
+	mark_damage_amp = 0
+	mark_crit_chance = 0
 
 
 func is_targetable() -> bool:

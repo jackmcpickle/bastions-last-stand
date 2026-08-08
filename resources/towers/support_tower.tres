@@ -1,0 +1,109 @@
+[gd_resource type="Resource" script_class="TowerData" load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://resources/tower_data.gd" id="1"]
+[ext_resource type="Script" path="res://resources/tower_upgrade_data.gd" id="2"]
+
+[sub_resource type="Resource" id="support_war_banner"]
+script = ExtResource("2")
+id = "support_war_banner"
+display_name = "War Banner"
+tier = 2
+branch = "A"
+parent_branch = ""
+damage = 0
+attack_speed_ms = 1000
+range_tiles = 4
+aoe_radius = 0
+hp = 150
+special = {"support_aura": true, "aura_damage_buff": 200, "aura_speed_buff": 100}
+description = "+20% damage and +10% attack speed aura"
+
+[sub_resource type="Resource" id="support_tech_relay"]
+script = ExtResource("2")
+id = "support_tech_relay"
+display_name = "Tech Relay"
+tier = 2
+branch = "B"
+parent_branch = ""
+damage = 0
+attack_speed_ms = 1000
+range_tiles = 4
+aoe_radius = 0
+hp = 150
+special = {"support_aura": true, "mark_enemies": true, "mark_damage_amp": 150}
+description = "Marks enemies; marked take +15% damage"
+
+[sub_resource type="Resource" id="support_command_post"]
+script = ExtResource("2")
+id = "support_command_post"
+display_name = "Command Post"
+tier = 3
+branch = "A1"
+parent_branch = "A"
+damage = 0
+attack_speed_ms = 1000
+range_tiles = 5
+aoe_radius = 0
+hp = 200
+special = {"support_aura": true, "aura_damage_buff": 250, "aura_speed_buff": 150, "aura_range_buff": 1}
+description = "+25% damage, +15% speed, +1 range aura"
+
+[sub_resource type="Resource" id="support_rally_point"]
+script = ExtResource("2")
+id = "support_rally_point"
+display_name = "Rally Point"
+tier = 3
+branch = "A2"
+parent_branch = "A"
+damage = 0
+attack_speed_ms = 1000
+range_tiles = 4
+aoe_radius = 0
+hp = 200
+special = {"support_aura": true, "aura_damage_buff": 200, "aura_tower_regen": 2}
+description = "+20% damage aura; nearby towers regen 2 HP/s"
+
+[sub_resource type="Resource" id="support_scanner"]
+script = ExtResource("2")
+id = "support_scanner"
+display_name = "Scanner"
+tier = 3
+branch = "B1"
+parent_branch = "B"
+damage = 0
+attack_speed_ms = 1000
+range_tiles = 5
+aoe_radius = 0
+hp = 200
+special = {"support_aura": true, "mark_enemies": true, "mark_damage_amp": 150, "reveal_stealth": true, "mark_crit_chance": 400}
+description = "Marks and reveals stealth; +40% crit vs marked"
+
+[sub_resource type="Resource" id="support_emp_field"]
+script = ExtResource("2")
+id = "support_emp_field"
+display_name = "EMP Field"
+tier = 3
+branch = "B2"
+parent_branch = "B"
+damage = 0
+attack_speed_ms = 1000
+range_tiles = 4
+aoe_radius = 0
+hp = 200
+special = {"support_aura": true, "emp_slow": 300, "emp_disable_shields": true}
+description = "-30% enemy speed; disables shields in range"
+
+[resource]
+script = ExtResource("1")
+id = "support"
+display_name = "Support Tower"
+base_cost = 160
+hp = 100
+damage = 0
+attack_speed_ms = 1000
+range_tiles = 3
+aoe_radius = 0
+special = {"support_aura": true, "aura_damage_buff": 150}
+upgrade_cost_t2 = 250
+upgrade_cost_t3 = 500
+upgrades = [SubResource("support_war_banner"), SubResource("support_tech_relay"), SubResource("support_command_post"), SubResource("support_rally_point"), SubResource("support_scanner"), SubResource("support_emp_field")]

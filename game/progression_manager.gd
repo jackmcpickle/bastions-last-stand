@@ -109,7 +109,7 @@ func _load_chapter_data() -> void:
 			"chapter_3",
 			0,
 			"Invisible enemies move unseen. Detection and AOE prevail.",
-			["cannon_tower", "lightning_tower"],
+			["cannon_tower", "lightning_tower", "support_tower"],
 			["stealth", "grunt"]
 		),
 		_create_level(

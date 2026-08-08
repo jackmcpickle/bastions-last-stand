@@ -90,7 +90,7 @@ attack_speed_ms = 5000
 range_tiles = 5
 aoe_radius = 3000
 hp = 200
-special = {}
+special = {"capacitor": true, "charge_ms": 5000, "beam": false}
 description = "Slow charge, massive AOE burst"
 
 [resource]

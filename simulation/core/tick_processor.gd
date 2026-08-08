@@ -59,6 +59,9 @@ func process_tick() -> TickResult:
 	# 3.6 Process delayed damage
 	_process_delayed_damage(TICK_MS)
 
+	# 3.7 Support tower auras (before attacks so buffs apply this tick)
+	Combat.process_support_auras(game_state, TICK_MS)
+
 	# 4. Tower attacks
 	Combat.process_tower_attacks(game_state, TICK_MS)
 
