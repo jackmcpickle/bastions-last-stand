@@ -302,7 +302,9 @@ func test_run_all_waves_tower_stats() -> void:
 
 	var result := _tick_processor.run_all_waves()
 
-	assert_has(result.tower_stats, "archer")
+	# Stats are keyed by id@x,y so multiple towers of the same type don't collide
+	assert_has(result.tower_stats, "archer@10,8")
+	assert_eq(result.tower_stats["archer@10,8"].id, "archer")
 
 
 # ============================================

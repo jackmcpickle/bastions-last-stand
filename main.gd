@@ -16,57 +16,178 @@ const GameState = preload("res://simulation/core/game_state.gd")
 const BalanceConfig = preload("res://simulation/core/balance_config.gd")
 
 ## Strategy definitions
-## Each strategy has towers and walls
 ## Map is 10x10, spawns at (2,0) and (7,0), shrine at (4,4)
+## Optional tower_upgrades / wall_upgrades: [{pos, upgrade_id}, ...]
 
 
-func _get_strategy_a() -> Dictionary:
-	## Strategy A: Dual Tower - 2 towers covering both spawn paths
-	## Cost: 160g towers = need 160+ starting gold
+func _tower_path_strategy(
+	name: String, description: String, tower_id: String, pos: Vector2i, t2_id: String, t3_id: String
+) -> Dictionary:
 	return {
-		"name": "DualTower",
-		"description": "Two towers covering spawn paths",
-		"towers": [{pos = Vector2i(3, 2), id = "archer"}, {pos = Vector2i(6, 2), id = "archer"}],
-		"walls": [] as Array[Vector2i]
+		"name": name,
+		"description": description,
+		"towers": [{pos = pos, id = tower_id}],
+		"walls": [] as Array[Vector2i],
+		"tower_upgrades": [{pos = pos, upgrade_id = t2_id}, {pos = pos, upgrade_id = t3_id}],
+		"wall_upgrades": [],
 	}
 
 
-func _get_strategy_b() -> Dictionary:
-	## Strategy B: Triple Tower - 3 towers in killing zone
-	## Cost: 240g towers = need 240+ starting gold OR good economy
-	return {
-		"name": "TripleTower",
-		"description": "Three towers near shrine",
-		"towers":
+func _get_all_strategies() -> Dictionary:
+	## id -> strategy dict (baselines + upgrade matrix)
+	var strategies := {
+		"a":
+		{
+			"name": "DualTower",
+			"description": "Two T1 archers covering spawn paths",
+			"towers":
+			[{pos = Vector2i(3, 2), id = "archer"}, {pos = Vector2i(6, 2), id = "archer"}],
+			"walls": [] as Array[Vector2i],
+			"tower_upgrades": [],
+			"wall_upgrades": [],
+		},
+		"b":
+		{
+			"name": "TripleTower",
+			"description": "Three T1 archers near shrine",
+			"towers":
+			[
+				{pos = Vector2i(3, 3), id = "archer"},
+				{pos = Vector2i(4, 2), id = "archer"},
+				{pos = Vector2i(6, 3), id = "archer"}
+			],
+			"walls": [] as Array[Vector2i],
+			"tower_upgrades": [],
+			"wall_upgrades": [],
+		},
+		"c":
+		{
+			"name": "Flanking",
+			"description": "T1 archers on flanks",
+			"towers":
+			[{pos = Vector2i(1, 2), id = "archer"}, {pos = Vector2i(8, 2), id = "archer"}],
+			"walls": [] as Array[Vector2i],
+			"tower_upgrades": [],
+			"wall_upgrades": [],
+		},
+		"d":
+		{
+			"name": "CentralDefense",
+			"description": "T1 archers clustered at shrine",
+			"towers":
+			[{pos = Vector2i(3, 4), id = "archer"}, {pos = Vector2i(6, 4), id = "archer"}],
+			"walls": [] as Array[Vector2i],
+			"tower_upgrades": [],
+			"wall_upgrades": [],
+		},
+	}
+
+	# Upgrade matrix: one A-final and one B-final per combat tower
+	var pos := Vector2i(4, 2)
+	strategies["archer_sniper"] = _tower_path_strategy(
+		"ArcherSniper", "Archer Marksman→Sniper", "archer", pos, "archer_marksman", "archer_sniper"
+	)
+	strategies["archer_machine"] = _tower_path_strategy(
+		"ArcherMachine",
+		"Archer Rapid→Machine Bow",
+		"archer",
+		pos,
+		"archer_rapid_fire",
+		"archer_machine_bow"
+	)
+	strategies["cannon_siege"] = _tower_path_strategy(
+		"CannonSiege", "Cannon Mortar→Siege", "cannon", pos, "cannon_mortar", "cannon_siege"
+	)
+	strategies["cannon_railgun"] = _tower_path_strategy(
+		"CannonRailgun",
+		"Cannon Artillery→Railgun",
+		"cannon",
+		pos,
+		"cannon_artillery",
+		"cannon_railgun"
+	)
+	strategies["frost_permafrost"] = _tower_path_strategy(
+		"FrostPermafrost",
+		"Frost Blizzard→Permafrost",
+		"frost",
+		pos,
+		"frost_blizzard",
+		"frost_permafrost"
+	)
+	strategies["frost_cryo"] = _tower_path_strategy(
+		"FrostCryo",
+		"Frost Ice Shard→Cryo Cannon",
+		"frost",
+		pos,
+		"frost_ice_shard",
+		"frost_cryo_cannon"
+	)
+	strategies["lightning_storm"] = _tower_path_strategy(
+		"LightningStorm",
+		"Lightning Tesla→Storm Spire",
+		"lightning",
+		pos,
+		"lightning_tesla",
+		"lightning_storm_spire"
+	)
+	strategies["lightning_disruptor"] = _tower_path_strategy(
+		"LightningDisruptor",
+		"Lightning Arc→Disruptor",
+		"lightning",
+		pos,
+		"lightning_arc_pylon",
+		"lightning_disruptor"
+	)
+	strategies["flame_hellfire"] = _tower_path_strategy(
+		"FlameHellfire", "Flame Inferno→Hellfire", "flame", pos, "flame_inferno", "flame_hellfire"
+	)
+	strategies["flame_plasma"] = _tower_path_strategy(
+		"FlamePlasma", "Flame Focused→Plasma", "flame", pos, "flame_focused", "flame_plasma"
+	)
+
+	# Wall upgrade paths (with a supporting T1 archer)
+	var wall_pos := Vector2i(4, 3)
+	var archer_pos := Vector2i(5, 2)
+	strategies["wall_fortress"] = {
+		"name": "WallFortress",
+		"description": "Wall Reinforced→Fortress + T1 archer",
+		"towers": [{pos = archer_pos, id = "archer"}],
+		"walls": [wall_pos] as Array[Vector2i],
+		"tower_upgrades": [],
+		"wall_upgrades":
 		[
-			{pos = Vector2i(3, 3), id = "archer"},
-			{pos = Vector2i(4, 2), id = "archer"},
-			{pos = Vector2i(6, 3), id = "archer"}
+			{pos = wall_pos, upgrade_id = "wall_reinforced"},
+			{pos = wall_pos, upgrade_id = "wall_fortress"}
 		],
-		"walls": [] as Array[Vector2i]
+	}
+	strategies["wall_tar"] = {
+		"name": "WallTar",
+		"description": "Wall Reactive→Tar + T1 archer",
+		"towers": [{pos = archer_pos, id = "archer"}],
+		"walls": [wall_pos] as Array[Vector2i],
+		"tower_upgrades": [],
+		"wall_upgrades":
+		[{pos = wall_pos, upgrade_id = "wall_reactive"}, {pos = wall_pos, upgrade_id = "wall_tar"}],
 	}
 
-
-func _get_strategy_c() -> Dictionary:
-	## Strategy C: Flanking - towers on sides covering paths
-	## No walls, just good tower positioning
-	return {
-		"name": "Flanking",
-		"description": "Towers on flanks covering spawn paths",
-		"towers": [{pos = Vector2i(1, 2), id = "archer"}, {pos = Vector2i(8, 2), id = "archer"}],
-		"walls": [] as Array[Vector2i]
-	}
+	return strategies
 
 
-func _get_strategy_d() -> Dictionary:
-	## Strategy D: Central Defense - towers clustered near shrine
-	## Concentrated firepower at the end
-	return {
-		"name": "CentralDefense",
-		"description": "Towers clustered defending shrine",
-		"towers": [{pos = Vector2i(3, 4), id = "archer"}, {pos = Vector2i(6, 4), id = "archer"}],
-		"walls": [] as Array[Vector2i]
-	}
+func _get_upgrade_strategy_ids() -> Array[String]:
+	return [
+		"archer_sniper",
+		"archer_machine",
+		"cannon_siege",
+		"cannon_railgun",
+		"frost_permafrost",
+		"frost_cryo",
+		"lightning_storm",
+		"lightning_disruptor",
+		"flame_hellfire",
+		"flame_plasma",
+		"wall_fortress",
+		"wall_tar",
+	]
 
 
 func _ready() -> void:
@@ -100,22 +221,23 @@ Options:
   --help, -h           Show this help
   --count N            Simulations per strategy (default: 100)
   --seed N             Base random seed (default: 12345)
-  --strategy S         Strategy to run: a, b, c, d, or all (default: all)
+  --strategy S         Strategy: a-d, upgrades, all, or a named upgrade path
+  --ai balanced        Run BalancedAI instead of static strategies
   --json               Output results as JSON (for AI optimizer)
   --config FILE        Load balance config from JSON file
   --save-config FILE   Save current config to JSON file
   --output FILE        Save results to file
 
 Strategies:
-  a - Baseline: No walls, center tower
-  b - Funnel: Walls create chokepoint
-  c - Zigzag: Wall line extends path
-  d - PathExtension: Vertical walls block direct path
+  a-d       T1 archer baselines (Dual/Triple/Flanking/Central)
+  upgrades  Upgrade matrix (each tower A/B final + wall Fortress/Tar)
+  all       Baselines + upgrade matrix
+  Named     e.g. archer_sniper, cannon_siege, wall_fortress, ...
 
 Examples:
-  godot --headless -- --strategy all --count 1000 --json
-  godot --headless -- --config balance.json --json
-  godot --headless -- --save-config default_config.json
+  godot --headless -- --strategy upgrades --count 50 --json
+  godot --headless -- --ai balanced --count 100 --json
+  godot --headless -- --config balance.json --strategy all --json
 """
 	)
 
@@ -129,6 +251,7 @@ func _run_simulation(args: Array) -> void:
 	var config_file := ""
 	var save_config_file := ""
 	var output_file := ""
+	var ai_mode := ""
 
 	for i in range(args.size()):
 		match args[i]:
@@ -141,6 +264,9 @@ func _run_simulation(args: Array) -> void:
 			"--strategy":
 				if i + 1 < args.size():
 					strategy_arg = args[i + 1].to_lower()
+			"--ai":
+				if i + 1 < args.size():
+					ai_mode = args[i + 1].to_lower()
 			"--json":
 				json_output = true
 			"--config":
@@ -219,12 +345,16 @@ func _run_simulation(args: Array) -> void:
 	runner.register_enemy(breaker_data)
 	runner.register_enemy(boss_golem_data)
 
-	# Determine which strategies to run
+	var all_strategies := _get_all_strategies()
 	var strategies_to_run: Array[String] = []
-	if strategy_arg == "all":
-		strategies_to_run = ["a", "b", "c", "d"]
-	else:
-		strategies_to_run = [strategy_arg]
+	if ai_mode == "":
+		if strategy_arg == "all":
+			strategies_to_run = ["a", "b", "c", "d"]
+			strategies_to_run.append_array(_get_upgrade_strategy_ids())
+		elif strategy_arg == "upgrades":
+			strategies_to_run = _get_upgrade_strategy_ids()
+		else:
+			strategies_to_run = [strategy_arg]
 
 	# Collect results
 	var all_results := {}
@@ -263,39 +393,25 @@ func _run_simulation(args: Array) -> void:
 			)
 		)
 		print("  Shrine: %d HP" % config.shrine_hp)
+		if ai_mode != "":
+			print("  AI mode: %s" % ai_mode)
 		print("")
 		print("Running %d simulations per strategy..." % count)
 		print("")
 
-	for strat_id in strategies_to_run:
-		var strategy: Dictionary
-		match strat_id:
-			"a":
-				strategy = _get_strategy_a()
-			"b":
-				strategy = _get_strategy_b()
-			"c":
-				strategy = _get_strategy_c()
-			"d":
-				strategy = _get_strategy_d()
-			_:
-				push_error("Unknown strategy: " + strat_id)
-				continue
-
-		var towers: Array[Dictionary] = []
-		for t in strategy.towers:
-			towers.append(t)
-
-		var walls: Array[Vector2i] = []
-		for w in strategy.walls:
-			walls.append(w)
-
-		var results := runner.run_batch(count, base_seed, towers, walls)
+	if ai_mode == "balanced":
+		var BalancedAIClass = preload("res://simulation/ai/strategies/balanced_ai.gd")
+		var results := runner.run_batch_with_ai(
+			count,
+			base_seed,
+			func(game: GameState, wave: int) -> void:
+				var ai = BalancedAIClass.new(game)
+				ai.make_decisions(wave)
+		)
 		var analysis := SimulationRunner.analyze_results(results)
-
-		all_results[strat_id] = {
-			"name": strategy.name,
-			"description": strategy.description,
+		all_results["ai_balanced"] = {
+			"name": "BalancedAI",
+			"description": "Coverage towers + upgrades + walls",
 			"runs": count,
 			"wins": analysis.wins,
 			"win_rate": analysis.win_rate,
@@ -304,15 +420,60 @@ func _run_simulation(args: Array) -> void:
 			"avg_killed": analysis.avg_killed,
 			"avg_leaked": analysis.avg_leaked,
 			"avg_duration_ms": analysis.avg_duration_ms,
+			"upgrade_path_counts": analysis.get("upgrade_path_counts", {}),
 		}
-
 		if not json_output:
-			print("Strategy %s (%s):" % [strat_id.to_upper(), strategy.name])
+			print("AI Balanced:")
 			print("  Win rate: %.1f%%" % [analysis.win_rate * 100])
 			print("  Avg shrine HP: %.1f" % analysis.avg_shrine_hp)
-			print("  Avg gold: %.1f" % analysis.avg_gold)
-			print("  Avg killed/leaked: %.0f / %.0f" % [analysis.avg_killed, analysis.avg_leaked])
+			print("  Upgrade paths: %s" % str(analysis.get("upgrade_path_counts", {})))
 			print("")
+	else:
+		for strat_id in strategies_to_run:
+			if not all_strategies.has(strat_id):
+				push_error("Unknown strategy: " + strat_id)
+				continue
+			var strategy: Dictionary = all_strategies[strat_id]
+
+			var towers: Array[Dictionary] = []
+			for t in strategy.towers:
+				towers.append(t)
+
+			var walls: Array[Vector2i] = []
+			for w in strategy.walls:
+				walls.append(w)
+
+			var tower_upgrades: Array = strategy.get("tower_upgrades", [])
+			var wall_upgrades: Array = strategy.get("wall_upgrades", [])
+
+			var results := runner.run_batch(
+				count, base_seed, towers, walls, tower_upgrades, wall_upgrades
+			)
+			var analysis := SimulationRunner.analyze_results(results)
+
+			all_results[strat_id] = {
+				"name": strategy.name,
+				"description": strategy.description,
+				"runs": count,
+				"wins": analysis.wins,
+				"win_rate": analysis.win_rate,
+				"avg_shrine_hp": analysis.avg_shrine_hp,
+				"avg_gold": analysis.avg_gold,
+				"avg_killed": analysis.avg_killed,
+				"avg_leaked": analysis.avg_leaked,
+				"avg_duration_ms": analysis.avg_duration_ms,
+				"upgrade_path_counts": analysis.get("upgrade_path_counts", {}),
+			}
+
+			if not json_output:
+				print("Strategy %s (%s):" % [strat_id, strategy.name])
+				print("  Win rate: %.1f%%" % [analysis.win_rate * 100])
+				print("  Avg shrine HP: %.1f" % analysis.avg_shrine_hp)
+				print("  Avg gold: %.1f" % analysis.avg_gold)
+				print(
+					"  Avg killed/leaked: %.0f / %.0f" % [analysis.avg_killed, analysis.avg_leaked]
+				)
+				print("")
 
 	var end_time := Time.get_ticks_msec()
 
@@ -330,6 +491,7 @@ func _run_simulation(args: Array) -> void:
 			"config": config.to_dict(),
 			"strategies": all_results,
 			"best_strategy": best_strategy,
+			"ai_mode": ai_mode,
 			"total_duration_ms": end_time - start_time,
 			"timestamp": Time.get_datetime_string_from_system(),
 			"parameter_bounds": BalanceConfig.get_parameter_bounds(),

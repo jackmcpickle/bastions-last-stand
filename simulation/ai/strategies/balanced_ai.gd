@@ -21,6 +21,9 @@ func make_decisions(wave: int) -> void:
 	# 3. Upgrade existing towers
 	_upgrade_towers()
 
+	# 4. Upgrade walls when gold allows
+	_upgrade_walls()
+
 
 func _build_emergency_walls() -> void:
 	## Build walls near shrine when HP is low
@@ -102,4 +105,25 @@ func _upgrade_towers() -> void:
 		if game_state.can_upgrade_tower(tower, upgrade.id):
 			game_state.upgrade_tower(tower, upgrade.id)
 			# Only upgrade one tower per wave to spread gold
+			break
+
+
+func _upgrade_walls() -> void:
+	## Upgrade damaged walls first, then any upgradeable wall
+	var upgradeable := get_upgradeable_walls()
+	if upgradeable.is_empty():
+		return
+
+	upgradeable.sort_custom(
+		func(a: SimWall, b: SimWall) -> bool: return a.get_hp_percent() < b.get_hp_percent()
+	)
+
+	for wall in upgradeable:
+		if game_state.gold < MIN_GOLD_RESERVE + 40:
+			break
+		var upgrade := get_best_upgrade_for_wall(wall)
+		if not upgrade:
+			continue
+		if game_state.can_upgrade_wall(wall, upgrade.id):
+			game_state.upgrade_wall(wall, upgrade.id)
 			break

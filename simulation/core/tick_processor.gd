@@ -138,11 +138,8 @@ func run_all_waves() -> GameResult:
 	result.enemies_leaked = game_state.enemies_leaked
 	result.total_damage_dealt = game_state.total_damage_dealt
 
-	# Collect tower stats
-	for tower in game_state.towers:
-		result.tower_stats[tower.id] = {
-			"damage": tower.total_damage_dealt, "kills": tower.kills, "shots": tower.shots_fired
-		}
+	# Collect tower / upgrade stats
+	_fill_result_loadout(result, game_state)
 
 	return result
 
@@ -184,7 +181,9 @@ class GameResult:
 	var enemies_leaked: int = 0
 	var total_damage_dealt: int = 0  # x1000
 	var wave_results: Array[WaveResult] = []
-	var tower_stats: Dictionary = {}  # tower_id -> {damage, kills, shots}
+	var tower_stats: Dictionary = {}  # tower_id -> {damage, kills, shots, tier, branch}
+	## Final loadout for upgrade balance reporting
+	var upgrade_loadout: Array = []  # [{kind, id, pos, tier, branch}]
 
 	func get_duration_ms() -> int:
 		return end_time - start_time
@@ -202,7 +201,49 @@ class GameResult:
 			"enemies_leaked": enemies_leaked,
 			"total_damage_dealt": total_damage_dealt,
 			"tower_stats": tower_stats,
+			"upgrade_loadout": upgrade_loadout,
 		}
+
+
+static func _fill_result_loadout(result: GameResult, game_state: GameState) -> void:
+	for tower in game_state.towers:
+		var key := "%s@%d,%d" % [tower.id, tower.position.x, tower.position.y]
+		result.tower_stats[key] = {
+			"id": tower.id,
+			"damage": tower.total_damage_dealt,
+			"kills": tower.kills,
+			"shots": tower.shots_fired,
+			"tier": tower.tier,
+			"branch": tower.branch,
+			"pos": {"x": tower.position.x, "y": tower.position.y},
+		}
+		(
+			result
+			. upgrade_loadout
+			. append(
+				{
+					"kind": "tower",
+					"id": tower.id,
+					"tier": tower.tier,
+					"branch": tower.branch,
+					"pos": {"x": tower.position.x, "y": tower.position.y},
+				}
+			)
+		)
+	for wall in game_state.walls:
+		(
+			result
+			. upgrade_loadout
+			. append(
+				{
+					"kind": "wall",
+					"id": "wall",
+					"tier": wall.tier,
+					"branch": wall.branch,
+					"pos": {"x": wall.position.x, "y": wall.position.y},
+				}
+			)
+		)
 
 
 func _process_ground_effects(delta_ms: int) -> void:

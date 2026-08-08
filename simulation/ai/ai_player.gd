@@ -153,11 +153,46 @@ func get_upgradeable_towers() -> Array[SimTower]:
 
 
 func get_best_upgrade_for_tower(tower: SimTower) -> TowerUpgradeData:
-	## Returns best upgrade for tower (by damage increase)
+	## Prefer branch variety at T2, then highest damage at T3
 	var upgrades := tower.get_available_upgrades()
 	if upgrades.is_empty():
 		return null
 
-	# For simplicity, pick first available upgrade
-	# More sophisticated AI could evaluate upgrade value
+	if tower.tier == 1:
+		var prefer_b := (tower.kills + tower.position.x) % 2 == 1
+		for upgrade in upgrades:
+			if prefer_b and upgrade.branch == "B":
+				return upgrade
+			if not prefer_b and upgrade.branch == "A":
+				return upgrade
+
+	var best: TowerUpgradeData = upgrades[0]
+	for upgrade in upgrades:
+		if upgrade.damage > best.damage:
+			best = upgrade
+		elif upgrade.damage == best.damage and upgrade.special.size() > best.special.size():
+			best = upgrade
+	return best
+
+
+func get_upgradeable_walls() -> Array[SimWall]:
+	var result: Array[SimWall] = []
+	for wall in game_state.walls:
+		if not wall.get_available_upgrades().is_empty():
+			result.append(wall)
+	return result
+
+
+func get_best_upgrade_for_wall(wall: SimWall) -> WallUpgradeData:
+	## Prefer reinforcing damaged walls (branch A), else utility (B)
+	var upgrades := wall.get_available_upgrades()
+	if upgrades.is_empty():
+		return null
+	if wall.tier == 1:
+		var damaged := wall.hp < wall.max_hp
+		for upgrade in upgrades:
+			if damaged and upgrade.branch == "A":
+				return upgrade
+			if not damaged and upgrade.branch == "B":
+				return upgrade
 	return upgrades[0]
