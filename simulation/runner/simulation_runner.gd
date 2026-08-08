@@ -11,6 +11,7 @@ var _map_data: MapData
 var _wave_data: WaveData
 var _tower_registry: Dictionary = {}
 var _enemy_registry: Dictionary = {}
+var _wall_data: WallData
 var _balance_config: BalanceConfig
 
 
@@ -26,6 +27,10 @@ func register_tower(data: TowerData) -> void:
 
 func register_enemy(data: EnemyData) -> void:
 	_enemy_registry[data.id] = data
+
+
+func register_wall(data: WallData) -> void:
+	_wall_data = data
 
 
 func get_balance_config() -> BalanceConfig:
@@ -73,6 +78,8 @@ func run_single(
 		var data: EnemyData = _enemy_registry[id].duplicate()
 		data = _apply_config_to_enemy(data)
 		game.register_enemy_data(data)
+	if _wall_data:
+		game.register_wall_data(_wall_data.duplicate())
 
 	# Initialize with config
 	game.initialize_with_config(_map_data, _wave_data, _balance_config, seed)
@@ -141,6 +148,8 @@ func _run_with_ai(seed: int, ai_strategy: Callable) -> TickProcessor.GameResult:
 		game.register_tower_data(_tower_registry[id])
 	for id in _enemy_registry:
 		game.register_enemy_data(_enemy_registry[id])
+	if _wall_data:
+		game.register_wall_data(_wall_data)
 
 	# Initialize
 	game.initialize(_map_data, _wave_data, seed)

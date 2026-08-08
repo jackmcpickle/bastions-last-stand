@@ -215,6 +215,76 @@ static func create_upgrade_data(tier: int, branch: String) -> TowerUpgradeData:
 	return data
 
 
+static func create_basic_wall_data() -> WallData:
+	var data := WallData.new()
+	data.id = "wall"
+	data.display_name = "Wall"
+	data.base_cost = 10
+	data.hp = 100
+	data.upgrade_cost_t2 = 40
+	data.upgrade_cost_t3 = 80
+
+	var reinforced := WallUpgradeData.new()
+	reinforced.id = "wall_reinforced"
+	reinforced.display_name = "Reinforced"
+	reinforced.tier = 2
+	reinforced.branch = "A"
+	reinforced.hp = 250
+	reinforced.special = {"self_repair": 5, "repair_out_of_combat": true}
+
+	var reactive := WallUpgradeData.new()
+	reactive.id = "wall_reactive"
+	reactive.display_name = "Reactive"
+	reactive.tier = 2
+	reactive.branch = "B"
+	reactive.hp = 100
+	reactive.special = {"stun_on_hit_ms": 500, "stun_cooldown_ms": 8000}
+
+	var fortress := WallUpgradeData.new()
+	fortress.id = "wall_fortress"
+	fortress.display_name = "Fortress Wall"
+	fortress.tier = 3
+	fortress.branch = "A1"
+	fortress.parent_branch = "A"
+	fortress.hp = 500
+	fortress.special = {"self_repair": 10, "repair_out_of_combat": false}
+
+	var thorned := WallUpgradeData.new()
+	thorned.id = "wall_thorned"
+	thorned.display_name = "Thorned Wall"
+	thorned.tier = 3
+	thorned.branch = "A2"
+	thorned.parent_branch = "A"
+	thorned.hp = 300
+	thorned.special = {"self_repair": 5, "repair_out_of_combat": true, "reflect_pct": 200}
+
+	var shock := WallUpgradeData.new()
+	shock.id = "wall_shock"
+	shock.display_name = "Shock Wall"
+	shock.tier = 3
+	shock.branch = "B1"
+	shock.parent_branch = "B"
+	shock.hp = 150
+	shock.special = {"stun_on_hit_ms": 1000, "stun_cooldown_ms": 5000}
+
+	var tar := WallUpgradeData.new()
+	tar.id = "wall_tar"
+	tar.display_name = "Tar Wall"
+	tar.tier = 3
+	tar.branch = "B2"
+	tar.parent_branch = "B"
+	tar.hp = 150
+	tar.special = {
+		"stun_on_hit_ms": 500,
+		"stun_cooldown_ms": 8000,
+		"tar_slow": 400,
+		"tar_radius": 2,
+	}
+
+	data.upgrades = [reinforced, reactive, fortress, thorned, shock, tar]
+	return data
+
+
 static func create_test_game_state() -> GameState:
 	var map := create_basic_map_data()
 	var waves := create_basic_wave_data()
@@ -222,6 +292,7 @@ static func create_test_game_state() -> GameState:
 	state.initialize(map, waves, 12345)
 	state.register_enemy_data(create_basic_enemy_data())
 	state.register_tower_data(create_basic_tower_data())
+	state.register_wall_data(create_basic_wall_data())
 	return state
 
 

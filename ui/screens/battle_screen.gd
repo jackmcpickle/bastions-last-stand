@@ -199,6 +199,7 @@ func _register_data_to_state(state: GameState) -> void:
 	state.register_tower_data(load("res://resources/towers/lightning_tower.tres"))
 	state.register_tower_data(load("res://resources/towers/flame_tower.tres"))
 	state.register_tower_data(load("res://resources/towers/support_tower.tres"))
+	state.register_wall_data(load("res://resources/walls/basic_wall.tres"))
 
 	# Register all enemies
 	state.register_enemy_data(load("res://resources/enemies/grunt.tres"))

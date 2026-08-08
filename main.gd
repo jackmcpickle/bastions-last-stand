@@ -184,6 +184,7 @@ func _run_simulation(args: Array) -> void:
 	var lightning_data: TowerData = load("res://resources/towers/lightning_tower.tres")
 	var flame_data: TowerData = load("res://resources/towers/flame_tower.tres")
 	var support_data: TowerData = load("res://resources/towers/support_tower.tres")
+	var wall_data: WallData = load("res://resources/walls/basic_wall.tres")
 
 	# Load all enemy data
 	var grunt_data: EnemyData = load("res://resources/enemies/grunt.tres")
@@ -206,6 +207,7 @@ func _run_simulation(args: Array) -> void:
 	runner.register_tower(lightning_data)
 	runner.register_tower(flame_data)
 	runner.register_tower(support_data)
+	runner.register_wall(wall_data)
 
 	# Register all enemies
 	runner.register_enemy(grunt_data)

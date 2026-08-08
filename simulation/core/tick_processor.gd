@@ -41,6 +41,9 @@ func process_tick() -> TickResult:
 	# 2.6. Process siege attacks (no-path enemies attack blockers)
 	Combat.process_siege_attacks(game_state, TICK_MS)
 
+	# 2.7. Wall repair / tar auras (after damage so combat_idle resets apply)
+	Combat.process_wall_effects(game_state, TICK_MS)
+
 	# 3. Process status effects (DOTs, slow decay, etc.)
 	Combat.process_status_effects(game_state, TICK_MS)
 

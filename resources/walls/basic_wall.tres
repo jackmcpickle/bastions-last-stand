@@ -1,0 +1,81 @@
+[gd_resource type="Resource" script_class="WallData" load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://resources/wall_data.gd" id="1"]
+[ext_resource type="Script" path="res://resources/wall_upgrade_data.gd" id="2"]
+
+[sub_resource type="Resource" id="wall_reinforced"]
+script = ExtResource("2")
+id = "wall_reinforced"
+display_name = "Reinforced"
+tier = 2
+branch = "A"
+parent_branch = ""
+hp = 250
+special = {"self_repair": 5, "repair_out_of_combat": true}
+description = "250 HP; repairs 5 HP/s out of combat"
+
+[sub_resource type="Resource" id="wall_reactive"]
+script = ExtResource("2")
+id = "wall_reactive"
+display_name = "Reactive"
+tier = 2
+branch = "B"
+parent_branch = ""
+hp = 100
+special = {"stun_on_hit_ms": 500, "stun_cooldown_ms": 8000}
+description = "Stuns attackers 0.5s (8s cooldown)"
+
+[sub_resource type="Resource" id="wall_fortress"]
+script = ExtResource("2")
+id = "wall_fortress"
+display_name = "Fortress Wall"
+tier = 3
+branch = "A1"
+parent_branch = "A"
+hp = 500
+special = {"self_repair": 10, "repair_out_of_combat": false}
+description = "500 HP; repairs 10 HP/s always"
+
+[sub_resource type="Resource" id="wall_thorned"]
+script = ExtResource("2")
+id = "wall_thorned"
+display_name = "Thorned Wall"
+tier = 3
+branch = "A2"
+parent_branch = "A"
+hp = 300
+special = {"self_repair": 5, "repair_out_of_combat": true, "reflect_pct": 200}
+description = "Reflects 20% melee damage; keeps out-of-combat repair"
+
+[sub_resource type="Resource" id="wall_shock"]
+script = ExtResource("2")
+id = "wall_shock"
+display_name = "Shock Wall"
+tier = 3
+branch = "B1"
+parent_branch = "B"
+hp = 150
+special = {"stun_on_hit_ms": 1000, "stun_cooldown_ms": 5000}
+description = "Stuns attackers 1s (5s cooldown)"
+
+[sub_resource type="Resource" id="wall_tar"]
+script = ExtResource("2")
+id = "wall_tar"
+display_name = "Tar Wall"
+tier = 3
+branch = "B2"
+parent_branch = "B"
+hp = 150
+special = {"stun_on_hit_ms": 500, "stun_cooldown_ms": 8000, "tar_slow": 400, "tar_radius": 2}
+description = "40% slow in 2-tile radius"
+
+[resource]
+script = ExtResource("1")
+id = "wall"
+display_name = "Wall"
+base_cost = 10
+hp = 100
+upgrade_cost_t2 = 40
+upgrade_cost_t3 = 80
+special = {}
+upgrades = [SubResource("wall_reinforced"), SubResource("wall_reactive"), SubResource("wall_fortress"), SubResource("wall_thorned"), SubResource("wall_shock"), SubResource("wall_tar")]

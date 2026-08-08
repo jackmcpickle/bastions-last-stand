@@ -21,6 +21,7 @@ var map_data: MapData
 var wave_data: WaveData
 var tower_registry: Dictionary = {}  # id -> TowerData
 var enemy_registry: Dictionary = {}  # id -> EnemyData
+var wall_data: WallData  # Shared wall config / upgrade tree
 
 ## Core systems
 var pathfinding: SimPathfinding
@@ -116,6 +117,10 @@ func register_enemy_data(data: EnemyData) -> void:
 	enemy_registry[data.id] = data
 
 
+func register_wall_data(data: WallData) -> void:
+	wall_data = data
+
+
 func get_tower_data(id: String) -> TowerData:
 	return tower_registry.get(id)
 
@@ -204,12 +209,16 @@ func place_wall(pos: Vector2i) -> SimWall:
 	var wall_cost := balance_config.wall_cost if balance_config else 10
 
 	var wall := SimWall.new()
-	wall.position = pos
-	wall.hp = 100
-	wall.max_hp = 100
+	if wall_data:
+		wall.initialize(wall_data, pos)
+	else:
+		wall.position = pos
+		wall.hp = 100
+		wall.max_hp = 100
 
 	gold -= wall_cost
 	total_gold_spent += wall_cost
+	wall.total_cost = wall_cost
 	walls.append(wall)
 
 	pathfinding.set_blocked(pos, true)
@@ -284,6 +293,48 @@ func _get_upgrade_cost(tower: SimTower, upgrade: TowerUpgradeData) -> int:
 		return tower.data.upgrade_cost_t2
 	elif upgrade.tier == 3:
 		return tower.data.upgrade_cost_t3
+	return 0
+
+
+## Wall upgrades
+func can_upgrade_wall(wall: SimWall, upgrade_id: String) -> bool:
+	if not wall or not wall.data:
+		return false
+	var upgrade := _find_wall_upgrade(wall.data, upgrade_id)
+	if not upgrade:
+		return false
+	var cost := _get_wall_upgrade_cost(wall, upgrade)
+	if cost > gold:
+		return false
+	return wall.can_upgrade_to(upgrade)
+
+
+func upgrade_wall(wall: SimWall, upgrade_id: String) -> bool:
+	if not can_upgrade_wall(wall, upgrade_id):
+		return false
+
+	var upgrade := _find_wall_upgrade(wall.data, upgrade_id)
+	var cost := _get_wall_upgrade_cost(wall, upgrade)
+
+	gold -= cost
+	total_gold_spent += cost
+	wall.total_cost += cost
+	wall.apply_upgrade(upgrade)
+	return true
+
+
+func _find_wall_upgrade(data: WallData, upgrade_id: String) -> WallUpgradeData:
+	for upgrade in data.upgrades:
+		if upgrade.id == upgrade_id:
+			return upgrade
+	return null
+
+
+func _get_wall_upgrade_cost(wall: SimWall, upgrade: WallUpgradeData) -> int:
+	if upgrade.tier == 2:
+		return wall.data.upgrade_cost_t2
+	elif upgrade.tier == 3:
+		return wall.data.upgrade_cost_t3
 	return 0
 
 

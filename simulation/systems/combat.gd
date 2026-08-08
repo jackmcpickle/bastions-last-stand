@@ -614,6 +614,71 @@ static func _resurrect_nearby_dead(enemy: SimEnemy, game_state: GameState) -> vo
 		game_state.dead_enemies.remove_at(resurrected_idx)
 
 
+static func process_wall_effects(game_state: GameState, delta_ms: int) -> void:
+	## Tick wall timers, self-repair, and tar auras
+	for wall in game_state.walls:
+		wall.process_timers(delta_ms)
+		_apply_wall_repair(wall, delta_ms)
+		_apply_tar_aura(wall, game_state, delta_ms)
+
+
+static func _apply_wall_repair(wall: SimWall, delta_ms: int) -> void:
+	var repair_rate: int = wall.special.get("self_repair", 0)
+	if repair_rate <= 0:
+		wall.repair_accum_ms = 0
+		return
+	if wall.special.get("repair_out_of_combat", false) and not wall.is_out_of_combat():
+		return
+	if wall.hp >= wall.max_hp:
+		wall.repair_accum_ms = 0
+		return
+	wall.repair_accum_ms += repair_rate * delta_ms
+	var heal := wall.repair_accum_ms / 1000
+	if heal <= 0:
+		return
+	wall.repair_accum_ms -= heal * 1000
+	wall.hp = mini(wall.hp + heal, wall.max_hp)
+
+
+static func _apply_tar_aura(wall: SimWall, game_state: GameState, delta_ms: int) -> void:
+	if not wall.special.has("tar_slow"):
+		return
+	var slow_amount: int = wall.special.tar_slow
+	var radius: float = float(wall.special.get("tar_radius", 2))
+	var radius_sq := radius * radius
+	var wall_pos := Vector2(wall.position)
+	for enemy in game_state.enemies:
+		if enemy.is_dead() or enemy.is_flying:
+			continue
+		var dx := enemy.grid_pos.x - wall_pos.x
+		var dy := enemy.grid_pos.y - wall_pos.y
+		if dx * dx + dy * dy <= radius_sq:
+			enemy.apply_slow(slow_amount, maxi(delta_ms * 2, 200))
+
+
+static func _damage_wall(
+	wall: SimWall, amount: int, attacker: SimEnemy, game_state: GameState
+) -> void:
+	## Apply structure damage and on-hit wall specials (thorns / stun)
+	wall.take_damage(amount)
+	if attacker == null or attacker.is_dead():
+		return
+
+	# Reflect (thorns) — amount is raw HP, enemy damage is x1000
+	var reflect_pct: int = wall.special.get("reflect_pct", 0)
+	if reflect_pct > 0:
+		var reflected := amount * reflect_pct  # raw * x1000 => damage x1000
+		if reflected > 0:
+			attacker.take_damage(reflected)
+			game_state.total_damage_dealt += reflected
+
+	# Stun on hit (Reactive / Shock)
+	var stun_ms: int = wall.special.get("stun_on_hit_ms", 0)
+	if stun_ms > 0 and wall.stun_cooldown_remaining_ms <= 0:
+		attacker.apply_stun(stun_ms)
+		wall.stun_cooldown_remaining_ms = wall.special.get("stun_cooldown_ms", 5000)
+
+
 static func process_siege_attacks(game_state: GameState, _delta_ms: int) -> void:
 	## Ground enemies with no path attack nearest wall or tower
 	var walls_to_remove: Array[SimWall] = []
@@ -642,7 +707,7 @@ static func process_siege_attacks(game_state: GameState, _delta_ms: int) -> void
 			if tower.is_destroyed() and tower not in towers_to_remove:
 				towers_to_remove.append(tower)
 		else:
-			wall.take_damage(wall_damage)
+			_damage_wall(wall, wall_damage, enemy, game_state)
 			if wall.is_destroyed() and wall not in walls_to_remove:
 				walls_to_remove.append(wall)
 
@@ -716,7 +781,7 @@ static func process_wall_breaker_attacks(game_state: GameState, delta_ms: int) -
 
 		# Attack wall
 		var wall_damage: int = enemy.data.special.get("wall_damage", 10)
-		wall.take_damage(wall_damage)
+		_damage_wall(wall, wall_damage, enemy, game_state)
 
 		if wall.is_destroyed() and wall not in walls_to_remove:
 			walls_to_remove.append(wall)
