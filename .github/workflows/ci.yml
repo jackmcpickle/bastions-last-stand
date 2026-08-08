@@ -4,7 +4,6 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
 
 jobs:
   lint:
@@ -30,10 +29,16 @@ jobs:
           use-dotnet: false
       - name: Install GUT
         run: |
+          # Gut repo nests the addon under addons/gut; copy that tree into place.
+          # Pin to 9.3.1 for Godot 4.3 (newer GUT targets Godot 4.6+).
+          git clone --depth 1 --branch 9.3.1 https://github.com/bitwes/Gut.git /tmp/gut
           mkdir -p addons
-          git clone --depth 1 https://github.com/bitwes/Gut.git addons/gut
+          cp -r /tmp/gut/addons/gut addons/gut
+      - name: Import project
+        # First headless run generates .godot/ so scripts/resources resolve.
+        run: godot --headless --import || true
       - name: Run tests
-        run: godot --headless -s addons/gut/gut_cmdline.gd -gdir=res://tests -gexit
+        run: godot --headless -s addons/gut/gut_cmdln.gd -gdir=res://tests -gexit
 
   python-tests:
     runs-on: ubuntu-latest
