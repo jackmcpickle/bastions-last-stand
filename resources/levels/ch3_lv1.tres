@@ -31,4 +31,4 @@ difficulty_modifiers = {
 unlock_requirement = ""
 description = "Invisible enemies move unseen. Detection and AOE prevail."
 recommended_towers = Array[String](["cannon_tower", "lightning_tower"])
-enemy_types = Array[String](["stealth", "grunt", "shielded", "regen", "necromancer"])
+enemy_types = Array[String](["stealth", "grunt", "shielded", "regen", "necromancer", "phase_phantom", "siege_golem", "battering_ram"])

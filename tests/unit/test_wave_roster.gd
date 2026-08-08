@@ -31,7 +31,8 @@ func test_milestone_boss_placements() -> void:
 
 	assert_true(by_wave[10].has("swarm_queen"))
 	assert_true(by_wave[15].has("frost_wyrm"))
-	assert_true(by_wave[20].has("phase_phantom"))
+	assert_true(by_wave[21].has("phase_phantom"))
+	assert_false(by_wave[20].has("phase_phantom"))
 	assert_false(by_wave[20].has("boss_golem"))
 	assert_true(by_wave[25].has("necromancer"))
 	assert_true(by_wave[30].has("iron_colossus"))
@@ -79,7 +80,7 @@ func test_boss_is_first_spawn_group_on_milestone_waves() -> void:
 	var expected := {
 		10: "swarm_queen",
 		15: "frost_wyrm",
-		20: "phase_phantom",
+		21: "phase_phantom",
 		25: "necromancer",
 		30: "iron_colossus",
 	}
@@ -103,7 +104,7 @@ func test_final_wave_keeps_boss_golem_after_iron_colossus() -> void:
 
 func test_rush_and_smash_flags_unchanged() -> void:
 	var wave_data: WaveData = Waves1To10.create_full()
-	var rush_waves := [8, 14, 26]
+	var rush_waves := [8, 14, 20, 26]
 	var smash_waves := [18, 24, 28]
 
 	for wave_number in rush_waves:
@@ -115,7 +116,7 @@ func test_rush_and_smash_flags_unchanged() -> void:
 		assert_false(wave_data.get_wave(wave_number).is_rush)
 
 	# Boss milestones are neither rush nor smash
-	for wave_number in [10, 15, 20, 25, 30]:
+	for wave_number in [10, 15, 21, 25, 30]:
 		var wave := wave_data.get_wave(wave_number)
 		assert_false(wave.is_rush)
 		assert_false(wave.is_smash)
@@ -127,10 +128,23 @@ func test_boss_wave_escorts_preserved() -> void:
 	assert_eq(counts[10].get("grunt", 0), 18)
 	assert_eq(counts[10].get("runner", 0), 10)
 	assert_eq(counts[15].get("stealth", 0), 3)
-	assert_eq(counts[20].get("tank", 0), 6)
-	assert_eq(counts[20].get("grunt", 0), 20)
+	assert_eq(counts[20].get("runner", 0), 35)
+	assert_eq(counts[20].get("swarm", 0), 25)
+	assert_eq(counts[21].get("phase_phantom", 0), 1)
+	assert_eq(counts[21].get("shielded", 0), 4)
 	assert_eq(counts[25].get("flyer", 0), 15)
 	assert_eq(counts[30].get("breaker", 0), 10)
+
+
+func test_smash_waves_include_siege_roster() -> void:
+	var counts := _spawn_counts_by_wave(Waves1To10.create_full())
+
+	assert_eq(counts[18].get("siege_golem", 0), 1)
+	assert_eq(counts[18].get("battering_ram", 0), 2)
+	assert_eq(counts[24].get("siege_golem", 0), 2)
+	assert_eq(counts[24].get("battering_ram", 0), 3)
+	assert_eq(counts[28].get("siege_golem", 0), 3)
+	assert_eq(counts[28].get("battering_ram", 0), 4)
 
 
 func test_level_metadata_includes_new_enemy_types() -> void:
@@ -138,9 +152,12 @@ func test_level_metadata_includes_new_enemy_types() -> void:
 		"res://resources/levels/ch1_lv2.tres": ["swarm_queen"],
 		"res://resources/levels/ch1_lv3.tres": ["swarm_queen"],
 		"res://resources/levels/ch2_lv1.tres": ["healer", "frost_wyrm"],
-		"res://resources/levels/ch2_lv2.tres": ["shielded", "splitter", "phase_phantom"],
-		"res://resources/levels/ch3_lv1.tres": ["shielded", "regen", "necromancer"],
-		"res://resources/levels/ch3_lv2.tres": ["shielded", "splitter", "regen"],
+		"res://resources/levels/ch2_lv2.tres":
+		["shielded", "splitter", "phase_phantom", "siege_golem", "battering_ram"],
+		"res://resources/levels/ch3_lv1.tres":
+		["shielded", "regen", "necromancer", "phase_phantom", "siege_golem", "battering_ram"],
+		"res://resources/levels/ch3_lv2.tres":
+		["shielded", "splitter", "regen", "siege_golem", "battering_ram"],
 		"res://resources/levels/ch3_lv3.tres": ["iron_colossus"],
 	}
 
@@ -172,8 +189,12 @@ func test_progression_manager_level_enemy_types_match_roster() -> void:
 	assert_true("healer" in by_id["ch2_lv1"].enemy_types)
 	assert_true("frost_wyrm" in by_id["ch2_lv1"].enemy_types)
 	assert_true("phase_phantom" in by_id["ch2_lv2"].enemy_types)
+	assert_true("siege_golem" in by_id["ch2_lv2"].enemy_types)
 	assert_true("necromancer" in by_id["ch3_lv1"].enemy_types)
+	assert_true("phase_phantom" in by_id["ch3_lv1"].enemy_types)
+	assert_true("battering_ram" in by_id["ch3_lv1"].enemy_types)
 	assert_true("splitter" in by_id["ch3_lv2"].enemy_types)
+	assert_true("siege_golem" in by_id["ch3_lv2"].enemy_types)
 	assert_true("iron_colossus" in by_id["ch3_lv3"].enemy_types)
 	assert_true("boss_golem" in by_id["ch3_lv3"].enemy_types)
 	assert_false("mini" in by_id["ch3_lv3"].enemy_types)
@@ -217,10 +238,22 @@ func test_wave_19_spawns_splitter_without_prelisting_mini() -> void:
 	assert_eq(counts.get("mini", 0), 0)
 
 
-func test_wave_20_spawns_phase_phantom_not_golem() -> void:
+func test_wave_20_is_rush_without_boss() -> void:
 	var state := _make_roster_game_state()
 	assert_true(state.start_wave(20))
-	_drain_spawns(state, 20000)
+	_drain_spawns(state, 40000)
+
+	var counts := _alive_enemy_counts(state)
+	assert_eq(counts.get("runner", 0), 35)
+	assert_eq(counts.get("swarm", 0), 25)
+	assert_eq(counts.get("phase_phantom", 0), 0)
+	assert_eq(counts.get("boss_golem", 0), 0)
+
+
+func test_wave_21_spawns_phase_phantom() -> void:
+	var state := _make_roster_game_state()
+	assert_true(state.start_wave(21))
+	_drain_spawns(state, 40000)
 
 	var ids := _alive_enemy_ids(state)
 	assert_true(ids.has("phase_phantom"))
@@ -268,6 +301,8 @@ func _make_roster_game_state() -> GameState:
 		"res://resources/enemies/swarm.tres",
 		"res://resources/enemies/stealth.tres",
 		"res://resources/enemies/breaker.tres",
+		"res://resources/enemies/siege_golem.tres",
+		"res://resources/enemies/battering_ram.tres",
 		"res://resources/enemies/healer.tres",
 		"res://resources/enemies/shielded.tres",
 		"res://resources/enemies/splitter.tres",

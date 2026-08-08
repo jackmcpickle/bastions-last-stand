@@ -584,6 +584,44 @@ func test_complete_wave_applies_early_start_bonus() -> void:
 	assert_eq(_game_state.gold, 220)
 
 
+func test_complete_wave_doubles_early_bonus_on_rush() -> void:
+	_game_state.wave_data = Waves1To10.create_full()
+	_game_state.wave_in_progress = true
+	_game_state.current_wave = 8
+	_game_state.wave_gold_earned = 100
+	_game_state.wave_shrine_damaged = true
+	_game_state.wave_seconds_early = 10.0
+	_game_state.gold = 200
+
+	_game_state.complete_wave()
+
+	# 20% early ×2 Rush = 40
+	assert_eq(_game_state.gold, 240)
+
+
+func test_start_wave_rush_uses_balance_config_interval() -> void:
+	_game_state.wave_data = Waves1To10.create_full()
+	_game_state.balance_config.wave_spawn_interval_rush_ms = 350
+	assert_true(_game_state.start_wave(8))
+
+	assert_gt(_game_state.spawn_queue.size(), 1)
+	var d0: int = _game_state.spawn_queue[0].delay_remaining
+	var d1: int = _game_state.spawn_queue[1].delay_remaining
+	assert_eq(d1 - d0, 350)
+
+
+func test_start_wave_non_rush_uses_authored_interval() -> void:
+	_game_state.wave_data = Waves1To10.create_full()
+	_game_state.balance_config.wave_spawn_interval_rush_ms = 350
+	var wave := _game_state.wave_data.get_wave(1)
+	assert_true(_game_state.start_wave(1))
+
+	assert_gt(_game_state.spawn_queue.size(), 1)
+	var d0: int = _game_state.spawn_queue[0].delay_remaining
+	var d1: int = _game_state.spawn_queue[1].delay_remaining
+	assert_eq(d1 - d0, wave.spawn_interval_ms)
+
+
 func test_complete_wave_applies_interest_when_unlocked() -> void:
 	_game_state.balance_config.interest_unlocked = true
 	_game_state.wave_in_progress = true

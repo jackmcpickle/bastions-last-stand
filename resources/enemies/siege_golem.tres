@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/enemy_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "siege_golem"
+display_name = "Siege Golem"
+hp = 800
+speed = 300
+armor = 500
+gold_value = 100
+special = {
+"wall_breaker": true,
+"wall_damage": 50,
+"slow_immune": true,
+"structure_attack_interval_ms": 1000
+}
+is_boss = false
+boss_abilities = []

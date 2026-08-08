@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/enemy_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "battering_ram"
+display_name = "Battering Ram"
+hp = 300
+speed = 600
+armor = 200
+gold_value = 40
+special = {
+"wall_breaker": true,
+"wall_damage": 40,
+"structure_attack_interval_ms": 800,
+"charge_impact_bonus": 2000,
+"charge_range": 3,
+"charge_speed_bonus": 1000,
+"charge_cooldown_ms": 3000
+}
+is_boss = false
+boss_abilities = []

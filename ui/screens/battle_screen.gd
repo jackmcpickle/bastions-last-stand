@@ -209,6 +209,8 @@ func _register_data_to_state(state: GameState) -> void:
 	state.register_enemy_data(load("res://resources/enemies/swarm.tres"))
 	state.register_enemy_data(load("res://resources/enemies/stealth.tres"))
 	state.register_enemy_data(load("res://resources/enemies/breaker.tres"))
+	state.register_enemy_data(load("res://resources/enemies/siege_golem.tres"))
+	state.register_enemy_data(load("res://resources/enemies/battering_ram.tres"))
 	state.register_enemy_data(load("res://resources/enemies/healer.tres"))
 	state.register_enemy_data(load("res://resources/enemies/shielded.tres"))
 	state.register_enemy_data(load("res://resources/enemies/splitter.tres"))

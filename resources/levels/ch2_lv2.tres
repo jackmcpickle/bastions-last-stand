@@ -31,4 +31,4 @@ difficulty_modifiers = {
 unlock_requirement = "ch2_lv1"
 description = "Balanced enemy composition. Adapt your tower mix."
 recommended_towers = Array[String](["archer_tower", "cannon_tower", "frost_tower"])
-enemy_types = Array[String](["grunt", "runner", "tank", "shielded", "splitter", "phase_phantom"])
+enemy_types = Array[String](["grunt", "runner", "tank", "shielded", "splitter", "phase_phantom", "siege_golem", "battering_ram"])

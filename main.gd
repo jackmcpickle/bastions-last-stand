@@ -170,6 +170,36 @@ func _get_all_strategies() -> Dictionary:
 		[{pos = wall_pos, upgrade_id = "wall_reactive"}, {pos = wall_pos, upgrade_id = "wall_tar"}],
 	}
 
+	# Special-round stress strategies (full 30-wave roster).
+	# Keep placements affordable under default starting_gold 120
+	# (walls are placed before towers).
+	strategies["rush_aoe"] = {
+		"name": "RushAoe",
+		"description": "Flame Hellfire AOE for Rush density",
+		"towers": [{pos = Vector2i(2, 2), id = "flame"}],
+		"walls": [Vector2i(4, 3), Vector2i(5, 3)] as Array[Vector2i],
+		"tower_upgrades":
+		[
+			{pos = Vector2i(2, 2), upgrade_id = "flame_inferno"},
+			{pos = Vector2i(2, 2), upgrade_id = "flame_hellfire"},
+		],
+		"wall_upgrades": [],
+	}
+	strategies["smash_maze"] = {
+		"name": "SmashMaze",
+		"description": "Fortress wall line vs Smash breakers",
+		"towers": [{pos = Vector2i(7, 1), id = "archer"}],
+		"walls": [Vector2i(3, 3), Vector2i(4, 3), Vector2i(5, 3)] as Array[Vector2i],
+		"tower_upgrades": [],
+		"wall_upgrades":
+		[
+			{pos = Vector2i(4, 3), upgrade_id = "wall_reinforced"},
+			{pos = Vector2i(4, 3), upgrade_id = "wall_fortress"},
+			{pos = Vector2i(5, 3), upgrade_id = "wall_reinforced"},
+			{pos = Vector2i(5, 3), upgrade_id = "wall_thorned"},
+		],
+	}
+
 	return strategies
 
 
@@ -187,6 +217,8 @@ func _get_upgrade_strategy_ids() -> Array[String]:
 		"flame_plasma",
 		"wall_fortress",
 		"wall_tar",
+		"rush_aoe",
+		"smash_maze",
 	]
 
 
@@ -221,7 +253,7 @@ Options:
   --help, -h           Show this help
   --count N            Simulations per strategy (default: 100)
   --seed N             Base random seed (default: 12345)
-  --strategy S         Strategy: a-d, upgrades, all, or a named upgrade path
+  --strategy S         Strategy: a-d, upgrades, all, or a named path
   --ai balanced        Run BalancedAI instead of static strategies
   --json               Output results as JSON (for AI optimizer)
   --config FILE        Load balance config from JSON file
@@ -230,9 +262,9 @@ Options:
 
 Strategies:
   a-d       T1 archer baselines (Dual/Triple/Flanking/Central)
-  upgrades  Upgrade matrix (each tower A/B final + wall Fortress/Tar)
-  all       Baselines + upgrade matrix
-  Named     e.g. archer_sniper, cannon_siege, wall_fortress, ...
+  upgrades  Upgrade matrix + rush_aoe + smash_maze
+  all       Baselines + upgrade matrix + special-round strategies
+  Named     e.g. archer_sniper, rush_aoe, smash_maze, wall_fortress, ...
 
 Examples:
   godot --headless -- --strategy upgrades --count 50 --json
@@ -301,7 +333,7 @@ func _run_simulation(args: Array) -> void:
 
 	# Load base data (will be overridden by config)
 	var map := TestMap.create()
-	var waves := Waves1To10.create()
+	var waves := Waves1To10.create_full()
 
 	# Load all tower data
 	var archer_data: TowerData = load("res://resources/towers/archer_tower.tres")
@@ -320,6 +352,8 @@ func _run_simulation(args: Array) -> void:
 	var swarm_data: EnemyData = load("res://resources/enemies/swarm.tres")
 	var stealth_data: EnemyData = load("res://resources/enemies/stealth.tres")
 	var breaker_data: EnemyData = load("res://resources/enemies/breaker.tres")
+	var siege_golem_data: EnemyData = load("res://resources/enemies/siege_golem.tres")
+	var battering_ram_data: EnemyData = load("res://resources/enemies/battering_ram.tres")
 	var healer_data: EnemyData = load("res://resources/enemies/healer.tres")
 	var shielded_data: EnemyData = load("res://resources/enemies/shielded.tres")
 	var splitter_data: EnemyData = load("res://resources/enemies/splitter.tres")
@@ -353,6 +387,8 @@ func _run_simulation(args: Array) -> void:
 	runner.register_enemy(swarm_data)
 	runner.register_enemy(stealth_data)
 	runner.register_enemy(breaker_data)
+	runner.register_enemy(siege_golem_data)
+	runner.register_enemy(battering_ram_data)
 	runner.register_enemy(healer_data)
 	runner.register_enemy(shielded_data)
 	runner.register_enemy(splitter_data)
