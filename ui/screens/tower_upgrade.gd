@@ -51,6 +51,7 @@ func _load_tower_data() -> void:
 	_tower_data["frost"] = load("res://resources/towers/frost_tower.tres")
 	_tower_data["lightning"] = load("res://resources/towers/lightning_tower.tres")
 	_tower_data["flame"] = load("res://resources/towers/flame_tower.tres")
+	_tower_data["support"] = load("res://resources/towers/support_tower.tres")
 
 
 func _setup_tower_grid() -> void:

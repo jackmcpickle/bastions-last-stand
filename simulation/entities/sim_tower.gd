@@ -25,10 +25,18 @@ var total_cost: int = 0  # For sell value calculation
 var cooldown_ms: int = 0
 var target_priority: Targeting.Priority = Targeting.Priority.FIRST
 var frozen_ms: int = 0  # Frost Wyrm freeze duration
+var capacitor_charge_ms: int = 0  # Accumulated charge for capacitor special
 
 ## Durability (raw int, not x1000)
 var hp: int
 var max_hp: int
+
+## Ephemeral aura buffs (set each tick by support towers)
+var aura_damage_buff: int = 0  # x1000: +% damage
+var aura_speed_buff: int = 0  # x1000: +% attack speed
+var aura_bonus_range: int = 0  # flat tiles
+var aura_regen_per_sec: int = 0  # raw HP/s
+var regen_accum_ms: int = 0  # accumulates rate*ms for fractional HP/s
 
 ## Tracking
 var total_damage_dealt: int = 0  # x1000
@@ -91,7 +99,7 @@ func attack(target: SimEnemy, all_enemies: Array[SimEnemy]) -> Array[SimEnemy]:
 	if not can_attack():
 		return []
 
-	cooldown_ms = attack_speed_ms
+	cooldown_ms = get_attack_cooldown_ms()
 	shots_fired += 1
 
 	var hit_enemies: Array[SimEnemy] = []
@@ -160,6 +168,27 @@ func get_damage_for_target(target: SimEnemy) -> int:
 		final_damage = final_damage * (1000 + special.fast_bonus) / 1000
 
 	return final_damage
+
+
+func get_effective_range() -> int:
+	return range_tiles + aura_bonus_range
+
+
+func get_attack_cooldown_ms() -> int:
+	if aura_speed_buff <= 0:
+		return attack_speed_ms
+	return attack_speed_ms * 1000 / (1000 + aura_speed_buff)
+
+
+func clear_aura_buffs() -> void:
+	aura_damage_buff = 0
+	aura_speed_buff = 0
+	aura_bonus_range = 0
+	aura_regen_per_sec = 0
+
+
+func is_support_tower() -> bool:
+	return special.get("support_aura", false)
 
 
 func record_damage(amount: int) -> void:

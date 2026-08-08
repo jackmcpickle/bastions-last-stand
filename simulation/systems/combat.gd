@@ -6,12 +6,116 @@ extends RefCounted
 const SimGroundEffectClass = preload("res://simulation/entities/sim_ground_effect.gd")
 
 
+static func process_support_auras(game_state: GameState, delta_ms: int) -> void:
+	## Apply support tower auras, marks, and EMP effects for this tick
+
+	for tower in game_state.towers:
+		tower.clear_aura_buffs()
+	for enemy in game_state.enemies:
+		enemy.clear_mark_state()
+
+	for support in game_state.towers:
+		if not support.is_support_tower():
+			continue
+		_apply_support_aura(support, game_state, delta_ms)
+
+	_apply_tower_regen(game_state, delta_ms)
+
+
+static func _apply_support_aura(support: SimTower, game_state: GameState, delta_ms: int) -> void:
+	var special := support.special
+	var support_center := support.get_center()
+	var range_sq := float(support.range_tiles * support.range_tiles)
+
+	# Buff nearby ally towers (not self)
+	for tower in game_state.towers:
+		if tower == support:
+			continue
+		if not _is_in_aura_range(support_center, tower.get_center(), range_sq):
+			continue
+
+		var dmg_buff: int = special.get("aura_damage_buff", 0)
+		if dmg_buff > tower.aura_damage_buff:
+			tower.aura_damage_buff = dmg_buff
+
+		var spd_buff: int = special.get("aura_speed_buff", 0)
+		if spd_buff > tower.aura_speed_buff:
+			tower.aura_speed_buff = spd_buff
+
+		var rng_buff: int = special.get("aura_range_buff", 0)
+		if rng_buff > tower.aura_bonus_range:
+			tower.aura_bonus_range = rng_buff
+
+		var regen: int = special.get("aura_tower_regen", 0)
+		if regen > tower.aura_regen_per_sec:
+			tower.aura_regen_per_sec = regen
+
+	# Enemy mark / EMP / reveal
+	for enemy in game_state.enemies:
+		if enemy.is_dead():
+			continue
+		if not _is_in_aura_range(support_center, enemy.grid_pos, range_sq):
+			continue
+
+		if special.get("mark_enemies", false):
+			enemy.is_marked = true
+			var amp: int = special.get("mark_damage_amp", 0)
+			if amp > enemy.mark_damage_amp:
+				enemy.mark_damage_amp = amp
+			var crit: int = special.get("mark_crit_chance", 0)
+			if crit > enemy.mark_crit_chance:
+				enemy.mark_crit_chance = crit
+
+		if special.get("reveal_stealth", false) and enemy.is_stealth:
+			enemy.is_revealed = true
+
+		if special.has("emp_slow"):
+			enemy.apply_slow(special.emp_slow, maxi(delta_ms * 2, 200))
+
+		if special.get("emp_disable_shields", false):
+			enemy.shield_hp = 0
+
+
+static func _apply_tower_regen(game_state: GameState, delta_ms: int) -> void:
+	## Heal towers that have aura regen (accumulates fractional HP/s)
+	for tower in game_state.towers:
+		if tower.aura_regen_per_sec <= 0:
+			tower.regen_accum_ms = 0
+			continue
+		if tower.hp >= tower.max_hp:
+			tower.regen_accum_ms = 0
+			continue
+		# Accumulate rate*ms; every 1000 units = 1 HP
+		tower.regen_accum_ms += tower.aura_regen_per_sec * delta_ms
+		var heal := tower.regen_accum_ms / 1000
+		if heal <= 0:
+			continue
+		tower.regen_accum_ms -= heal * 1000
+		tower.hp = mini(tower.hp + heal, tower.max_hp)
+
+
+static func _is_in_aura_range(center: Vector2, target: Vector2, range_sq: float) -> bool:
+	var dx := center.x - target.x
+	var dy := center.y - target.y
+	return dx * dx + dy * dy <= range_sq
+
+
 static func process_tower_attacks(game_state: GameState, delta_ms: int) -> void:
 	## Process all tower attacks for this tick
 
 	for tower in game_state.towers:
+		# Support towers are aura-only
+		if tower.is_support_tower():
+			tower.process_cooldown(delta_ms)
+			continue
+
 		# Update cooldown
 		tower.process_cooldown(delta_ms)
+
+		# Capacitor before beam — Arc Pylon→Capacitor may still have beam:true
+		if tower.special.get("capacitor", false):
+			_process_capacitor_tower(tower, game_state, delta_ms)
+			continue
 
 		# Handle beam mode towers
 		if tower.special.has("beam"):
@@ -23,7 +127,7 @@ static func process_tower_attacks(game_state: GameState, delta_ms: int) -> void:
 
 		# Find target
 		var target := Targeting.find_target(
-			tower.position, game_state.enemies, tower.range_tiles, tower.target_priority
+			tower.position, game_state.enemies, tower.get_effective_range(), tower.target_priority
 		)
 
 		if not target:
@@ -112,9 +216,21 @@ static func _calculate_damage(tower: SimTower, enemy: SimEnemy, rng: RandomManag
 	var special := tower.special
 	var damage := tower.get_damage_for_target(enemy)
 
-	# Crit chance
-	if special.has("crit_chance") and rng:
-		var crit_chance: int = special.crit_chance  # x1000 (500 = 50%)
+	# Support aura damage buff
+	if tower.aura_damage_buff > 0:
+		damage = damage * (1000 + tower.aura_damage_buff) / 1000
+
+	# Marked enemy damage amp
+	if enemy.is_marked and enemy.mark_damage_amp > 0:
+		damage = damage * (1000 + enemy.mark_damage_amp) / 1000
+
+	# Crit chance (tower crit or mark-provided crit)
+	var crit_chance := 0
+	if special.has("crit_chance"):
+		crit_chance = special.crit_chance
+	if enemy.is_marked and enemy.mark_crit_chance > crit_chance:
+		crit_chance = enemy.mark_crit_chance
+	if crit_chance > 0 and rng:
 		if rng.randi_range(0, 999) < crit_chance:
 			damage *= 2
 
@@ -147,7 +263,7 @@ static func _process_beam_tower(tower: SimTower, game_state: GameState, delta_ms
 	## Handle continuous beam damage
 	# Beam towers attack every tick (no cooldown)
 	var target := Targeting.find_target(
-		tower.position, game_state.enemies, tower.range_tiles, tower.target_priority
+		tower.position, game_state.enemies, tower.get_effective_range(), tower.target_priority
 	)
 
 	if not target:
@@ -166,6 +282,48 @@ static func _process_beam_tower(tower: SimTower, game_state: GameState, delta_ms
 
 	if target.is_dead():
 		tower.record_kill()
+
+
+static func _process_capacitor_tower(tower: SimTower, game_state: GameState, delta_ms: int) -> void:
+	## Charge while enemies are in range, then discharge AOE from tower center
+	if tower.frozen_ms > 0:
+		return
+
+	var in_range := Targeting.get_enemies_in_range(
+		tower.position, game_state.enemies, tower.range_tiles
+	)
+	in_range = in_range.filter(func(e): return e.is_targetable())
+	if in_range.is_empty():
+		return
+
+	tower.capacitor_charge_ms += delta_ms
+	var charge_needed: int = tower.special.get("charge_ms", tower.attack_speed_ms)
+	if charge_needed <= 0:
+		charge_needed = tower.attack_speed_ms
+	if tower.capacitor_charge_ms < charge_needed:
+		return
+
+	# Fully charged — discharge
+	tower.capacitor_charge_ms = 0
+	tower.shots_fired += 1
+
+	var radius := float(tower.aoe_radius) / 1000.0
+	if radius <= 0.0:
+		radius = float(tower.range_tiles)
+	var hit_enemies := Targeting.get_enemies_in_aoe(tower.get_center(), game_state.enemies, radius)
+
+	for enemy in hit_enemies:
+		if not enemy.is_targetable():
+			continue
+		var damage := _calculate_damage(tower, enemy, game_state.rng)
+		enemy.take_damage(damage)
+		tower.record_damage(damage)
+		game_state.total_damage_dealt += damage
+		_apply_tower_effects(tower, enemy, game_state)
+		game_state.tower_attacked.emit(tower, enemy, damage)
+		if enemy.is_dead():
+			tower.record_kill()
+			_handle_kill_effects(tower, enemy, game_state)
 
 
 static func _get_line_targets(

@@ -2,13 +2,17 @@ extends GutTest
 
 ## Unit tests for combat special effect handlers
 
+const LIGHTNING_TOWER_PATH := "res://resources/towers/lightning_tower.tres"
+
 var _game_state: GameState
 var _pathfinding: SimPathfinding
+var _lightning_data: TowerData
 
 
 func before_each() -> void:
 	_game_state = TestHelpers.create_test_game_state()
 	_pathfinding = _game_state.pathfinding
+	_lightning_data = load(LIGHTNING_TOWER_PATH) as TowerData
 
 
 # ============================================
@@ -427,8 +431,121 @@ func test_disable_prevents_regen() -> void:
 
 
 # ============================================
+# Capacitor tests (Lightning T3B2)
+# ============================================
+
+
+func test_capacitor_charges_when_enemy_in_range() -> void:
+	var tower := _create_capacitor_tower()
+	_place_tower_in_state(tower)
+	_spawn_enemy_at(Vector2(6, 6))
+
+	Combat.process_tower_attacks(_game_state, 1000)
+
+	assert_eq(tower.capacitor_charge_ms, 1000)
+	assert_eq(tower.shots_fired, 0)
+
+
+func test_capacitor_does_not_charge_without_enemies() -> void:
+	var tower := _create_capacitor_tower()
+	_place_tower_in_state(tower)
+
+	Combat.process_tower_attacks(_game_state, 2000)
+
+	assert_eq(tower.capacitor_charge_ms, 0)
+
+
+func test_capacitor_discharges_aoe_when_fully_charged() -> void:
+	var tower := _create_capacitor_tower()
+	tower.attack_speed_ms = 1000  # charge time
+	tower.damage = 20000  # 20 damage
+	tower.aoe_radius = 3000  # 3 tiles
+	_place_tower_in_state(tower)
+	var near := _spawn_enemy_at(Vector2(6, 6))  # in AOE of center (6,6)
+	near.hp = 100
+	var far := _spawn_enemy_at(Vector2(15, 15))
+	far.hp = 100
+
+	Combat.process_tower_attacks(_game_state, 1000)
+
+	assert_eq(tower.capacitor_charge_ms, 0)
+	assert_eq(tower.shots_fired, 1)
+	assert_eq(near.hp, 80)
+	assert_eq(far.hp, 100)
+
+
+func test_capacitor_hits_all_enemies_in_aoe() -> void:
+	var tower := _create_capacitor_tower()
+	tower.attack_speed_ms = 500
+	tower.damage = 10000
+	tower.aoe_radius = 4000
+	_place_tower_in_state(tower)
+	var a := _spawn_enemy_at(Vector2(5.5, 5.5))
+	var b := _spawn_enemy_at(Vector2(7, 6))
+	a.hp = 50
+	b.hp = 50
+
+	Combat.process_tower_attacks(_game_state, 500)
+
+	assert_eq(a.hp, 40)
+	assert_eq(b.hp, 40)
+
+
+func test_capacitor_does_not_charge_while_frozen() -> void:
+	var tower := _create_capacitor_tower()
+	tower.frozen_ms = 2000
+	_place_tower_in_state(tower)
+	_spawn_enemy_at(Vector2(6, 6))
+
+	Combat.process_tower_attacks(_game_state, 1000)
+
+	assert_eq(tower.capacitor_charge_ms, 0)
+
+
+func test_capacitor_upgrade_resource_has_capacitor_flag() -> void:
+	var capacitor: TowerUpgradeData = null
+	for upgrade in _lightning_data.upgrades:
+		if upgrade.id == "lightning_capacitor":
+			capacitor = upgrade
+			break
+
+	assert_not_null(capacitor)
+	assert_true(capacitor.special.get("capacitor", false))
+	assert_eq(capacitor.damage, 200000)
+	assert_eq(capacitor.attack_speed_ms, 5000)
+
+
+func test_capacitor_upgrade_from_arc_pylon_clears_beam() -> void:
+	var tower := SimTower.new()
+	tower.initialize(_lightning_data, Vector2i(5, 5))
+
+	var arc: TowerUpgradeData = null
+	var capacitor: TowerUpgradeData = null
+	for upgrade in _lightning_data.upgrades:
+		if upgrade.id == "lightning_arc_pylon":
+			arc = upgrade
+		elif upgrade.id == "lightning_capacitor":
+			capacitor = upgrade
+
+	tower.apply_upgrade(arc)
+	assert_true(tower.special.get("beam", false))
+	tower.apply_upgrade(capacitor)
+	assert_true(tower.special.get("capacitor", false))
+	assert_false(tower.special.get("beam", false))
+
+
+# ============================================
 # Helpers
 # ============================================
+
+
+func _create_capacitor_tower() -> SimTower:
+	var tower := _create_tower_with_special({"capacitor": true})
+	tower.damage = 200000
+	tower.attack_speed_ms = 5000
+	tower.range_tiles = 5
+	tower.aoe_radius = 3000
+	return tower
 
 
 func _create_tower_with_special(special: Dictionary) -> SimTower:
