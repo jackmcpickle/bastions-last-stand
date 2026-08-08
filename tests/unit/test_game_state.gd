@@ -513,6 +513,175 @@ func test_upgrade_tower_deducts_gold() -> void:
 
 
 # ============================================
+# Economy wiring: wave bonuses + sell
+# ============================================
+
+
+func test_start_wave_resets_wave_economy_tracking() -> void:
+	_game_state.wave_gold_earned = 50
+	_game_state.wave_shrine_damaged = true
+	_game_state.wave_seconds_early = 12.0
+
+	_game_state.start_wave(1, 10.0)
+
+	assert_eq(_game_state.wave_gold_earned, 0)
+	assert_false(_game_state.wave_shrine_damaged)
+	assert_eq(_game_state.wave_seconds_early, 10.0)
+
+
+func test_remove_enemy_tracks_wave_gold_earned() -> void:
+	var enemy := _spawn_enemy()
+
+	_game_state.remove_enemy(enemy, true)
+
+	assert_eq(_game_state.wave_gold_earned, enemy.gold_value)
+
+
+func test_damage_shrine_marks_wave_damaged() -> void:
+	_game_state.damage_shrine(1)
+
+	assert_true(_game_state.wave_shrine_damaged)
+
+
+func test_complete_wave_applies_perfect_wave_bonus() -> void:
+	_game_state.wave_in_progress = true
+	_game_state.current_wave = 1
+	_game_state.wave_gold_earned = 100
+	_game_state.wave_shrine_damaged = false
+	_game_state.gold = 200
+	var earned_before := _game_state.total_gold_earned
+
+	_game_state.complete_wave()
+
+	# 25% of 100 = 25
+	assert_eq(_game_state.gold, 225)
+	assert_eq(_game_state.total_gold_earned, earned_before + 25)
+
+
+func test_complete_wave_skips_perfect_bonus_when_damaged() -> void:
+	_game_state.wave_in_progress = true
+	_game_state.current_wave = 1
+	_game_state.wave_gold_earned = 100
+	_game_state.wave_shrine_damaged = true
+	_game_state.gold = 200
+
+	_game_state.complete_wave()
+
+	assert_eq(_game_state.gold, 200)
+
+
+func test_complete_wave_applies_early_start_bonus() -> void:
+	_game_state.wave_in_progress = true
+	_game_state.current_wave = 1
+	_game_state.wave_gold_earned = 100
+	_game_state.wave_shrine_damaged = true
+	_game_state.wave_seconds_early = 10.0
+	_game_state.gold = 200
+
+	_game_state.complete_wave()
+
+	# 20% early (10s / 5s * 10%) of 100 = 20
+	assert_eq(_game_state.gold, 220)
+
+
+func test_complete_wave_applies_interest_when_unlocked() -> void:
+	_game_state.balance_config.interest_unlocked = true
+	_game_state.wave_in_progress = true
+	_game_state.current_wave = 1
+	_game_state.wave_gold_earned = 0
+	_game_state.wave_shrine_damaged = true
+	_game_state.gold = 200
+
+	_game_state.complete_wave()
+
+	# 5% of 200 = 10
+	assert_eq(_game_state.gold, 210)
+
+
+func test_complete_wave_skips_interest_when_locked() -> void:
+	_game_state.balance_config.interest_unlocked = false
+	_game_state.wave_in_progress = true
+	_game_state.current_wave = 1
+	_game_state.wave_gold_earned = 0
+	_game_state.wave_shrine_damaged = true
+	_game_state.gold = 200
+
+	_game_state.complete_wave()
+
+	assert_eq(_game_state.gold, 200)
+
+
+func test_complete_wave_applies_bonus_then_interest() -> void:
+	_game_state.balance_config.interest_unlocked = true
+	_game_state.wave_in_progress = true
+	_game_state.current_wave = 1
+	_game_state.wave_gold_earned = 100
+	_game_state.wave_shrine_damaged = false
+	_game_state.gold = 200
+
+	_game_state.complete_wave()
+
+	# Perfect 25 -> gold 225; interest 5% of 225 = 11
+	assert_eq(_game_state.gold, 236)
+
+
+func test_sell_tower_refunds_gold_and_removes() -> void:
+	_game_state.gold = 200
+	var data := TestHelpers.create_basic_tower_data()
+	data.base_cost = 100
+	_game_state.register_tower_data(data)
+	var tower := _game_state.place_tower(Vector2i(5, 5), "archer")
+	var earned_before := _game_state.total_gold_earned
+
+	var refund := _game_state.sell_tower(tower)
+
+	assert_eq(refund, 90)
+	assert_eq(_game_state.gold, 190)  # 200 - 100 + 90
+	assert_eq(_game_state.towers.size(), 0)
+	assert_eq(_game_state.total_gold_earned, earned_before)
+	assert_false(_game_state.pathfinding.is_blocked(Vector2i(5, 5)))
+
+
+func test_sell_tower_uses_balance_sell_rate() -> void:
+	_game_state.balance_config.sell_rate_percent = 50
+	_game_state.gold = 200
+	var data := TestHelpers.create_basic_tower_data()
+	data.base_cost = 100
+	_game_state.register_tower_data(data)
+	var tower := _game_state.place_tower(Vector2i(5, 5), "archer")
+
+	var refund := _game_state.sell_tower(tower)
+
+	assert_eq(refund, 50)
+	assert_eq(_game_state.gold, 150)
+
+
+func test_sell_tower_refuses_during_wave() -> void:
+	_game_state.gold = 200
+	var data := TestHelpers.create_basic_tower_data()
+	_game_state.register_tower_data(data)
+	var tower := _game_state.place_tower(Vector2i(5, 5), "archer")
+	_game_state.wave_in_progress = true
+	var gold_before := _game_state.gold
+
+	var refund := _game_state.sell_tower(tower)
+
+	assert_eq(refund, 0)
+	assert_eq(_game_state.gold, gold_before)
+	assert_eq(_game_state.towers.size(), 1)
+
+
+func test_sell_tower_refuses_unknown_tower() -> void:
+	var data := TestHelpers.create_basic_tower_data()
+	var orphan := SimTower.new()
+	orphan.initialize(data, Vector2i(5, 5))
+
+	var refund := _game_state.sell_tower(orphan)
+
+	assert_eq(refund, 0)
+
+
+# ============================================
 # Helpers
 # ============================================
 

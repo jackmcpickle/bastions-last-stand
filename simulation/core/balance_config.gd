@@ -10,6 +10,7 @@ extends RefCounted
 var starting_gold: int = 120
 var wall_cost: int = 10
 var sell_rate_percent: int = 90  # % of total cost returned when selling
+var interest_unlocked: bool = false  # Meta unlock: +5% banked gold / wave
 
 ## ============================================
 ## ARCHER TOWER
@@ -155,6 +156,7 @@ func to_dict() -> Dictionary:
 		"starting_gold": starting_gold,
 		"wall_cost": wall_cost,
 		"sell_rate_percent": sell_rate_percent,
+		"interest_unlocked": interest_unlocked,
 		# Archer
 		"archer_cost": archer_cost,
 		"archer_damage": archer_damage,
@@ -265,6 +267,8 @@ func from_dict(d: Dictionary) -> void:
 		wall_cost = d.wall_cost
 	if d.has("sell_rate_percent"):
 		sell_rate_percent = d.sell_rate_percent
+	if d.has("interest_unlocked"):
+		interest_unlocked = d.interest_unlocked
 	# Archer
 	if d.has("archer_cost"):
 		archer_cost = d.archer_cost

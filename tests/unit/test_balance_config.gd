@@ -15,6 +15,7 @@ func test_to_dict_contains_economy() -> void:
 	assert_has(dict, "starting_gold")
 	assert_has(dict, "wall_cost")
 	assert_has(dict, "sell_rate_percent")
+	assert_has(dict, "interest_unlocked")
 
 
 func test_to_dict_contains_archer() -> void:
@@ -65,12 +66,19 @@ func test_to_dict_values_match() -> void:
 
 func test_from_dict_loads_economy() -> void:
 	var config := BalanceConfig.new()
-	var dict := {"starting_gold": 200, "wall_cost": 15}
+	var dict := {"starting_gold": 200, "wall_cost": 15, "interest_unlocked": true}
 
 	config.from_dict(dict)
 
 	assert_eq(config.starting_gold, 200)
 	assert_eq(config.wall_cost, 15)
+	assert_true(config.interest_unlocked)
+
+
+func test_default_interest_unlocked_is_false() -> void:
+	var config := BalanceConfig.new()
+
+	assert_false(config.interest_unlocked)
 
 
 func test_from_dict_loads_towers() -> void:

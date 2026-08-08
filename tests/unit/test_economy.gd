@@ -208,6 +208,17 @@ func test_get_sell_value_upgraded() -> void:
 	assert_eq(value, 180)
 
 
+func test_get_sell_value_custom_rate() -> void:
+	var data := TestHelpers.create_basic_tower_data()
+	var tower := SimTower.new()
+	tower.initialize(data, Vector2i.ZERO)
+	tower.total_cost = 100
+
+	var value := Economy.get_sell_value(tower, 50)
+
+	assert_eq(value, 50)
+
+
 # ============================================
 # can_afford_* tests
 # ============================================

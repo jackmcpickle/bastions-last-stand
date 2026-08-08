@@ -66,8 +66,8 @@ static func get_upgrade_cost(tower: SimTower, branch: String) -> int:
 	return 0
 
 
-static func get_sell_value(tower: SimTower) -> int:
-	return tower.total_cost * SELL_RATE / 100
+static func get_sell_value(tower: SimTower, sell_rate_percent: int = SELL_RATE) -> int:
+	return tower.total_cost * sell_rate_percent / 100
 
 
 static func can_afford_tower(tower_id: String, game_state: GameState) -> bool:

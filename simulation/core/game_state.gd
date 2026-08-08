@@ -50,6 +50,9 @@ var enemies_leaked: int = 0
 var wave_in_progress: bool = false
 var wave_enemies_remaining: int = 0
 var spawn_queue: Array[Dictionary] = []  # {enemy_id, spawn_point, delay_remaining}
+var wave_gold_earned: int = 0  # Kill gold this wave (bonus base)
+var wave_shrine_damaged: bool = false
+var wave_seconds_early: float = 0.0  # Build time remaining when wave started
 
 ## Constants
 const STARTING_GOLD := 120
@@ -107,6 +110,9 @@ func initialize_with_config(
 	enemies_killed = 0
 	enemies_leaked = 0
 	wave_in_progress = false
+	wave_gold_earned = 0
+	wave_shrine_damaged = false
+	wave_seconds_early = 0.0
 
 
 func register_tower_data(data: TowerData) -> void:
@@ -186,6 +192,18 @@ func destroy_tower(tower: SimTower) -> void:
 	towers.erase(tower)
 	tower_destroyed.emit(tower)
 	repath_ground_enemies()
+
+
+func sell_tower(tower: SimTower) -> int:
+	## Sell tower during build phase for configured sell rate. Returns refund or 0.
+	if wave_in_progress or tower == null or tower not in towers:
+		return 0
+
+	var sell_rate := balance_config.sell_rate_percent if balance_config else Economy.SELL_RATE
+	var refund := Economy.get_sell_value(tower, sell_rate)
+	gold += refund
+	destroy_tower(tower)
+	return refund
 
 
 ## Wall placement
@@ -339,7 +357,7 @@ func _get_wall_upgrade_cost(wall: SimWall, upgrade: WallUpgradeData) -> int:
 
 
 ## Wave management
-func start_wave(wave_number: int) -> bool:
+func start_wave(wave_number: int, seconds_early: float = 0.0) -> bool:
 	if wave_in_progress:
 		return false
 
@@ -350,6 +368,9 @@ func start_wave(wave_number: int) -> bool:
 	current_wave = wave_number
 	wave_in_progress = true
 	spawn_queue.clear()
+	wave_gold_earned = 0
+	wave_shrine_damaged = false
+	wave_seconds_early = maxf(seconds_early, 0.0)
 
 	# Build spawn queue
 	var spawn_delay := 0
@@ -439,10 +460,12 @@ func remove_enemy(enemy: SimEnemy, killed: bool) -> void:
 		enemies.remove_at(idx)
 
 	if killed:
-		gold += enemy.gold_value
-		total_gold_earned += enemy.gold_value
+		var reward := Economy.calculate_kill_reward(enemy, self)
+		gold += reward
+		total_gold_earned += reward
+		wave_gold_earned += reward
 		enemies_killed += 1
-		enemy_killed.emit(enemy, enemy.gold_value)
+		enemy_killed.emit(enemy, reward)
 	else:
 		enemies_leaked += 1
 
@@ -452,6 +475,8 @@ func damage_shrine(amount: int) -> void:
 	shrine.hp -= amount
 	if shrine.hp < 0:
 		shrine.hp = 0
+	if amount > 0:
+		wave_shrine_damaged = true
 	shrine_damaged.emit(amount, shrine.hp)
 
 	if shrine.hp <= 0:
@@ -462,6 +487,20 @@ func damage_shrine(amount: int) -> void:
 ## Complete wave
 func complete_wave() -> void:
 	wave_in_progress = false
+
+	var bonus := Economy.calculate_wave_bonus(
+		wave_gold_earned, wave_shrine_damaged, wave_seconds_early
+	)
+	if bonus > 0:
+		gold += bonus
+		total_gold_earned += bonus
+
+	var interest_unlocked := balance_config.interest_unlocked if balance_config else false
+	var interest := Economy.calculate_interest(gold, interest_unlocked)
+	if interest > 0:
+		gold += interest
+		total_gold_earned += interest
+
 	wave_completed.emit(current_wave)
 
 	if current_wave >= wave_data.get_total_waves():
