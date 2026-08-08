@@ -40,11 +40,11 @@ Unified special-rounds pass: wave data + economy/spawn wiring + combat kits + CL
 
 ### Wave 20 (pure Rush)
 
-Replace current Phase Phantom wave with a runner/swarm-heavy rush, slightly harder than wave 14. Example target composition (exact counts locked in implementation plan/tests):
+Replace current Phase Phantom wave with a runner/swarm-heavy rush, slightly harder than wave 14:
 
-- `runner` ×35, `swarm` ×25 (authored; no runtime ×3)
+- Spawns: `runner` ×35, `swarm` ×25 (authored; no runtime ×3)
 - `is_rush = true`
-- Authored `spawn_interval_ms` may remain for documentation but **runtime ignores it** when `is_rush`
+- Authored `spawn_interval_ms` can stay for readability; **runtime ignores it** when `is_rush`
 
 ### Wave 21 (Phase Phantom)
 
@@ -194,7 +194,7 @@ Destroyed walls never respawn today. Spec requires a regression test that a wall
 | Smash permanence | Destroyed wall stays removed |
 | Spawn integration | Registered smash/rush waves spawn new ids without missing-registry errors |
 
-Update `test_rush_and_smash_flags_unchanged` (or replace) so rush list is `[8, 14, 20, 26]`.
+Update `test_rush_and_smash_flags_unchanged` so the rush list is `[8, 14, 20, 26]`.
 
 ---
 
