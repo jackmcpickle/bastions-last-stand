@@ -48,7 +48,7 @@ func _load_chapter_data() -> void:
 			1,
 			"Fast enemies require defensive positioning. Use slowing towers!",
 			["archer_tower", "frost_tower"],
-			["grunt", "runner"]
+			["grunt", "runner", "swarm_queen"]
 		),
 		_create_level(
 			"ch1_lv3",
@@ -57,7 +57,7 @@ func _load_chapter_data() -> void:
 			2,
 			"Intense waves test your tower network. Adapt and survive!",
 			["archer_tower", "cannon_tower"],
-			["grunt", "runner"]
+			["grunt", "runner", "swarm_queen"]
 		),
 	]
 	ch1.set("levels", levels_ch1)
@@ -70,7 +70,7 @@ func _load_chapter_data() -> void:
 			0,
 			"Tanks arrive. Single-target towers struggle. Use AOE!",
 			["cannon_tower", "lightning_tower"],
-			["grunt", "tank"]
+			["grunt", "tank", "healer", "frost_wyrm"]
 		),
 		_create_level(
 			"ch2_lv2",
@@ -79,7 +79,7 @@ func _load_chapter_data() -> void:
 			1,
 			"Balanced enemy composition. Adapt your tower mix.",
 			["archer_tower", "cannon_tower", "frost_tower"],
-			["grunt", "runner", "tank"]
+			["grunt", "runner", "tank", "shielded", "splitter", "phase_phantom"]
 		),
 		_create_level(
 			"ch2_lv3",
@@ -110,7 +110,7 @@ func _load_chapter_data() -> void:
 			0,
 			"Invisible enemies move unseen. Detection and AOE prevail.",
 			["cannon_tower", "lightning_tower", "support_tower"],
-			["stealth", "grunt"]
+			["stealth", "grunt", "shielded", "regen", "necromancer"]
 		),
 		_create_level(
 			"ch3_lv2",
@@ -119,7 +119,7 @@ func _load_chapter_data() -> void:
 			1,
 			"Enemies destroy walls. Rebuild defenses strategically.",
 			["cannon_tower", "frost_tower"],
-			["breaker", "tank"]
+			["breaker", "tank", "shielded", "splitter", "regen"]
 		),
 		_create_level(
 			"ch3_lv3",
@@ -128,7 +128,7 @@ func _load_chapter_data() -> void:
 			2,
 			"Final confrontation. Everything you learned matters.",
 			["archer_tower", "cannon_tower", "lightning_tower"],
-			["boss"]
+			["boss_golem", "iron_colossus"]
 		),
 	]
 	ch3.set("levels", levels_ch3)
