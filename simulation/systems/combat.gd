@@ -112,6 +112,11 @@ static func process_tower_attacks(game_state: GameState, delta_ms: int) -> void:
 		# Update cooldown
 		tower.process_cooldown(delta_ms)
 
+		# Capacitor before beam — Arc Pylon→Capacitor may still have beam:true
+		if tower.special.get("capacitor", false):
+			_process_capacitor_tower(tower, game_state, delta_ms)
+			continue
+
 		# Handle beam mode towers
 		if tower.special.has("beam"):
 			_process_beam_tower(tower, game_state, delta_ms)
@@ -277,6 +282,48 @@ static func _process_beam_tower(tower: SimTower, game_state: GameState, delta_ms
 
 	if target.is_dead():
 		tower.record_kill()
+
+
+static func _process_capacitor_tower(tower: SimTower, game_state: GameState, delta_ms: int) -> void:
+	## Charge while enemies are in range, then discharge AOE from tower center
+	if tower.frozen_ms > 0:
+		return
+
+	var in_range := Targeting.get_enemies_in_range(
+		tower.position, game_state.enemies, tower.range_tiles
+	)
+	in_range = in_range.filter(func(e): return e.is_targetable())
+	if in_range.is_empty():
+		return
+
+	tower.capacitor_charge_ms += delta_ms
+	var charge_needed: int = tower.special.get("charge_ms", tower.attack_speed_ms)
+	if charge_needed <= 0:
+		charge_needed = tower.attack_speed_ms
+	if tower.capacitor_charge_ms < charge_needed:
+		return
+
+	# Fully charged — discharge
+	tower.capacitor_charge_ms = 0
+	tower.shots_fired += 1
+
+	var radius := float(tower.aoe_radius) / 1000.0
+	if radius <= 0.0:
+		radius = float(tower.range_tiles)
+	var hit_enemies := Targeting.get_enemies_in_aoe(tower.get_center(), game_state.enemies, radius)
+
+	for enemy in hit_enemies:
+		if not enemy.is_targetable():
+			continue
+		var damage := _calculate_damage(tower, enemy, game_state.rng)
+		enemy.take_damage(damage)
+		tower.record_damage(damage)
+		game_state.total_damage_dealt += damage
+		_apply_tower_effects(tower, enemy, game_state)
+		game_state.tower_attacked.emit(tower, enemy, damage)
+		if enemy.is_dead():
+			tower.record_kill()
+			_handle_kill_effects(tower, enemy, game_state)
 
 
 static func _get_line_targets(
