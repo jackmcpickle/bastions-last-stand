@@ -47,6 +47,19 @@ func test_wave_victory_gold_earned() -> void:
 	assert_gt(_game_state.gold, initial_gold)
 
 
+func test_wave_victory_perfect_bonus_applied() -> void:
+	_setup_powerful_towers()
+	var initial_gold := _game_state.gold
+
+	_tick_processor.run_wave(1)
+
+	# Kill gold + 25% perfect-wave bonus (no shrine damage with powerful towers)
+	var kill_gold := _game_state.enemies_killed * 10  # basic enemy gold_value
+	var expected_bonus := kill_gold * 250 / 1000
+	assert_eq(_game_state.shrine.hp, _game_state.shrine.max_hp)
+	assert_eq(_game_state.gold, initial_gold + kill_gold + expected_bonus)
+
+
 # ============================================
 # Defeat scenarios
 # ============================================
