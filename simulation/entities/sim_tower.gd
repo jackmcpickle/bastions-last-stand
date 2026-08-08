@@ -25,6 +25,7 @@ var total_cost: int = 0  # For sell value calculation
 var cooldown_ms: int = 0
 var target_priority: Targeting.Priority = Targeting.Priority.FIRST
 var frozen_ms: int = 0  # Frost Wyrm freeze duration
+var capacitor_charge_ms: int = 0  # Accumulated charge for capacitor special
 
 ## Durability (raw int, not x1000)
 var hp: int
