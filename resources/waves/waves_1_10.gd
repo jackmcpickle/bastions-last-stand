@@ -8,6 +8,7 @@ const Waves11To30Script = preload("res://resources/waves/waves_11_30.gd")
 ## 1-5: Grunts only (tutorial)
 ## 6-10: Grunts + Runners
 ## Wave 8: Rush round (3x count, 300ms spawn)
+## Wave 10: Boss (Swarm Queen)
 
 
 static func create() -> WaveData:
@@ -132,10 +133,12 @@ static func _wave_9() -> SingleWaveData:
 
 
 static func _wave_10() -> SingleWaveData:
+	## Boss wave - Swarm Queen
 	var wave := SingleWaveData.new()
 	wave.wave_number = 10
 	wave.spawn_interval_ms = 500
 	wave.spawns = [
+		_spawn("swarm_queen", 1),
 		_spawn("grunt", 18),
 		_spawn("runner", 10),
 	]
