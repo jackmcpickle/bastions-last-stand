@@ -63,7 +63,7 @@ func _on_enemy_reached_shrine(enemy: SimEnemy, _damage: int) -> void:
 
 func _remove_visual_enemy(enemy: SimEnemy) -> void:
 	if enemy in visual_enemies:
-		var venemy := visual_enemies[enemy]
+		var venemy: Node = visual_enemies[enemy]
 		visual_enemies.erase(enemy)
 		venemy.queue_free()
 

@@ -35,10 +35,9 @@ func _setup_tabs() -> void:
 
 
 func _apply_faction_theme() -> void:
-	var faction = SceneManager.current_faction
-	var theme = SceneManager.current_theme
-	if theme:
-		add_theme_overrides_from(theme)
+	var faction_theme := SceneManager.current_theme
+	if faction_theme:
+		theme = faction_theme
 
 
 func _connect_signals() -> void:

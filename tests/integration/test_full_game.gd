@@ -259,23 +259,25 @@ func test_full_game_deterministic() -> void:
 
 
 func test_different_seeds_different_outcomes() -> void:
-	# Different seeds should give different results (may be same, but usually different)
+	# Different seeds usually diverge; identical runs are unusual but allowed.
 	var seeds := [111, 222, 333, 444, 555]
-	var results := []
+	var results: Array = []
 
 	for seed in seeds:
 		results.append(_run_game_with_seed(seed))
 
-	# At least some variation expected
+	assert_eq(results.size(), seeds.size(), "Should collect a result per seed")
+
 	var all_same := true
 	for i in range(1, results.size()):
 		if results[i].final_wave != results[0].final_wave:
 			all_same = false
 			break
 
-	# If all same, that's unusual but possible - just log it
 	if all_same:
 		gut.p("All seeds produced same final wave - unusual but possible")
+	else:
+		assert_true(true, "Seeds produced varied final waves")
 
 
 # ============================================

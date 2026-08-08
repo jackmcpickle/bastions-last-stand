@@ -75,6 +75,7 @@ static func create_basic_tower_data(id: String = "archer") -> TowerData:
 	data.id = id
 	data.display_name = id.capitalize()
 	data.base_cost = 80
+	data.hp = 100
 	data.damage = 15000  # 15 damage
 	data.attack_speed_ms = 800
 	data.range_tiles = 5

@@ -277,6 +277,48 @@ func test_apply_upgrade_merges_special() -> void:
 	assert_eq(tower.special.burn_dps, 5000)
 
 
+func test_apply_upgrade_sets_max_hp_without_healing() -> void:
+	var tower := _create_tower()
+	tower.hp = 40
+	tower.max_hp = 100
+
+	var upgrade := TestHelpers.create_upgrade_data(2, "A")
+	upgrade.hp = 150
+
+	tower.apply_upgrade(upgrade)
+
+	assert_eq(tower.max_hp, 150)
+	assert_eq(tower.hp, 40)
+
+
+func test_apply_upgrade_clamps_hp_when_new_max_is_lower() -> void:
+	var tower := _create_tower()
+	tower.hp = 100
+	tower.max_hp = 100
+
+	var upgrade := TestHelpers.create_upgrade_data(2, "A")
+	upgrade.hp = 60
+
+	tower.apply_upgrade(upgrade)
+
+	assert_eq(tower.max_hp, 60)
+	assert_eq(tower.hp, 60)
+
+
+func test_apply_upgrade_zero_hp_leaves_max_hp_unchanged() -> void:
+	var tower := _create_tower()
+	tower.hp = 40
+	tower.max_hp = 100
+
+	var upgrade := TestHelpers.create_upgrade_data(2, "A")
+	upgrade.hp = 0
+
+	tower.apply_upgrade(upgrade)
+
+	assert_eq(tower.max_hp, 100)
+	assert_eq(tower.hp, 40)
+
+
 # ============================================
 # get_dps() tests
 # ============================================
@@ -392,6 +434,52 @@ func test_get_center() -> void:
 	var center := tower.get_center()
 
 	assert_eq(center, Vector2(5.0, 7.0))
+
+
+# ============================================
+# HP / durability tests
+# ============================================
+
+
+func test_initialize_sets_hp_from_data() -> void:
+	var data := TestHelpers.create_basic_tower_data()
+	data.hp = 100
+	var tower := SimTower.new()
+
+	tower.initialize(data, Vector2i(5, 5))
+
+	assert_eq(tower.hp, 100)
+	assert_eq(tower.max_hp, 100)
+
+
+func test_take_damage_reduces_hp() -> void:
+	var tower := _create_tower()
+	tower.hp = 100
+	tower.max_hp = 100
+
+	tower.take_damage(30)
+
+	assert_eq(tower.hp, 70)
+
+
+func test_take_damage_clamps_at_zero() -> void:
+	var tower := _create_tower()
+	tower.hp = 10
+	tower.max_hp = 100
+
+	tower.take_damage(50)
+
+	assert_eq(tower.hp, 0)
+
+
+func test_is_destroyed_when_hp_zero() -> void:
+	var tower := _create_tower()
+	tower.hp = 10
+	tower.max_hp = 100
+
+	assert_false(tower.is_destroyed())
+	tower.take_damage(10)
+	assert_true(tower.is_destroyed())
 
 
 # ============================================

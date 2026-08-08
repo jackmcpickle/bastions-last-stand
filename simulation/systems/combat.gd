@@ -456,6 +456,93 @@ static func _resurrect_nearby_dead(enemy: SimEnemy, game_state: GameState) -> vo
 		game_state.dead_enemies.remove_at(resurrected_idx)
 
 
+static func process_siege_attacks(game_state: GameState, _delta_ms: int) -> void:
+	## Ground enemies with no path attack nearest wall or tower
+	var walls_to_remove: Array[SimWall] = []
+	var towers_to_remove: Array[SimTower] = []
+
+	for enemy in game_state.enemies:
+		if enemy.is_flying or enemy.is_wall_breaker:
+			continue
+		if not enemy.path.is_empty():
+			continue
+
+		var wall := _find_nearest_wall(enemy, game_state.walls)
+		var tower := _find_nearest_tower(enemy, game_state.towers)
+		if not wall and not tower:
+			continue
+
+		var wall_damage: int = enemy.data.special.get("wall_damage", 10)
+		var prefer_tower := false
+		if wall and tower:
+			prefer_tower = _siege_tower_dist_sq(enemy, tower) < _siege_wall_dist_sq(enemy, wall)
+		elif tower:
+			prefer_tower = true
+
+		if prefer_tower:
+			tower.take_damage(wall_damage)
+			if tower.is_destroyed() and tower not in towers_to_remove:
+				towers_to_remove.append(tower)
+		else:
+			wall.take_damage(wall_damage)
+			if wall.is_destroyed() and wall not in walls_to_remove:
+				walls_to_remove.append(wall)
+
+	for wall in walls_to_remove:
+		game_state.pathfinding.set_blocked(wall.position, false)
+		game_state.walls.erase(wall)
+		game_state.wall_destroyed.emit(wall)
+
+	for tower in towers_to_remove:
+		game_state.destroy_tower(tower)
+
+	if not walls_to_remove.is_empty() and towers_to_remove.is_empty():
+		game_state.repath_ground_enemies()
+
+
+static func _find_nearest_wall(enemy: SimEnemy, walls: Array[SimWall]) -> SimWall:
+	## Returns nearest wall to enemy, or null if none
+	var best: SimWall = null
+	var best_dist_sq := 999999.0
+
+	for wall in walls:
+		var dist_sq := _siege_wall_dist_sq(enemy, wall)
+		if dist_sq < best_dist_sq:
+			best_dist_sq = dist_sq
+			best = wall
+
+	return best
+
+
+static func _find_nearest_tower(enemy: SimEnemy, towers: Array[SimTower]) -> SimTower:
+	## Returns nearest tower to enemy (by center), or null if none
+	var best: SimTower = null
+	var best_dist_sq := 999999.0
+
+	for tower in towers:
+		var dist_sq := _siege_tower_dist_sq(enemy, tower)
+		if dist_sq < best_dist_sq:
+			best_dist_sq = dist_sq
+			best = tower
+
+	return best
+
+
+static func _siege_wall_dist_sq(enemy: SimEnemy, wall: SimWall) -> float:
+	var pos := enemy.grid_pos
+	var dx := float(wall.position.x) - pos.x
+	var dy := float(wall.position.y) - pos.y
+	return dx * dx + dy * dy
+
+
+static func _siege_tower_dist_sq(enemy: SimEnemy, tower: SimTower) -> float:
+	var pos := enemy.grid_pos
+	var center := tower.get_center()
+	var dx := center.x - pos.x
+	var dy := center.y - pos.y
+	return dx * dx + dy * dy
+
+
 static func process_wall_breaker_attacks(game_state: GameState, delta_ms: int) -> void:
 	## Wall breakers attack adjacent walls
 	var walls_to_remove: Array[SimWall] = []
@@ -482,11 +569,7 @@ static func process_wall_breaker_attacks(game_state: GameState, delta_ms: int) -
 		game_state.walls.erase(wall)
 		game_state.wall_destroyed.emit(wall)
 
-		# Recompute paths for non-flying enemies
-		for enemy in game_state.enemies:
-			if not enemy.is_flying:
-				enemy.path = game_state.pathfinding.get_path(enemy.get_current_tile())
-				enemy.path_index = 0
+		game_state.repath_ground_enemies()
 
 
 static func _find_adjacent_wall(enemy: SimEnemy, walls: Array[SimWall]) -> SimWall:

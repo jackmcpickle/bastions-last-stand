@@ -1,7 +1,7 @@
-class_name ModelLoader
 extends Node
 
-## Singleton for loading 3D models with fallback to placeholders
+## Autoload singleton for loading 3D models with fallback to placeholders.
+## Intentionally no class_name: it would hide the ModelLoader autoload.
 
 const TOWER_PATH := "res://assets/models/towers/"
 const ENEMY_PATH := "res://assets/models/enemies/"

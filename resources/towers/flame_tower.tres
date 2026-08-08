@@ -14,6 +14,7 @@ damage = 15000
 attack_speed_ms = 400
 range_tiles = 3
 aoe_radius = 0
+hp = 150
 special = {"burn_dps": 10000, "burn_duration_ms": 3000}
 description = "Standard burn damage"
 
@@ -28,6 +29,7 @@ damage = 25000
 attack_speed_ms = 400
 range_tiles = 3
 aoe_radius = 0
+hp = 150
 special = {"burn_dps": 12000, "burn_duration_ms": 3000}
 description = "Higher direct and burn damage"
 
@@ -42,6 +44,7 @@ damage = 15000
 attack_speed_ms = 400
 range_tiles = 3
 aoe_radius = 0
+hp = 200
 special = {"burn_dps": 10000, "burn_duration_ms": 3000, "ground_burn": true}
 description = "Leaves burning ground"
 
@@ -56,6 +59,7 @@ damage = 12000
 attack_speed_ms = 400
 range_tiles = 3
 aoe_radius = 0
+hp = 200
 special = {"burn_dps": 15000, "burn_duration_ms": 5000, "burn_stacks": 3}
 description = "Burns stack up to 3 times"
 
@@ -70,6 +74,7 @@ damage = 40000
 attack_speed_ms = 400
 range_tiles = 3
 aoe_radius = 0
+hp = 200
 special = {"burn_dps": 8000, "burn_duration_ms": 3000, "armor_pen": 500}
 description = "50% armor penetration"
 
@@ -84,6 +89,7 @@ damage = 60000
 attack_speed_ms = 400
 range_tiles = 6
 aoe_radius = 0
+hp = 200
 special = {"burn_dps": 10000, "burn_duration_ms": 3000}
 description = "Extended range flamethrower"
 
@@ -92,6 +98,7 @@ script = ExtResource("1")
 id = "flame"
 display_name = "Flame Tower"
 base_cost = 90
+hp = 100
 damage = 6000
 attack_speed_ms = 400
 range_tiles = 3

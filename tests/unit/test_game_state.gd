@@ -62,6 +62,26 @@ func test_place_tower_blocks_tiles() -> void:
 	assert_true(_game_state.pathfinding.is_blocked(Vector2i(6, 6)))
 
 
+func test_place_tower_repaths_ground_enemies() -> void:
+	_game_state.gold = 200
+	var data := TestHelpers.create_basic_tower_data()
+	_game_state.register_tower_data(data)
+
+	var enemy := SimEnemy.new()
+	enemy.initialize(
+		TestHelpers.create_basic_enemy_data(), Vector2i(0, 10), _game_state.pathfinding
+	)
+	_game_state.enemies.append(enemy)
+
+	assert_has(enemy.path, Vector2i(10, 10))
+
+	# 2x2 tower at (9,9) covers (10,10) on the straight path
+	_game_state.place_tower(Vector2i(9, 9), "archer")
+
+	assert_false(enemy.path.has(Vector2i(10, 10)))
+	assert_eq(enemy.path[-1], _game_state.pathfinding.get_shrine_position())
+
+
 func test_place_tower_insufficient_gold() -> void:
 	_game_state.gold = 10
 	var data := TestHelpers.create_basic_tower_data()
@@ -84,6 +104,63 @@ func test_place_tower_overlapping() -> void:
 
 	assert_null(tower2)
 	assert_eq(_game_state.towers.size(), 1)
+
+
+func test_place_tower_initializes_hp_from_data() -> void:
+	_game_state.gold = 200
+	var data := TestHelpers.create_basic_tower_data()
+	data.hp = 100
+	_game_state.register_tower_data(data)
+
+	var tower := _game_state.place_tower(Vector2i(5, 5), "archer")
+
+	assert_eq(tower.hp, 100)
+	assert_eq(tower.max_hp, 100)
+
+
+func test_destroy_tower_removes_from_towers() -> void:
+	_game_state.gold = 200
+	var data := TestHelpers.create_basic_tower_data()
+	_game_state.register_tower_data(data)
+	var tower := _game_state.place_tower(Vector2i(5, 5), "archer")
+
+	_game_state.destroy_tower(tower)
+
+	assert_false(_game_state.towers.has(tower))
+	assert_eq(_game_state.towers.size(), 0)
+
+
+func test_destroy_tower_unblocks_2x2_tiles() -> void:
+	_game_state.gold = 200
+	var data := TestHelpers.create_basic_tower_data()
+	_game_state.register_tower_data(data)
+	var tower := _game_state.place_tower(Vector2i(5, 5), "archer")
+
+	_game_state.destroy_tower(tower)
+
+	assert_false(_game_state.pathfinding.is_blocked(Vector2i(5, 5)))
+	assert_false(_game_state.pathfinding.is_blocked(Vector2i(6, 5)))
+	assert_false(_game_state.pathfinding.is_blocked(Vector2i(5, 6)))
+	assert_false(_game_state.pathfinding.is_blocked(Vector2i(6, 6)))
+
+
+func test_destroy_tower_emits_tower_destroyed() -> void:
+	_game_state.gold = 200
+	var data := TestHelpers.create_basic_tower_data()
+	_game_state.register_tower_data(data)
+	var tower := _game_state.place_tower(Vector2i(5, 5), "archer")
+
+	var signal_data := {"emitted": false, "tower": null}
+	_game_state.tower_destroyed.connect(
+		func(t: SimTower):
+			signal_data.emitted = true
+			signal_data.tower = t
+	)
+
+	_game_state.destroy_tower(tower)
+
+	assert_true(signal_data.emitted)
+	assert_eq(signal_data.tower, tower)
 
 
 # ============================================
@@ -164,6 +241,23 @@ func test_place_wall_blocks_tile() -> void:
 	_game_state.place_wall(Vector2i(5, 5))
 
 	assert_true(_game_state.pathfinding.is_blocked(Vector2i(5, 5)))
+
+
+func test_place_wall_repaths_ground_enemies() -> void:
+	_game_state.gold = 200
+
+	var enemy := SimEnemy.new()
+	enemy.initialize(
+		TestHelpers.create_basic_enemy_data(), Vector2i(0, 10), _game_state.pathfinding
+	)
+	_game_state.enemies.append(enemy)
+
+	assert_has(enemy.path, Vector2i(10, 10))
+
+	_game_state.place_wall(Vector2i(10, 10))
+
+	assert_false(enemy.path.has(Vector2i(10, 10)))
+	assert_eq(enemy.path[-1], _game_state.pathfinding.get_shrine_position())
 
 
 func test_place_wall_insufficient_gold() -> void:

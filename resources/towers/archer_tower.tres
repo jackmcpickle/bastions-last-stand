@@ -14,6 +14,7 @@ damage = 25000
 attack_speed_ms = 1000
 range_tiles = 7
 aoe_radius = 0
+hp = 150
 special = {"crit_chance": 500}
 description = "Precision shots with 50% crit chance"
 
@@ -28,6 +29,7 @@ damage = 12000
 attack_speed_ms = 400
 range_tiles = 4
 aoe_radius = 0
+hp = 150
 special = {}
 description = "Fast attacks, shorter range"
 
@@ -42,6 +44,7 @@ damage = 80000
 attack_speed_ms = 2000
 range_tiles = 12
 aoe_radius = 0
+hp = 200
 special = {"instakill_threshold": 100}
 description = "Long range, execute enemies below 100 HP"
 
@@ -56,6 +59,7 @@ damage = 35000
 attack_speed_ms = 800
 range_tiles = 7
 aoe_radius = 0
+hp = 200
 special = {"crit_chance": 500, "fast_bonus": 1000}
 description = "100% bonus damage vs fast enemies"
 
@@ -70,6 +74,7 @@ damage = 8000
 attack_speed_ms = 150
 range_tiles = 4
 aoe_radius = 0
+hp = 200
 special = {}
 description = "Extremely fast attack rate"
 
@@ -84,6 +89,7 @@ damage = 15000
 attack_speed_ms = 500
 range_tiles = 5
 aoe_radius = 0
+hp = 200
 special = {"pierce": 3}
 description = "Arrows pierce through 3 enemies"
 
@@ -92,6 +98,7 @@ script = ExtResource("1")
 id = "archer"
 display_name = "Archer Tower"
 base_cost = 80
+hp = 100
 damage = 15000
 attack_speed_ms = 800
 range_tiles = 5
