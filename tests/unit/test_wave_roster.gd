@@ -8,9 +8,7 @@ func test_full_roster_includes_all_standards_and_bosses() -> void:
 	var enemy_ids := _collect_enemy_ids(wave_data)
 
 	for enemy_id in ["healer", "shielded", "splitter", "regen"]:
-		assert_true(
-			enemy_ids.has(enemy_id), "Expected standard enemy '%s' in roster" % enemy_id
-		)
+		assert_true(enemy_ids.has(enemy_id), "Expected standard enemy '%s' in roster" % enemy_id)
 
 	for enemy_id in [
 		"swarm_queen",
