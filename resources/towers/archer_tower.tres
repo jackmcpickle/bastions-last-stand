@@ -92,6 +92,7 @@ script = ExtResource("1")
 id = "archer"
 display_name = "Archer Tower"
 base_cost = 80
+hp = 100
 damage = 15000
 attack_speed_ms = 800
 range_tiles = 5

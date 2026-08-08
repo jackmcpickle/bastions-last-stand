@@ -395,6 +395,52 @@ func test_get_center() -> void:
 
 
 # ============================================
+# HP / durability tests
+# ============================================
+
+
+func test_initialize_sets_hp_from_data() -> void:
+	var data := TestHelpers.create_basic_tower_data()
+	data.hp = 100
+	var tower := SimTower.new()
+
+	tower.initialize(data, Vector2i(5, 5))
+
+	assert_eq(tower.hp, 100)
+	assert_eq(tower.max_hp, 100)
+
+
+func test_take_damage_reduces_hp() -> void:
+	var tower := _create_tower()
+	tower.hp = 100
+	tower.max_hp = 100
+
+	tower.take_damage(30)
+
+	assert_eq(tower.hp, 70)
+
+
+func test_take_damage_clamps_at_zero() -> void:
+	var tower := _create_tower()
+	tower.hp = 10
+	tower.max_hp = 100
+
+	tower.take_damage(50)
+
+	assert_eq(tower.hp, 0)
+
+
+func test_is_destroyed_when_hp_zero() -> void:
+	var tower := _create_tower()
+	tower.hp = 10
+	tower.max_hp = 100
+
+	assert_false(tower.is_destroyed())
+	tower.take_damage(10)
+	assert_true(tower.is_destroyed())
+
+
+# ============================================
 # Helpers
 # ============================================
 

@@ -106,6 +106,63 @@ func test_place_tower_overlapping() -> void:
 	assert_eq(_game_state.towers.size(), 1)
 
 
+func test_place_tower_initializes_hp_from_data() -> void:
+	_game_state.gold = 200
+	var data := TestHelpers.create_basic_tower_data()
+	data.hp = 100
+	_game_state.register_tower_data(data)
+
+	var tower := _game_state.place_tower(Vector2i(5, 5), "archer")
+
+	assert_eq(tower.hp, 100)
+	assert_eq(tower.max_hp, 100)
+
+
+func test_destroy_tower_removes_from_towers() -> void:
+	_game_state.gold = 200
+	var data := TestHelpers.create_basic_tower_data()
+	_game_state.register_tower_data(data)
+	var tower := _game_state.place_tower(Vector2i(5, 5), "archer")
+
+	_game_state.destroy_tower(tower)
+
+	assert_false(_game_state.towers.has(tower))
+	assert_eq(_game_state.towers.size(), 0)
+
+
+func test_destroy_tower_unblocks_2x2_tiles() -> void:
+	_game_state.gold = 200
+	var data := TestHelpers.create_basic_tower_data()
+	_game_state.register_tower_data(data)
+	var tower := _game_state.place_tower(Vector2i(5, 5), "archer")
+
+	_game_state.destroy_tower(tower)
+
+	assert_false(_game_state.pathfinding.is_blocked(Vector2i(5, 5)))
+	assert_false(_game_state.pathfinding.is_blocked(Vector2i(6, 5)))
+	assert_false(_game_state.pathfinding.is_blocked(Vector2i(5, 6)))
+	assert_false(_game_state.pathfinding.is_blocked(Vector2i(6, 6)))
+
+
+func test_destroy_tower_emits_tower_destroyed() -> void:
+	_game_state.gold = 200
+	var data := TestHelpers.create_basic_tower_data()
+	_game_state.register_tower_data(data)
+	var tower := _game_state.place_tower(Vector2i(5, 5), "archer")
+
+	var signal_data := {"emitted": false, "tower": null}
+	_game_state.tower_destroyed.connect(
+		func(t: SimTower):
+			signal_data.emitted = true
+			signal_data.tower = t
+	)
+
+	_game_state.destroy_tower(tower)
+
+	assert_true(signal_data.emitted)
+	assert_eq(signal_data.tower, tower)
+
+
 # ============================================
 # can_place_tower() tests
 # ============================================

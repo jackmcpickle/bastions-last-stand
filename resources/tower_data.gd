@@ -7,6 +7,7 @@ extends Resource
 @export var id: String
 @export var display_name: String
 @export var base_cost: int  # Gold cost
+@export var hp: int = 100  # Raw HP (not x1000), same as walls/enemies
 
 ## Combat stats (fixed-point x1000)
 @export var damage: int  # x1000: 15000 = 15.0 damage

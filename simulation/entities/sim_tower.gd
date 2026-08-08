@@ -26,6 +26,10 @@ var cooldown_ms: int = 0
 var target_priority: Targeting.Priority = Targeting.Priority.FIRST
 var frozen_ms: int = 0  # Frost Wyrm freeze duration
 
+## Durability (raw int, not x1000)
+var hp: int
+var max_hp: int
+
 ## Tracking
 var total_damage_dealt: int = 0  # x1000
 var kills: int = 0
@@ -43,9 +47,21 @@ func initialize(p_data: TowerData, p_position: Vector2i) -> void:
 	range_tiles = data.range_tiles
 	aoe_radius = data.aoe_radius
 	special = data.special.duplicate()
+	hp = data.hp
+	max_hp = data.hp
 
 	total_cost = data.base_cost
 	tier = 1
+
+
+func take_damage(amount: int) -> void:
+	hp -= amount
+	if hp < 0:
+		hp = 0
+
+
+func is_destroyed() -> bool:
+	return hp <= 0
 
 
 func get_center() -> Vector2:

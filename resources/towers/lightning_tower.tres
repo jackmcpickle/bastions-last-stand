@@ -92,6 +92,7 @@ script = ExtResource("1")
 id = "lightning"
 display_name = "Lightning Tower"
 base_cost = 140
+hp = 100
 damage = 12000
 attack_speed_ms = 1200
 range_tiles = 5

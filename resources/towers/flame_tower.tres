@@ -92,6 +92,7 @@ script = ExtResource("1")
 id = "flame"
 display_name = "Flame Tower"
 base_cost = 90
+hp = 100
 damage = 6000
 attack_speed_ms = 400
 range_tiles = 3

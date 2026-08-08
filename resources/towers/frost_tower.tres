@@ -92,6 +92,7 @@ script = ExtResource("1")
 id = "frost"
 display_name = "Frost Tower"
 base_cost = 100
+hp = 100
 damage = 8000
 attack_speed_ms = 600
 range_tiles = 4

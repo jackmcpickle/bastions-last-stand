@@ -92,6 +92,7 @@ script = ExtResource("1")
 id = "cannon"
 display_name = "Cannon Tower"
 base_cost = 120
+hp = 100
 damage = 25000
 attack_speed_ms = 1500
 range_tiles = 4

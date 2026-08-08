@@ -8,6 +8,7 @@ signal enemy_killed(enemy: SimEnemy, gold_earned: int)
 signal enemy_reached_shrine(enemy: SimEnemy, damage: int)
 signal tower_placed(tower: SimTower)
 signal tower_attacked(tower: SimTower, target: SimEnemy, damage: int)
+signal tower_destroyed(tower: SimTower)
 signal wall_placed(wall: SimWall)
 signal wall_destroyed(wall: SimWall)
 signal wave_started(wave_number: int)
@@ -166,6 +167,20 @@ func place_tower(pos: Vector2i, tower_id: String) -> SimTower:
 
 	tower_placed.emit(tower)
 	return tower
+
+
+func destroy_tower(tower: SimTower) -> void:
+	## Remove tower, unblock footprint, emit signal, and repath
+	if tower == null or tower not in towers:
+		return
+
+	for dx in range(2):
+		for dy in range(2):
+			pathfinding.set_blocked(Vector2i(tower.position.x + dx, tower.position.y + dy), false)
+
+	towers.erase(tower)
+	tower_destroyed.emit(tower)
+	repath_ground_enemies()
 
 
 ## Wall placement
