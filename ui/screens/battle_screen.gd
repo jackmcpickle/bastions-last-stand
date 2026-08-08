@@ -209,7 +209,17 @@ func _register_data_to_state(state: GameState) -> void:
 	state.register_enemy_data(load("res://resources/enemies/swarm.tres"))
 	state.register_enemy_data(load("res://resources/enemies/stealth.tres"))
 	state.register_enemy_data(load("res://resources/enemies/breaker.tres"))
+	state.register_enemy_data(load("res://resources/enemies/healer.tres"))
+	state.register_enemy_data(load("res://resources/enemies/shielded.tres"))
+	state.register_enemy_data(load("res://resources/enemies/splitter.tres"))
+	state.register_enemy_data(load("res://resources/enemies/regen.tres"))
+	state.register_enemy_data(load("res://resources/enemies/mini.tres"))
 	state.register_enemy_data(load("res://resources/enemies/boss_golem.tres"))
+	state.register_enemy_data(load("res://resources/enemies/swarm_queen.tres"))
+	state.register_enemy_data(load("res://resources/enemies/frost_wyrm.tres"))
+	state.register_enemy_data(load("res://resources/enemies/phase_phantom.tres"))
+	state.register_enemy_data(load("res://resources/enemies/necromancer.tres"))
+	state.register_enemy_data(load("res://resources/enemies/iron_colossus.tres"))
 
 
 func _update_display() -> void:

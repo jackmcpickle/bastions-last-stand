@@ -11,4 +11,4 @@ difficulty_modifiers = {"easy": {"dmg_mult": 0.75, "gold": 80, "hp_mult": 0.75},
 unlock_requirement = ""
 description = "Tanks arrive. Single-target towers struggle. Use AOE!"
 recommended_towers = ["cannon_tower", "lightning_tower"]
-enemy_types = ["grunt", "tank"]
+enemy_types = ["grunt", "tank", "healer", "frost_wyrm"]

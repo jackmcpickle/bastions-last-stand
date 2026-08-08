@@ -11,4 +11,4 @@ difficulty_modifiers = {"easy": {"dmg_mult": 0.75, "gold": 80, "hp_mult": 0.75},
 unlock_requirement = "ch3_lv2"
 description = "The final confrontation. A legendary boss awaits."
 recommended_towers = ["archer_tower", "cannon_tower", "lightning_tower"]
-enemy_types = ["boss_golem"]
+enemy_types = ["boss_golem", "iron_colossus"]

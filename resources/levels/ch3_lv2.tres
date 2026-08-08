@@ -11,4 +11,4 @@ difficulty_modifiers = {"easy": {"dmg_mult": 0.75, "gold": 80, "hp_mult": 0.75},
 unlock_requirement = "ch3_lv1"
 description = "Enemies destroy walls. Rebuild defenses strategically."
 recommended_towers = ["cannon_tower", "frost_tower"]
-enemy_types = ["breaker", "tank"]
+enemy_types = ["breaker", "tank", "shielded", "splitter", "regen"]

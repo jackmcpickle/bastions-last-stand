@@ -11,4 +11,4 @@ difficulty_modifiers = {"easy": {"dmg_mult": 0.75, "gold": 80, "hp_mult": 0.75},
 unlock_requirement = "ch1_lv2"
 description = "Intense waves test your tower network. Adapt and survive!"
 recommended_towers = ["archer_tower", "cannon_tower"]
-enemy_types = ["grunt", "runner"]
+enemy_types = ["grunt", "runner", "swarm_queen"]

@@ -11,4 +11,4 @@ difficulty_modifiers = {"easy": {"dmg_mult": 0.75, "gold": 80, "hp_mult": 0.75},
 unlock_requirement = ""
 description = "Invisible enemies move unseen. Detection and AOE prevail."
 recommended_towers = ["cannon_tower", "lightning_tower"]
-enemy_types = ["stealth", "grunt"]
+enemy_types = ["stealth", "grunt", "shielded", "regen", "necromancer"]

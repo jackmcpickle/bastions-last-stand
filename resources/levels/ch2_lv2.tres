@@ -11,4 +11,4 @@ difficulty_modifiers = {"easy": {"dmg_mult": 0.75, "gold": 80, "hp_mult": 0.75},
 unlock_requirement = "ch2_lv1"
 description = "Balanced enemy composition. Adapt your tower mix."
 recommended_towers = ["archer_tower", "cannon_tower", "frost_tower"]
-enemy_types = ["grunt", "runner", "tank"]
+enemy_types = ["grunt", "runner", "tank", "shielded", "splitter", "phase_phantom"]

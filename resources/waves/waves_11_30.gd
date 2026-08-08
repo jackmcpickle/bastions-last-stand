@@ -3,18 +3,20 @@ extends RefCounted
 
 ## Factory for waves 11-30
 ## Wave composition:
-## 10: Boss wave (Golem)
 ## 11-14: Introduce Tank, Flyer
+## 13: Introduce Healer
 ## 14: Rush round
-## 15-18: Introduce Swarm, Stealth
+## 15: Boss (Frost Wyrm); introduce Stealth
+## 16: Introduce Shielded
 ## 18: Smash round (Breakers)
-## 19-20: Boss wave (Golem)
-## 21-24: Mixed compositions
+## 19: Introduce Splitter
+## 20: Boss (Phase Phantom)
+## 21-24: Mixed compositions; Regen intro on 22
 ## 24: Smash round
-## 25-28: Increased difficulty
+## 25: Boss (Necromancer)
 ## 26: Rush round
 ## 28: Smash round
-## 29-30: Boss wave + everything
+## 30: Final bosses (Iron Colossus + Boss Golem)
 
 
 static func create() -> Array[SingleWaveData]:
@@ -74,6 +76,7 @@ static func _wave_13() -> SingleWaveData:
 		_spawn("grunt", 18),
 		_spawn("tank", 4),
 		_spawn("flyer", 6),
+		_spawn("healer", 2),
 	]
 	return wave
 
@@ -92,10 +95,12 @@ static func _wave_14() -> SingleWaveData:
 
 
 static func _wave_15() -> SingleWaveData:
+	## Boss wave - Frost Wyrm
 	var wave := SingleWaveData.new()
 	wave.wave_number = 15
 	wave.spawn_interval_ms = 500
 	wave.spawns = [
+		_spawn("frost_wyrm", 1),
 		_spawn("grunt", 20),
 		_spawn("runner", 10),
 		_spawn("stealth", 3),
@@ -111,6 +116,7 @@ static func _wave_16() -> SingleWaveData:
 		_spawn("tank", 5),
 		_spawn("flyer", 8),
 		_spawn("stealth", 5),
+		_spawn("shielded", 3),
 	]
 	return wave
 
@@ -123,6 +129,7 @@ static func _wave_17() -> SingleWaveData:
 		_spawn("grunt", 25),
 		_spawn("runner", 12),
 		_spawn("swarm", 15),
+		_spawn("healer", 3),
 	]
 	return wave
 
@@ -150,17 +157,18 @@ static func _wave_19() -> SingleWaveData:
 		_spawn("runner", 15),
 		_spawn("flyer", 10),
 		_spawn("stealth", 4),
+		_spawn("splitter", 3),
 	]
 	return wave
 
 
 static func _wave_20() -> SingleWaveData:
-	## Boss wave
+	## Boss wave - Phase Phantom
 	var wave := SingleWaveData.new()
 	wave.wave_number = 20
 	wave.spawn_interval_ms = 500
 	wave.spawns = [
-		_spawn("boss_golem", 1),
+		_spawn("phase_phantom", 1),
 		_spawn("tank", 6),
 		_spawn("grunt", 20),
 	]
@@ -176,6 +184,7 @@ static func _wave_21() -> SingleWaveData:
 		_spawn("runner", 18),
 		_spawn("tank", 5),
 		_spawn("flyer", 8),
+		_spawn("shielded", 4),
 	]
 	return wave
 
@@ -188,6 +197,7 @@ static func _wave_22() -> SingleWaveData:
 		_spawn("swarm", 30),
 		_spawn("stealth", 8),
 		_spawn("flyer", 12),
+		_spawn("regen", 3),
 	]
 	return wave
 
@@ -201,6 +211,7 @@ static func _wave_23() -> SingleWaveData:
 		_spawn("runner", 15),
 		_spawn("tank", 8),
 		_spawn("stealth", 5),
+		_spawn("healer", 4),
 	]
 	return wave
 
@@ -215,15 +226,18 @@ static func _wave_24() -> SingleWaveData:
 		_spawn("breaker", 12),
 		_spawn("tank", 6),
 		_spawn("runner", 20),
+		_spawn("splitter", 4),
 	]
 	return wave
 
 
 static func _wave_25() -> SingleWaveData:
+	## Boss wave - Necromancer
 	var wave := SingleWaveData.new()
 	wave.wave_number = 25
 	wave.spawn_interval_ms = 350
 	wave.spawns = [
+		_spawn("necromancer", 1),
 		_spawn("grunt", 35),
 		_spawn("runner", 20),
 		_spawn("flyer", 15),
@@ -255,6 +269,7 @@ static func _wave_27() -> SingleWaveData:
 		_spawn("tank", 10),
 		_spawn("stealth", 10),
 		_spawn("flyer", 12),
+		_spawn("shielded", 5),
 	]
 	return wave
 
@@ -270,6 +285,7 @@ static func _wave_28() -> SingleWaveData:
 		_spawn("tank", 10),
 		_spawn("grunt", 25),
 		_spawn("runner", 15),
+		_spawn("regen", 4),
 	]
 	return wave
 
@@ -285,16 +301,18 @@ static func _wave_29() -> SingleWaveData:
 		_spawn("flyer", 18),
 		_spawn("stealth", 8),
 		_spawn("swarm", 30),
+		_spawn("splitter", 5),
 	]
 	return wave
 
 
 static func _wave_30() -> SingleWaveData:
-	## Final boss wave
+	## Final boss wave - Iron Colossus + Boss Golem
 	var wave := SingleWaveData.new()
 	wave.wave_number = 30
 	wave.spawn_interval_ms = 400
 	wave.spawns = [
+		_spawn("iron_colossus", 1),
 		_spawn("boss_golem", 3),
 		_spawn("tank", 15),
 		_spawn("breaker", 10),
