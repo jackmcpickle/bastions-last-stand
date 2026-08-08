@@ -75,6 +75,27 @@ func test_calculate_wave_bonus_perfect_plus_early() -> void:
 	assert_eq(bonus, 45)
 
 
+func test_calculate_wave_bonus_rush_doubles_early_only() -> void:
+	var bonus := Economy.calculate_wave_bonus(100, true, 10.0, true)
+
+	# 20% early * 2 = 40% (perfect skipped — took damage)
+	assert_eq(bonus, 40)
+
+
+func test_calculate_wave_bonus_rush_does_not_double_perfect() -> void:
+	var bonus := Economy.calculate_wave_bonus(100, false, 0.0, true)
+
+	# Perfect only — Rush must not double it
+	assert_eq(bonus, 25)
+
+
+func test_calculate_wave_bonus_rush_early_max() -> void:
+	var bonus := Economy.calculate_wave_bonus(100, true, 100.0, true)
+
+	# Cap 50% then ×2 => 100
+	assert_eq(bonus, 100)
+
+
 func test_calculate_wave_bonus_zero_gold() -> void:
 	var bonus := Economy.calculate_wave_bonus(0, false)
 

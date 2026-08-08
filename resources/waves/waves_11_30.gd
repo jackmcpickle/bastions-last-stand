@@ -8,10 +8,11 @@ extends RefCounted
 ## 14: Rush round
 ## 15: Boss (Frost Wyrm); introduce Stealth
 ## 16: Introduce Shielded
-## 18: Smash round (Breakers)
+## 18: Smash round (Breakers + Siege Golem / Battering Ram)
 ## 19: Introduce Splitter
-## 20: Boss (Phase Phantom)
-## 21-24: Mixed compositions; Regen intro on 22
+## 20: Rush round
+## 21: Boss (Phase Phantom)
+## 22-24: Mixed compositions; Regen intro on 22
 ## 24: Smash round
 ## 25: Boss (Necromancer)
 ## 26: Rush round
@@ -135,7 +136,7 @@ static func _wave_17() -> SingleWaveData:
 
 
 static func _wave_18() -> SingleWaveData:
-	## Smash round - wall breakers
+	## Smash round - wall breakers + siege units
 	var wave := SingleWaveData.new()
 	wave.wave_number = 18
 	wave.spawn_interval_ms = 600
@@ -144,6 +145,8 @@ static func _wave_18() -> SingleWaveData:
 		_spawn("breaker", 8),
 		_spawn("tank", 4),
 		_spawn("grunt", 15),
+		_spawn("siege_golem", 1),
+		_spawn("battering_ram", 2),
 	]
 	return wave
 
@@ -163,23 +166,25 @@ static func _wave_19() -> SingleWaveData:
 
 
 static func _wave_20() -> SingleWaveData:
-	## Boss wave - Phase Phantom
+	## Rush round
 	var wave := SingleWaveData.new()
 	wave.wave_number = 20
-	wave.spawn_interval_ms = 500
+	wave.spawn_interval_ms = 300
+	wave.is_rush = true
 	wave.spawns = [
-		_spawn("phase_phantom", 1),
-		_spawn("tank", 6),
-		_spawn("grunt", 20),
+		_spawn("runner", 35),
+		_spawn("swarm", 25),
 	]
 	return wave
 
 
 static func _wave_21() -> SingleWaveData:
+	## Boss wave - Phase Phantom
 	var wave := SingleWaveData.new()
 	wave.wave_number = 21
 	wave.spawn_interval_ms = 400
 	wave.spawns = [
+		_spawn("phase_phantom", 1),
 		_spawn("grunt", 25),
 		_spawn("runner", 18),
 		_spawn("tank", 5),
@@ -227,6 +232,8 @@ static func _wave_24() -> SingleWaveData:
 		_spawn("tank", 6),
 		_spawn("runner", 20),
 		_spawn("splitter", 4),
+		_spawn("siege_golem", 2),
+		_spawn("battering_ram", 3),
 	]
 	return wave
 
@@ -286,6 +293,8 @@ static func _wave_28() -> SingleWaveData:
 		_spawn("grunt", 25),
 		_spawn("runner", 15),
 		_spawn("regen", 4),
+		_spawn("siege_golem", 3),
+		_spawn("battering_ram", 4),
 	]
 	return wave
 

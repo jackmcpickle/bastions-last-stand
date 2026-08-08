@@ -79,7 +79,16 @@ func _load_chapter_data() -> void:
 			1,
 			"Balanced enemy composition. Adapt your tower mix.",
 			["archer_tower", "cannon_tower", "frost_tower"],
-			["grunt", "runner", "tank", "shielded", "splitter", "phase_phantom"]
+			[
+				"grunt",
+				"runner",
+				"tank",
+				"shielded",
+				"splitter",
+				"phase_phantom",
+				"siege_golem",
+				"battering_ram",
+			]
 		),
 		_create_level(
 			"ch2_lv3",
@@ -110,7 +119,16 @@ func _load_chapter_data() -> void:
 			0,
 			"Invisible enemies move unseen. Detection and AOE prevail.",
 			["cannon_tower", "lightning_tower", "support_tower"],
-			["stealth", "grunt", "shielded", "regen", "necromancer"]
+			[
+				"stealth",
+				"grunt",
+				"shielded",
+				"regen",
+				"necromancer",
+				"phase_phantom",
+				"siege_golem",
+				"battering_ram",
+			]
 		),
 		_create_level(
 			"ch3_lv2",
@@ -119,7 +137,15 @@ func _load_chapter_data() -> void:
 			1,
 			"Enemies destroy walls. Rebuild defenses strategically.",
 			["cannon_tower", "frost_tower"],
-			["breaker", "tank", "shielded", "splitter", "regen"]
+			[
+				"breaker",
+				"tank",
+				"shielded",
+				"splitter",
+				"regen",
+				"siege_golem",
+				"battering_ram",
+			]
 		),
 		_create_level(
 			"ch3_lv3",

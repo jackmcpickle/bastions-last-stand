@@ -74,6 +74,17 @@ var stealth_delay_ms: int = 0
 var teleport_timer_ms: int = 0
 
 var cc_immune: bool = false
+var slow_immune: bool = false
+
+## Wall-breaker structure combat / charge
+var structure_attack_interval_ms: int = 1000
+var structure_attack_cooldown_ms: int = 0
+var charge_impact_bonus: int = 0  # x1000 +% on charged hit
+var charge_range: int = 0
+var charge_speed_bonus: int = 0  # x1000 +% move speed while charging
+var charge_cooldown_ms: int = 0
+var charge_cooldown_remaining_ms: int = 0
+var is_charging: bool = false
 
 var freeze_towers_range: float = 0
 var freeze_duration_ms: int = 0
@@ -130,6 +141,16 @@ func initialize(p_data: EnemyData, p_spawn_point: Vector2i, pathfinding: SimPath
 	teleport_timer_ms = teleport_interval_ms
 
 	cc_immune = data.special.get("cc_immune", false)
+	slow_immune = data.special.get("slow_immune", false)
+
+	structure_attack_interval_ms = data.special.get("structure_attack_interval_ms", 1000)
+	structure_attack_cooldown_ms = 0
+	charge_impact_bonus = data.special.get("charge_impact_bonus", 0)
+	charge_range = data.special.get("charge_range", 0)
+	charge_speed_bonus = data.special.get("charge_speed_bonus", 0)
+	charge_cooldown_ms = data.special.get("charge_cooldown_ms", 0)
+	charge_cooldown_remaining_ms = 0
+	is_charging = false
 
 	freeze_towers_range = data.special.get("freeze_towers_range", 0)
 	freeze_duration_ms = data.special.get("freeze_duration_ms", 0)
@@ -160,10 +181,12 @@ func move(delta_ms: int) -> void:
 	if path.is_empty() or path_index >= path.size():
 		return
 
-	# Calculate effective speed (with slow)
+	# Calculate effective speed (with slow / charge)
 	var effective_speed := speed
 	if slow_amount > 0:
 		effective_speed = speed * (1000 - slow_amount) / 1000
+	if is_charging and charge_speed_bonus > 0:
+		effective_speed = effective_speed * (1000 + charge_speed_bonus) / 1000
 
 	# Convert to distance per tick
 	# speed is x1000 tiles/sec, delta_ms is milliseconds
@@ -271,7 +294,7 @@ func take_damage(amount: int) -> void:
 
 func apply_slow(amount: int, duration_ms: int) -> void:
 	## amount is x1000 (300 = 30% slow)
-	if duration_ms <= 0 or cc_immune:
+	if duration_ms <= 0 or cc_immune or slow_immune:
 		return
 	# Take the stronger slow
 	if amount > slow_amount:

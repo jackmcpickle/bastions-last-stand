@@ -372,7 +372,11 @@ func start_wave(wave_number: int, seconds_early: float = 0.0) -> bool:
 	wave_shrine_damaged = false
 	wave_seconds_early = maxf(seconds_early, 0.0)
 
-	# Build spawn queue
+	# Build spawn queue (Rush uses BalanceConfig interval)
+	var spawn_interval_ms := wave.spawn_interval_ms
+	if wave.is_rush and balance_config:
+		spawn_interval_ms = balance_config.wave_spawn_interval_rush_ms
+
 	var spawn_delay := 0
 	for spawn_group in wave.spawns:
 		spawn_delay += spawn_group.delay_ms
@@ -389,7 +393,7 @@ func start_wave(wave_number: int, seconds_early: float = 0.0) -> bool:
 					"delay_remaining": spawn_delay
 				}
 			)
-			spawn_delay += wave.spawn_interval_ms
+			spawn_delay += spawn_interval_ms
 
 	wave_enemies_remaining = spawn_queue.size()
 	wave_started.emit(wave_number)
@@ -488,8 +492,14 @@ func damage_shrine(amount: int) -> void:
 func complete_wave() -> void:
 	wave_in_progress = false
 
+	var is_rush := false
+	if wave_data:
+		var wave := wave_data.get_wave(current_wave)
+		if wave:
+			is_rush = wave.is_rush
+
 	var bonus := Economy.calculate_wave_bonus(
-		wave_gold_earned, wave_shrine_damaged, wave_seconds_early
+		wave_gold_earned, wave_shrine_damaged, wave_seconds_early, is_rush
 	)
 	if bonus > 0:
 		gold += bonus

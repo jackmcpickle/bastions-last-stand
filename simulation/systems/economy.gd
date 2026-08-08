@@ -22,20 +22,25 @@ static func calculate_kill_reward(enemy: SimEnemy, game_state: GameState) -> int
 
 
 static func calculate_wave_bonus(
-	wave_gold_earned: int, shrine_took_damage: bool, seconds_early: float = 0.0
+	wave_gold_earned: int,
+	shrine_took_damage: bool,
+	seconds_early: float = 0.0,
+	is_rush: bool = false
 ) -> int:
 	## Calculate end-of-wave bonus gold
 	var bonus := 0
 
-	# Perfect wave bonus (no damage)
+	# Perfect wave bonus (no damage) — not doubled on Rush
 	if not shrine_took_damage:
 		bonus += wave_gold_earned * PERFECT_WAVE_BONUS / 1000
 
-	# Early start bonus
+	# Early start bonus (Rush doubles this portion after the 50% cap)
 	if seconds_early > 0:
 		var early_bonus_mult := mini(
 			int(seconds_early / 5.0) * EARLY_START_BONUS_PER_5S, EARLY_START_BONUS_MAX
 		)
+		if is_rush:
+			early_bonus_mult *= 2
 		bonus += wave_gold_earned * early_bonus_mult / 1000
 
 	return bonus

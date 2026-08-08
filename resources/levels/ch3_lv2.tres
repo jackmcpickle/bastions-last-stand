@@ -31,4 +31,4 @@ difficulty_modifiers = {
 unlock_requirement = "ch3_lv1"
 description = "Enemies destroy walls. Rebuild defenses strategically."
 recommended_towers = Array[String](["cannon_tower", "frost_tower"])
-enemy_types = Array[String](["breaker", "tank", "shielded", "splitter", "regen"])
+enemy_types = Array[String](["breaker", "tank", "shielded", "splitter", "regen", "siege_golem", "battering_ram"])

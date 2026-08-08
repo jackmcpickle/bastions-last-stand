@@ -767,42 +767,145 @@ static func _siege_tower_dist_sq(enemy: SimEnemy, tower: SimTower) -> float:
 
 
 static func process_wall_breaker_attacks(game_state: GameState, delta_ms: int) -> void:
-	## Wall breakers attack adjacent walls
+	## Wall breakers attack adjacent walls/towers on an interval (charge-aware)
 	var walls_to_remove: Array[SimWall] = []
+	var towers_to_remove: Array[SimTower] = []
+	var need_repath := false
 
 	for enemy in game_state.enemies:
-		if not enemy.is_wall_breaker:
+		if not enemy.is_wall_breaker or enemy.is_dead():
 			continue
 
-		# Find adjacent wall
+		if enemy.charge_cooldown_remaining_ms > 0:
+			enemy.charge_cooldown_remaining_ms = maxi(
+				enemy.charge_cooldown_remaining_ms - delta_ms, 0
+			)
+
 		var wall := _find_adjacent_wall(enemy, game_state.walls)
-		if not wall:
+		var tower := _find_adjacent_tower(enemy, game_state.towers)
+		_update_wall_breaker_charge(enemy, game_state)
+
+		if enemy.structure_attack_cooldown_ms > 0:
+			enemy.structure_attack_cooldown_ms = maxi(
+				enemy.structure_attack_cooldown_ms - delta_ms, 0
+			)
+
+		if not wall and not tower:
+			continue
+		if enemy.structure_attack_cooldown_ms > 0:
 			continue
 
-		# Attack wall
-		var wall_damage: int = enemy.data.special.get("wall_damage", 10)
-		_damage_wall(wall, wall_damage, enemy, game_state)
+		var prefer_tower := false
+		if wall and tower:
+			prefer_tower = (_siege_tower_dist_sq(enemy, tower) < _siege_wall_dist_sq(enemy, wall))
+		elif tower:
+			prefer_tower = true
 
-		if wall.is_destroyed() and wall not in walls_to_remove:
-			walls_to_remove.append(wall)
+		var base_damage: int = enemy.data.special.get("wall_damage", 10)
+		var damage := base_damage
+		if enemy.is_charging and enemy.charge_impact_bonus > 0:
+			damage = base_damage * (1000 + enemy.charge_impact_bonus) / 1000
+			enemy.is_charging = false
+			enemy.charge_cooldown_remaining_ms = enemy.charge_cooldown_ms
 
-	# Remove destroyed walls and update pathfinding
+		if prefer_tower:
+			tower.take_damage(damage)
+			enemy.structure_attack_cooldown_ms = enemy.structure_attack_interval_ms
+			if tower.is_destroyed() and tower not in towers_to_remove:
+				towers_to_remove.append(tower)
+		else:
+			_damage_wall(wall, damage, enemy, game_state)
+			enemy.structure_attack_cooldown_ms = enemy.structure_attack_interval_ms
+			if wall.is_destroyed() and wall not in walls_to_remove:
+				walls_to_remove.append(wall)
+
 	for wall in walls_to_remove:
 		game_state.pathfinding.set_blocked(wall.position, false)
 		game_state.walls.erase(wall)
 		game_state.wall_destroyed.emit(wall)
+		need_repath = true
 
+	for tower in towers_to_remove:
+		game_state.destroy_tower(tower)
+		need_repath = true
+
+	if need_repath and towers_to_remove.is_empty():
+		# destroy_tower already repaths; wall-only needs explicit repath
 		game_state.repath_ground_enemies()
+
+
+static func _update_wall_breaker_charge(enemy: SimEnemy, game_state: GameState) -> void:
+	if enemy.charge_range <= 0 or enemy.charge_impact_bonus <= 0:
+		return
+	if enemy.charge_cooldown_remaining_ms > 0:
+		enemy.is_charging = false
+		return
+	if enemy.is_charging:
+		return
+	if _structure_within_chebyshev(enemy, game_state, enemy.charge_range):
+		enemy.is_charging = true
+
+
+static func _structure_within_chebyshev(
+	enemy: SimEnemy, game_state: GameState, range_tiles: int
+) -> bool:
+	var pos := enemy.get_current_tile()
+	for wall in game_state.walls:
+		var dx := absi(wall.position.x - pos.x)
+		var dy := absi(wall.position.y - pos.y)
+		if dx <= range_tiles and dy <= range_tiles:
+			return true
+	for tower in game_state.towers:
+		# Tower is 2x2; check closest cell of footprint
+		for ox in range(2):
+			for oy in range(2):
+				var dx := absi(tower.position.x + ox - pos.x)
+				var dy := absi(tower.position.y + oy - pos.y)
+				if dx <= range_tiles and dy <= range_tiles:
+					return true
+	return false
 
 
 static func _find_adjacent_wall(enemy: SimEnemy, walls: Array[SimWall]) -> SimWall:
 	## Returns wall adjacent to enemy position (within 1 tile)
 	var pos := enemy.get_current_tile()
+	var best: SimWall = null
+	var best_dist_sq := 999999.0
 
 	for wall in walls:
 		var dx := absi(wall.position.x - pos.x)
 		var dy := absi(wall.position.y - pos.y)
 		if dx <= 1 and dy <= 1:
-			return wall
+			var dist_sq := _siege_wall_dist_sq(enemy, wall)
+			if dist_sq < best_dist_sq:
+				best_dist_sq = dist_sq
+				best = wall
 
-	return null
+	return best
+
+
+static func _find_adjacent_tower(enemy: SimEnemy, towers: Array[SimTower]) -> SimTower:
+	## Returns tower adjacent to enemy (any cell of 2x2 footprint within 1)
+	var pos := enemy.get_current_tile()
+	var best: SimTower = null
+	var best_dist_sq := 999999.0
+
+	for tower in towers:
+		var adjacent := false
+		for ox in range(2):
+			for oy in range(2):
+				var dx := absi(tower.position.x + ox - pos.x)
+				var dy := absi(tower.position.y + oy - pos.y)
+				if dx <= 1 and dy <= 1:
+					adjacent = true
+					break
+			if adjacent:
+				break
+		if not adjacent:
+			continue
+		var dist_sq := _siege_tower_dist_sq(enemy, tower)
+		if dist_sq < best_dist_sq:
+			best_dist_sq = dist_sq
+			best = tower
+
+	return best
