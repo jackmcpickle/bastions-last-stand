@@ -38,12 +38,27 @@ func get_balance_config() -> BalanceConfig:
 
 
 func _apply_config_to_tower(data: TowerData) -> TowerData:
-	## Apply balance config overrides to tower data
-	if data.id == "archer":
-		data.base_cost = _balance_config.archer_cost
-		data.damage = _balance_config.archer_damage
-		data.attack_speed_ms = _balance_config.archer_attack_speed_ms
-		data.range_tiles = _balance_config.archer_range
+	## Apply balance config overrides to tower data (base + upgrade costs)
+	match data.id:
+		"archer":
+			data.base_cost = _balance_config.archer_cost
+			data.damage = _balance_config.archer_damage
+			data.attack_speed_ms = _balance_config.archer_attack_speed_ms
+			data.range_tiles = _balance_config.archer_range
+			data.upgrade_cost_t2 = _balance_config.archer_upgrade_t2
+			data.upgrade_cost_t3 = _balance_config.archer_upgrade_t3
+		"cannon":
+			data.upgrade_cost_t2 = _balance_config.cannon_upgrade_t2
+			data.upgrade_cost_t3 = _balance_config.cannon_upgrade_t3
+		"frost":
+			data.upgrade_cost_t2 = _balance_config.frost_upgrade_t2
+			data.upgrade_cost_t3 = _balance_config.frost_upgrade_t3
+		"lightning":
+			data.upgrade_cost_t2 = _balance_config.lightning_upgrade_t2
+			data.upgrade_cost_t3 = _balance_config.lightning_upgrade_t3
+		"flame":
+			data.upgrade_cost_t2 = _balance_config.flame_upgrade_t2
+			data.upgrade_cost_t3 = _balance_config.flame_upgrade_t3
 	return data
 
 
@@ -61,17 +76,23 @@ func _apply_config_to_enemy(data: EnemyData) -> EnemyData:
 
 
 func run_single(
-	seed: int, tower_placements: Array[Dictionary], wall_placements: Array[Vector2i] = []
+	seed: int,
+	tower_placements: Array[Dictionary],
+	wall_placements: Array[Vector2i] = [],
+	tower_upgrades: Array = [],
+	wall_upgrades: Array = []
 ) -> TickProcessor.GameResult:
-	## Run a single simulation with specified tower and wall placements
+	## Run a single simulation with placements and optional upgrade schedules
 	## tower_placements: [{pos: Vector2i, id: String}, ...]
 	## wall_placements: [Vector2i, ...]
+	## tower_upgrades: [{pos: Vector2i, upgrade_id: String}, ...] applied in order
+	## wall_upgrades: [{pos: Vector2i, upgrade_id: String}, ...]
 
 	var game := GameState.new()
 
 	# Register data with config overrides
 	for id in _tower_registry:
-		var data: TowerData = _tower_registry[id].duplicate()
+		var data: TowerData = _tower_registry[id].duplicate(true)
 		data = _apply_config_to_tower(data)
 		game.register_tower_data(data)
 	for id in _enemy_registry:
@@ -79,7 +100,7 @@ func run_single(
 		data = _apply_config_to_enemy(data)
 		game.register_enemy_data(data)
 	if _wall_data:
-		game.register_wall_data(_wall_data.duplicate())
+		game.register_wall_data(_wall_data.duplicate(true))
 
 	# Initialize with config
 	game.initialize_with_config(_map_data, _wave_data, _balance_config, seed)
@@ -92,16 +113,71 @@ func run_single(
 	for placement in tower_placements:
 		game.place_tower(placement.pos, placement.id)
 
+	# Apply scheduled upgrades (grant gold so schedules are deterministic)
+	_apply_scheduled_upgrades(game, tower_upgrades, wall_upgrades)
+
 	# Run simulation
 	var processor := TickProcessor.new(game)
 	return processor.run_all_waves()
+
+
+func _apply_scheduled_upgrades(
+	game: GameState, tower_upgrades: Array, wall_upgrades: Array
+) -> void:
+	## Apply pre-wave loadout upgrades without distorting run economy
+	if tower_upgrades.is_empty() and wall_upgrades.is_empty():
+		return
+
+	var saved_gold := game.gold
+	var saved_spent := game.total_gold_spent
+	game.gold = 10000
+
+	for entry in tower_upgrades:
+		var pos: Vector2i = entry.pos
+		var upgrade_id: String = entry.upgrade_id
+		var tower := _find_tower_at(game, pos)
+		if not tower:
+			push_warning("Upgrade schedule: no tower at %s" % str(pos))
+			continue
+		if not game.upgrade_tower(tower, upgrade_id):
+			push_warning("Upgrade schedule failed: %s at %s" % [upgrade_id, str(pos)])
+
+	for entry in wall_upgrades:
+		var pos: Vector2i = entry.pos
+		var upgrade_id: String = entry.upgrade_id
+		var wall := _find_wall_at(game, pos)
+		if not wall:
+			push_warning("Upgrade schedule: no wall at %s" % str(pos))
+			continue
+		if not game.upgrade_wall(wall, upgrade_id):
+			push_warning("Wall upgrade schedule failed: %s at %s" % [upgrade_id, str(pos)])
+
+	# Restore starting gold / spend so metrics reflect the run, not the schedule
+	game.gold = saved_gold
+	game.total_gold_spent = saved_spent
+
+
+func _find_tower_at(game: GameState, pos: Vector2i) -> SimTower:
+	for tower in game.towers:
+		if tower.position == pos:
+			return tower
+	return null
+
+
+func _find_wall_at(game: GameState, pos: Vector2i) -> SimWall:
+	for wall in game.walls:
+		if wall.position == pos:
+			return wall
+	return null
 
 
 func run_batch(
 	count: int,
 	base_seed: int,
 	tower_placements: Array[Dictionary],
-	wall_placements: Array[Vector2i] = []
+	wall_placements: Array[Vector2i] = [],
+	tower_upgrades: Array = [],
+	wall_upgrades: Array = []
 ) -> Array[TickProcessor.GameResult]:
 	## Run multiple simulations
 
@@ -111,7 +187,9 @@ func run_batch(
 		simulation_started.emit(i, count)
 
 		var seed := base_seed + i
-		var result := run_single(seed, tower_placements, wall_placements)
+		var result := run_single(
+			seed, tower_placements, wall_placements, tower_upgrades, wall_upgrades
+		)
 		results.append(result)
 
 		simulation_completed.emit(i, result)
@@ -143,16 +221,19 @@ func run_batch_with_ai(
 func _run_with_ai(seed: int, ai_strategy: Callable) -> TickProcessor.GameResult:
 	var game := GameState.new()
 
-	# Register data
+	# Register data with same config overrides as run_single
 	for id in _tower_registry:
-		game.register_tower_data(_tower_registry[id])
+		var data: TowerData = _tower_registry[id].duplicate(true)
+		data = _apply_config_to_tower(data)
+		game.register_tower_data(data)
 	for id in _enemy_registry:
-		game.register_enemy_data(_enemy_registry[id])
+		var data: EnemyData = _enemy_registry[id].duplicate()
+		data = _apply_config_to_enemy(data)
+		game.register_enemy_data(data)
 	if _wall_data:
-		game.register_wall_data(_wall_data)
+		game.register_wall_data(_wall_data.duplicate(true))
 
-	# Initialize
-	game.initialize(_map_data, _wave_data, seed)
+	game.initialize_with_config(_map_data, _wave_data, _balance_config, seed)
 
 	var processor := TickProcessor.new(game)
 	var result := TickProcessor.GameResult.new()
@@ -187,10 +268,7 @@ func _run_with_ai(seed: int, ai_strategy: Callable) -> TickProcessor.GameResult:
 	result.enemies_leaked = game.enemies_leaked
 	result.total_damage_dealt = game.total_damage_dealt
 
-	for tower in game.towers:
-		result.tower_stats[tower.id] = {
-			"damage": tower.total_damage_dealt, "kills": tower.kills, "shots": tower.shots_fired
-		}
+	TickProcessor._fill_result_loadout(result, game)
 
 	return result
 
@@ -211,6 +289,7 @@ static func analyze_results(results: Array[TickProcessor.GameResult]) -> Diction
 	var total_leaked := 0
 	var tower_damage: Dictionary = {}
 	var tower_kills: Dictionary = {}
+	var upgrade_path_counts: Dictionary = {}
 
 	for result in results:
 		if result.won:
@@ -222,10 +301,15 @@ static func analyze_results(results: Array[TickProcessor.GameResult]) -> Diction
 		total_killed += result.enemies_killed
 		total_leaked += result.enemies_leaked
 
-		for tower_id in result.tower_stats:
-			var stats: Dictionary = result.tower_stats[tower_id]
+		for tower_key in result.tower_stats:
+			var stats: Dictionary = result.tower_stats[tower_key]
+			var tower_id: String = str(stats.get("id", tower_key))
 			tower_damage[tower_id] = tower_damage.get(tower_id, 0) + stats.damage
 			tower_kills[tower_id] = tower_kills.get(tower_id, 0) + stats.kills
+
+		for entry in result.upgrade_loadout:
+			var path_key := "%s:T%d%s" % [entry.id, entry.tier, entry.branch]
+			upgrade_path_counts[path_key] = upgrade_path_counts.get(path_key, 0) + 1
 
 	var count := results.size()
 
@@ -242,6 +326,7 @@ static func analyze_results(results: Array[TickProcessor.GameResult]) -> Diction
 		"avg_leaked": float(total_leaked) / count,
 		"tower_total_damage": tower_damage,
 		"tower_total_kills": tower_kills,
+		"upgrade_path_counts": upgrade_path_counts,
 	}
 
 
