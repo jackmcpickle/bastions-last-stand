@@ -125,6 +125,18 @@ static func create_flame_tower_data() -> TowerData:
 	return data
 
 
+static func create_support_tower_data() -> TowerData:
+	var data := create_basic_tower_data("support")
+	data.base_cost = 160
+	data.damage = 0
+	data.attack_speed_ms = 1000
+	data.range_tiles = 3
+	data.special = {"support_aura": true, "aura_damage_buff": 150}
+	data.upgrade_cost_t2 = 250
+	data.upgrade_cost_t3 = 500
+	return data
+
+
 static func create_stun_tower_data() -> TowerData:
 	var data := create_basic_tower_data("stun")
 	data.damage = 5000
